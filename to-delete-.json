@@ -1,23 +1,11 @@
 {
   "createdAt": "2025-07-15T19:09:54.921Z",
-  "updatedAt": "2025-07-15T19:10:10.000Z",
+  "updatedAt": "2025-07-15T19:12:04.000Z",
   "id": "tXsvimvYG0CAtBzq",
   "name": "to delete",
   "active": false,
-  "isArchived": false,
-  "nodes": [
-    {
-      "parameters": {},
-      "type": "n8n-nodes-base.manualTrigger",
-      "typeVersion": 1,
-      "position": [
-        240,
-        80
-      ],
-      "id": "67739bb2-fe69-49e9-8c74-e5b83c60472a",
-      "name": "When clicking ‘Execute workflow’"
-    }
-  ],
+  "isArchived": true,
+  "nodes": [],
   "connections": {},
   "settings": {
     "executionOrder": "v1"
@@ -25,7 +13,7 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "ab065d07-679c-4ac2-a8ea-ce7b35259cc9",
+  "versionId": "79750322-8926-4142-b6b9-1e78189048fc",
   "triggerCount": 0,
   "tags": []
 }
