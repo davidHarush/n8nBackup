@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-15T12:03:13.011Z",
-  "updatedAt": "2025-07-15T12:18:38.000Z",
+  "updatedAt": "2025-07-15T18:31:30.000Z",
   "id": "DHHEjJfoELlVdD8G",
   "name": "n8n Backup To Github",
   "active": true,
@@ -408,7 +408,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "0cddfc64-9bfe-4a90-be6a-d27d75a75631",
+  "versionId": "898a51c5-8f44-452e-b0d8-fa3954481ce0",
   "triggerCount": 1,
   "tags": []
 }
