@@ -1,0 +1,62 @@
+{
+  "createdAt": "2025-07-15T19:59:52.359Z",
+  "updatedAt": "2025-07-15T19:59:52.359Z",
+  "id": "2t0ACB0ZtI6NLHS0",
+  "name": "My workflow",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "7e2a55c4-e010-4361-8219-e8b2fb9e2799",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.openWeatherMap",
+      "typeVersion": 1,
+      "position": [
+        288,
+        0
+      ],
+      "id": "ccb89b08-b6fe-42ef-bd79-89d98a0036e0",
+      "name": "OpenWeatherMap",
+      "credentials": {
+        "openWeatherMapApi": {
+          "id": "sLHnWtPZVlUXEZnt",
+          "name": "OpenWeatherMap account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "OpenWeatherMap",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "ef8c15a4-425c-4c87-9522-b2e716e4887a",
+  "triggerCount": 0,
+  "tags": []
+}
