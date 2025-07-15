@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-15T12:03:13.011Z",
-  "updatedAt": "2025-07-15T18:31:30.000Z",
+  "updatedAt": "2025-07-15T19:11:23.000Z",
   "id": "DHHEjJfoELlVdD8G",
   "name": "n8n Backup To Github",
   "active": true,
@@ -126,41 +126,6 @@
         48
       ],
       "webhookId": "27218087-8df7-474d-a39f-70cfa9c34ec8",
-      "typeVersion": 1,
-      "credentials": {
-        "githubApi": {
-          "id": "r2Zx8ZzRnTdjOUrt",
-          "name": "GitHub account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "resource": "file",
-        "owner": {
-          "__rl": true,
-          "value": "https://github.com/davidHarush",
-          "mode": "url"
-        },
-        "repository": {
-          "__rl": true,
-          "value": "n8nBackup",
-          "mode": "list",
-          "cachedResultName": "n8nBackup",
-          "cachedResultUrl": "https://github.com/davidHarush/n8nBackup"
-        },
-        "filePath": "={{ $('Retrieve workflows').item.json.name.replace(/\\s+/g, '-').toLowerCase() }}-{{ $('Retrieve workflows').item.json.tags[0].name }}.json",
-        "fileContent": "={{ $('To base64').item.json.data }}",
-        "commitMessage": "=backup-{{ $node['Commit date & file name'].json.commitDate }}"
-      },
-      "id": "9daf0642-7d0f-4d46-834e-4d4acd9d53f6",
-      "name": "Upload file",
-      "type": "n8n-nodes-base.github",
-      "position": [
-        1872,
-        240
-      ],
-      "webhookId": "ce4b561b-acb9-4cd8-b76f-4928dada9674",
       "typeVersion": 1,
       "credentials": {
         "githubApi": {
@@ -297,6 +262,41 @@
         -80
       ],
       "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "owner": {
+          "__rl": true,
+          "value": "https://github.com/davidHarush",
+          "mode": "url"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "n8nBackup",
+          "mode": "list",
+          "cachedResultName": "n8nBackup",
+          "cachedResultUrl": "https://github.com/davidHarush/n8nBackup"
+        },
+        "filePath": "={{ $('Retrieve workflows').item.json.name.replace(/\\s+/g, '-').toLowerCase() }}-{{ $('Retrieve workflows').item.json.tags[0].name }}.json",
+        "fileContent": "={{ $('To base64').item.json.data }}",
+        "commitMessage": "=backup-{{ $node['Commit date & file name'].json.commitDate }}"
+      },
+      "id": "9daf0642-7d0f-4d46-834e-4d4acd9d53f6",
+      "name": "Upload new file",
+      "type": "n8n-nodes-base.github",
+      "position": [
+        1872,
+        240
+      ],
+      "webhookId": "ce4b561b-acb9-4cd8-b76f-4928dada9674",
+      "typeVersion": 1,
+      "credentials": {
+        "githubApi": {
+          "id": "r2Zx8ZzRnTdjOUrt",
+          "name": "GitHub account"
+        }
+      }
     }
   ],
   "connections": {
@@ -366,7 +366,7 @@
         ],
         [
           {
-            "node": "Upload file",
+            "node": "Upload new file",
             "type": "main",
             "index": 0
           }
@@ -408,7 +408,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "898a51c5-8f44-452e-b0d8-fa3954481ce0",
+  "versionId": "c099f677-584f-4be5-a6cd-e600b04f5b25",
   "triggerCount": 1,
   "tags": []
 }
