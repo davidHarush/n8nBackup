@@ -1,0 +1,139 @@
+{
+  "createdAt": "2025-07-15T19:03:44.446Z",
+  "updatedAt": "2025-07-15T19:07:32.000Z",
+  "id": "egFfaJ2SGsrEzPSl",
+  "name": "is telgram user",
+  "active": false,
+  "isArchived": true,
+  "nodes": [
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d9f3eac2-5d84-42ff-905f-44c827ea9876",
+              "leftValue": "={{ $json.telegram_id }}",
+              "rightValue": "={{ $('Listen for incoming events').item.json.message.from.id }}",
+              "operator": {
+                "type": "array",
+                "operation": "contains",
+                "rightType": "any"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        224,
+        64
+      ],
+      "id": "a9d77422-192d-44b6-a182-881f527f92e9",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "uesrs"
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -160,
+        64
+      ],
+      "id": "94965e08-9e1b-4060-9247-ccc3cdf464c7",
+      "name": "Get many rows1",
+      "credentials": {
+        "supabaseApi": {
+          "id": "BJnGrjb6IoKgKQFh",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "telegram_id"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        32,
+        64
+      ],
+      "id": "225a7186-0c89-44a9-80b5-a0b8932c29dc",
+      "name": "Aggregate1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -352,
+        64
+      ],
+      "id": "50d54d0c-7186-4f25-bc21-ba5d05756aa8",
+      "name": "When clicking ‘Execute workflow’"
+    }
+  ],
+  "connections": {
+    "Get many rows1": {
+      "main": [
+        [
+          {
+            "node": "Aggregate1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get many rows1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "9f4a0f8a-56d8-40ee-8286-2aad1d6ad16c",
+  "triggerCount": 0,
+  "tags": []
+}
