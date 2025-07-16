@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-15T11:52:42.906Z",
-  "updatedAt": "2025-07-15T20:17:09.000Z",
+  "updatedAt": "2025-07-16T06:02:42.000Z",
   "id": "EhLmeL17IWgTCjhE",
   "name": "telegram agent",
   "active": false,
@@ -322,13 +322,7 @@
     },
     "If": {
       "main": [
-        [
-          {
-            "node": "AI Agent",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "Send a text message": {
@@ -352,7 +346,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "9c92e549-a234-4e62-b19a-2cd66d1928a7",
+  "versionId": "15ed8e2b-0bb8-4f2b-bbbf-535cad9887c2",
   "triggerCount": 1,
   "tags": []
 }
