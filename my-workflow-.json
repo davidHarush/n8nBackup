@@ -1,20 +1,20 @@
 {
-  "createdAt": "2025-07-15T19:59:52.359Z",
-  "updatedAt": "2025-07-15T19:59:52.359Z",
-  "id": "2t0ACB0ZtI6NLHS0",
+  "createdAt": "2025-07-17T20:49:12.278Z",
+  "updatedAt": "2025-07-17T20:51:20.000Z",
+  "id": "7OE6B4v5AGhGaZ2h",
   "name": "My workflow",
   "active": false,
-  "isArchived": false,
+  "isArchived": true,
   "nodes": [
     {
       "parameters": {},
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        0,
-        0
+        -256,
+        128
       ],
-      "id": "7e2a55c4-e010-4361-8219-e8b2fb9e2799",
+      "id": "758e920b-8831-42ba-8118-f7f6faf9a44a",
       "name": "When clicking ‘Execute workflow’"
     },
     {
@@ -22,17 +22,90 @@
       "type": "n8n-nodes-base.openWeatherMap",
       "typeVersion": 1,
       "position": [
-        288,
-        0
+        -32,
+        128
       ],
-      "id": "ccb89b08-b6fe-42ef-bd79-89d98a0036e0",
-      "name": "OpenWeatherMap",
-      "credentials": {
-        "openWeatherMapApi": {
-          "id": "sLHnWtPZVlUXEZnt",
-          "name": "OpenWeatherMap account"
-        }
-      }
+      "id": "b7171d1c-f06e-4f46-b9ef-02248fd34d80",
+      "name": "OpenWeatherMap"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d9f3eac2-5d84-42ff-905f-44c827ea9876",
+              "leftValue": "={{ $json.telegram_id }}",
+              "rightValue": "={{ $('Listen for incoming events').item.json.message.from.id }}",
+              "operator": {
+                "type": "array",
+                "operation": "contains",
+                "rightType": "any"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        192,
+        -96
+      ],
+      "id": "7cefa599-170b-44ec-9622-4a158606ccf0",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "uesrs"
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -256,
+        -96
+      ],
+      "id": "30eb6e94-4d81-4597-8f02-f94bb15fc845",
+      "name": "Get many rows1"
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "telegram_id"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -32,
+        -96
+      ],
+      "id": "a1bd2a2a-c9f2-4a96-a844-0bae4bf038dd",
+      "name": "Aggregate1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.openWeatherMap",
+      "typeVersion": 1,
+      "position": [
+        96,
+        576
+      ],
+      "id": "a790c5ff-48d2-4a0e-aefc-779446594055",
+      "name": "OpenWeatherMap1"
     }
   ],
   "connections": {
@@ -46,17 +119,37 @@
           }
         ]
       ]
+    },
+    "Get many rows1": {
+      "main": [
+        [
+          {
+            "node": "Aggregate1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
     "executionOrder": "v1"
   },
   "staticData": null,
-  "meta": {
-    "templateCredsSetupCompleted": true
-  },
+  "meta": null,
   "pinData": {},
-  "versionId": "ef8c15a4-425c-4c87-9522-b2e716e4887a",
+  "versionId": "1b8023b6-f100-4648-a630-dc29eb1b02de",
   "triggerCount": 0,
   "tags": []
 }
