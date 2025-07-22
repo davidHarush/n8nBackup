@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-17T20:49:59.817Z",
-  "updatedAt": "2025-07-22T15:42:13.000Z",
+  "updatedAt": "2025-07-22T15:43:35.000Z",
   "id": "Kkd0znkbtuxq1ujV",
   "name": "github",
   "active": false,
@@ -133,7 +133,8 @@
           "id": "R6xPYkyml7J10KgP",
           "name": "GitHub account"
         }
-      }
+      },
+      "onError": "continueRegularOutput"
     },
     {
       "parameters": {
@@ -297,7 +298,8 @@
           "id": "R6xPYkyml7J10KgP",
           "name": "GitHub account"
         }
-      }
+      },
+      "onError": "continueRegularOutput"
     }
   ],
   "connections": {
@@ -400,12 +402,16 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "staticData": null,
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
   "meta": {
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "ce77ba0f-9d72-4639-8ee9-17e9c8c965ed",
-  "triggerCount": 0,
+  "versionId": "b7df63b5-290c-4dc1-99f4-a5b1f5449c2a",
+  "triggerCount": 1,
   "tags": []
 }
