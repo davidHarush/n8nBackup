@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-17T20:49:59.817Z",
-  "updatedAt": "2025-07-22T19:46:29.000Z",
+  "updatedAt": "2025-07-22T19:47:27.000Z",
   "id": "Kkd0znkbtuxq1ujV",
   "name": "github",
   "active": false,
@@ -363,7 +363,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "df6ac63b-9b2e-4a19-9f52-76223b975c33",
+  "versionId": "3057cb89-1774-4d62-991a-80335492ab13",
   "triggerCount": 1,
   "tags": []
 }
