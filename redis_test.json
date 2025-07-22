@@ -1,0 +1,101 @@
+{
+  "createdAt": "2025-07-22T15:08:54.514Z",
+  "updatedAt": "2025-07-22T15:43:27.000Z",
+  "id": "w3pa0lCzzPXw8bvc",
+  "name": "redis_test",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "push",
+        "list": "={{ $json.sessionId }}",
+        "messageData": "={{ $json.chatInput }}"
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        64,
+        0
+      ],
+      "id": "7c27e241-8eb9-431d-80c6-98565a2a08e6",
+      "name": "Redis",
+      "credentials": {
+        "redis": {
+          "id": "B2GlY4erXA6PrPVT",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "key": "={{ $json.sessionId }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        288,
+        0
+      ],
+      "id": "e54c3ee5-fa39-417b-9e4e-a146d013de05",
+      "name": "Redis1",
+      "credentials": {
+        "redis": {
+          "id": "B2GlY4erXA6PrPVT",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -160,
+        0
+      ],
+      "id": "d9c4cbc9-4ea1-4d05-970b-a9c820b50eb3",
+      "name": "When chat message received",
+      "webhookId": "41df9597-f3dc-4ee9-81dd-9a3fdbdf1158"
+    }
+  ],
+  "connections": {
+    "Redis": {
+      "main": [
+        [
+          {
+            "node": "Redis1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Redis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "9f29dfa6-d4c0-4f2e-adeb-8fa32abaeb29",
+  "triggerCount": 0,
+  "tags": []
+}
