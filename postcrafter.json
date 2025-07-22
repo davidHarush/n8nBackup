@@ -1,0 +1,595 @@
+{
+  "createdAt": "2025-07-17T20:50:26.926Z",
+  "updatedAt": "2025-07-17T20:50:26.926Z",
+  "id": "UOyDcjXSqbKyHnpD",
+  "name": "postcrafter",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "==You are Agentic Vibe’s Content Researcher.\n\n🚀 Your mission:\nBased on exactly what the user has provided, craft **one** LinkedIn post topic that speaks directly to **their** context and goals.\n\nUser Input:\n• Title: {{ $json.title }}  \n• Description: {{ $json.description }}  \n• Audience: {{ $json.audience }}  \n• Tone: {{ $json.tone }}  \n• Post Length (paragraphs): {{ $json['length'] }}\n\n🔧 If you need fresh data or examples, call SerpAPI with:\n{ \"query\": \"latest trends in {{ $json.title }}: {{ $json.description }}\" }\n\n🔍 Task:\nUse **all** of the above fields—especially Title and Description—to generate **EXACTLY ONE** LinkedIn post topic, ensuring it:\n1. Is **directly relevant** to what the user described.\n2. Blends our core themes:\n   • AI for content  \n   • LinkedIn growth  \n   • Productivity hacks  \n   • Systems thinking  \n   • Future of work  \n   • No-code automation  \n\n🎯 Output:\nRespond with **only** this JSON object:\n```json\n{\n  \"title\":       \"…\",     // a one-line headline, tailored to the user’s Title & Description\n  \"rationale\":   \"…\",     // 1–2 sentences: why this matters for **their** situation\n  \"hook\":        \"…\",     // 1-line attention-grabber, in their Tone\n  \"tone\":        \"{{ $json.tone }}\",\n  \"postLength\":  {{ $json.length}},\n  \"audience\":    {{ $json.audience }}\n}\n",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "id": "74afc9e0-794a-4051-95ec-327435116893",
+      "name": "Content topic generator1",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        -1120,
+        208
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"title\": \"Why Launching Without Systems Thinking Is the #1 Startup Mistake\",\n  \"rationale\": \"Startups often rush to build cool features but skip scalable systems—resulting in chaotic workflows, burnt-out teams, and stalled growth. Embedding productivity hacks and no-code automation from day one creates a resilient, future-ready engine.\",\n  \"hook\": \"Building without a system is like throwing spaghetti at the wall—messy, wasteful, and destined to flop.\",\n  \"tone\": \"Funny\",\n  \"postLength\": 5,\n  \"audience\":\"Tech Professionals\"\n}\n"
+      },
+      "id": "b1193099-ffec-4ae0-ae31-2701a2c5cc96",
+      "name": "Structured Output Parser5",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "position": [
+        -896,
+        432
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1"
+        },
+        "options": {}
+      },
+      "id": "2515222c-178c-404e-8aa8-a567777a28e2",
+      "name": "OpenAI Chat Model2",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [
+        -688,
+        432
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"post title\": \"Harnessing No-Code Automation for Future-Ready Workflows\",\n  \"post content\": \"Imagine slashing your daily grind and unlocking more strategic growth—no coding required.\\n\\nIn today’s fast-paced tech landscape, embedding no-code automation from day one transforms chaotic to-do lists into seamless, scalable systems. By adopting tools like Zapier to automate meeting reminders, Airtable to auto-sort client data, and Integromat to trigger follow-up emails, teams regain hours each week and refocus on high-impact work.\\n\\nCase in point: Startup X cut their manual reporting time by 70% in one month, and Agency Y freed up an extra day per week to prototype new features—all without writing a single line of code.\\n\\nWhat would you automate first to reclaim your time? Let me know in the comments below!\",\n  \"image description\": \"A focused tech professional at a modern desk, multiple browser windows showing automation workflows on screen, with soft turquoise accents and warm ambient lighting.\"\n}\n"
+      },
+      "id": "b7476eec-5833-41bf-8aeb-9a19f14ed6b6",
+      "name": "Structured Output Parser7",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "position": [
+        -304,
+        432
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=\nYou are an SEO specialist for LinkedIn. Your task is to generate highly relevant and effective hashtags for the following post, and then output the full post data in one JSON object.\n\nUser Input:\n• Title: {{ $json.output['post title'] }}\n• Content: {{ $json.output['post content'] }}\n• Image Description: {{ $json.output['image description'] }}\n\n🔍 Task:\n1. Analyze the post title, content, and image description.\n2. Generate:\n   - 3–5 broad, high-volume hashtags (e.g., #AI, #Marketing, #Business)\n   - 3–5 niche-specific hashtags directly relevant to the core topic (e.g., #NoCodeAutomation, #WorkflowHacks)\n   - 1–2 trending/topical hashtags if applicable (e.g., #FutureOfWork, #DigitalTransformation)\n\n🎯 Output:\nRespond with a **single JSON object only** in this exact format:\n```json\n{\n  \"post title\":       \"{{ $json.output['post title'] }}\",\n  \"post content\":     \"{{ $json.output['post content'] }}\",\n  \"image description\":\"{{ $json.output['image description'] }}\",\n  \"hashtags\":         [\"#FirstTag\", \"#SecondTag\", \"...\"]\n}\n",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "id": "d12b93d3-3703-4b2a-8807-8ddd47ecb33a",
+      "name": "Hashtag generator /SEO",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        128,
+        352
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1-nano",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1-nano"
+        },
+        "options": {}
+      },
+      "id": "099cde3b-128f-4297-8bc7-f77609d0ad6b",
+      "name": "OpenAI Chat Model6",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [
+        160,
+        576
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1-nano",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1-nano"
+        },
+        "options": {}
+      },
+      "id": "5cbad753-a84c-49ce-b83f-f80b57ec0f40",
+      "name": "OpenAI Chat Model7",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [
+        -1152,
+        432
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "id": "b11bcecf-713c-4aa6-8978-d074a7ef8c63",
+      "name": "Merge1",
+      "type": "n8n-nodes-base.merge",
+      "position": [
+        528,
+        208
+      ],
+      "typeVersion": 3.2
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolSerpApi",
+      "typeVersion": 1,
+      "position": [
+        -1024,
+        432
+      ],
+      "id": "4de905a5-8234-41c5-b1b6-5317b7237791",
+      "name": "SerpAPI1"
+    },
+    {
+      "parameters": {
+        "content": "\n✅ Return a single JSON object with:  \n• title (one-line)  \n• rationale (1–2 sentences, cite any trend)  \n• hook (1-line LinkedIn style)  ",
+        "height": 500,
+        "width": 420,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1200,
+        64
+      ],
+      "id": "47c7d220-6d12-410a-a97e-a179d0073b6e",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "prompt": "=Generate an image for a linkedin post this is the description: {{ $json.output['image description'] }} .The images should be realistic for linkedin.",
+        "options": {
+          "returnImageUrls": true
+        }
+      },
+      "id": "7771ac9e-29a0-4b9c-b2c0-38210c0fb93e",
+      "name": "Generate an image1",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "position": [
+        -96,
+        48
+      ],
+      "typeVersion": 1.8
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"post title\": \"Harnessing No-Code Automation for Future-Ready Workflows\",\n  \"post content\": \"Imagine slashing your daily grind and unlocking more strategic growth—no coding required. No-code automation platforms are revolutionizing how professionals operate, enabling rapid transformation without the barrier of traditional programming expertise.\\n\\nThis shift matters now more than ever. In a rapidly evolving digital landscape, leveraging scalable and practical no-code solutions helps professionals boost productivity, save resources, and maintain a competitive edge. The ability to quickly adapt workflows can be the difference between keeping pace and falling behind.\\n\\nFor example, a SaaS startup recently automated their lead qualification process with a no-code platform, freeing up dozens of hours weekly for higher-value work. Another founder built a seamless onboarding flow for new hires—no developers required—drastically cutting down on manual admin. Even solopreneurs are piecing together marketing automations that once demanded a dedicated IT team.\\n\\nThe bottom line: No-code isn’t just a passing trend—it’s a powerful enabler for professionals ready to scale smarter. How are you harnessing automation to shape the future of your work? Share your favorite tools or experiences below.\",\n  \"image description\": \"A modern open office with professionals collaborating around laptops, a large digital dashboard displaying workflow automation, and vibrant blue and green accents highlighting simplicity and technology. Natural daylight flows in, creating a realistic, energetic atmosphere.\",\n  \"hashtags\": [\n    \"#Automation\",\n    \"#Productivity\",\n    \"#Tech\",\n    \"#NoCodeAutomation\",\n    \"#WorkflowHacks\",\n    \"#SystemsThinking\",\n    \"#FutureOfWork\",\n    \"#DigitalTransformation\"\n  ]\n}\n"
+      },
+      "id": "2f932667-3a4e-4d26-b009-71e38219d253",
+      "name": "Structured Output Parser8",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "position": [
+        288,
+        576
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a5274f68-4b5d-4249-ac98-4222184bc4b8",
+              "name": "postTitle",
+              "value": "={{ $json.output[\"post title\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "6c368b6a-c4ba-4531-bd32-0f9de7fd0556",
+              "name": "postContent",
+              "value": "={{ $json.output[\"post content\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "b4644405-d969-407b-bb87-c70efdbddc3c",
+              "name": "hashtags",
+              "value": "={{ $json.output.hashtags }}",
+              "type": "array"
+            },
+            {
+              "id": "3ea58760-468f-48c1-83e1-fbef13bb5607",
+              "name": "imageUrl",
+              "value": "={{ $json.url }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        752,
+        208
+      ],
+      "id": "e9a3c0d6-98eb-4358-adc2-c2f3d86b3048",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "url": "={{$json.url}}\n",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        224,
+        48
+      ],
+      "id": "9577fde7-9db1-4b25-8bd0-a98cf440c49e",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "postCarfter",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -1600,
+        208
+      ],
+      "id": "8b312aa1-7a18-4359-a209-3e020e47a3cb",
+      "name": "Webhook",
+      "webhookId": "52a1ae67-4a47-4086-bf2a-fb0c0fcad1cb"
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        976,
+        208
+      ],
+      "id": "be2b4530-e101-4a9e-8f0c-fc50a4636990",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=\n\nYou are a senior LinkedIn content strategist and copywriter.\n\nUser Input:\n• Title: {{ $json.output.title }}\n• Rationale: {{ $json.output.rationale }}\n• Hook: {{ $json.output.hook }}\n• Tone: {{ $json.output.tone }}\n• Post Length (paragraphs): {{ $json.output.postLength }}\n\n🔍 Task:\nCraft a LinkedIn post of {{ $json.output.postLength }} paragraphs, each 3–5 lines long, that:\n1. Opens with the given hook.\n2. Explains why this topic matters, using the rationale.\n3. Delivers 2–3 concrete examples or mini-case studies.\n4. Summarizes the key takeaway and invites engagement (ask a question or call to action).\n\n🗣️ Writing Tone:\nUse exactly the tone provided by the user: “{{ $json.output.tone }}”.\n\n🎨 Image Suggestion:\nFinally, describe in 1–2 sentences a realistic image for the post, specifying scene, colors, and composition.\n\n",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "id": "1272bbe6-ec81-4336-939a-983833becf00",
+      "name": "Content topic generator2",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        -592,
+        208
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolSerpApi",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        432
+      ],
+      "id": "ce9119e1-7ad4-4162-bc38-ca2871037cbd",
+      "name": "SerpAPI2"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolWikipedia",
+      "typeVersion": 1,
+      "position": [
+        -432,
+        432
+      ],
+      "id": "ebefa565-516d-4fff-add0-3e259c12fe9d",
+      "name": "Wikipedia"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Flatten body to root-level JSON\nreturn items.map(item => {\n  return {\n    json: {\n      ...item.json.body\n    }\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1376,
+        208
+      ],
+      "id": "ceb2d3ca-ab75-4506-a135-16ee0b66f148",
+      "name": "Code"
+    }
+  ],
+  "connections": {
+    "Content topic generator1": {
+      "main": [
+        [
+          {
+            "node": "Content topic generator2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser5": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Content topic generator1",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Content topic generator2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser7": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Content topic generator2",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Hashtag generator /SEO": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model6": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Hashtag generator /SEO",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model7": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Content topic generator1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SerpAPI1": {
+      "ai_tool": [
+        [
+          {
+            "node": "Content topic generator1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate an image1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser8": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Hashtag generator /SEO",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Content topic generator2": {
+      "main": [
+        [
+          {
+            "node": "Hashtag generator /SEO",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Generate an image1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SerpAPI2": {
+      "ai_tool": [
+        [
+          {
+            "node": "Content topic generator2",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wikipedia": {
+      "ai_tool": [
+        [
+          {
+            "node": "Content topic generator2",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Content topic generator1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "n8n.srv906513.hstgr.cloud",
+            "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36",
+            "content-length": "149",
+            "accept": "application/json, text/plain, */*",
+            "accept-encoding": "gzip, deflate, br, zstd",
+            "accept-language": "en-US,en;q=0.9",
+            "content-type": "text/plain",
+            "origin": "https://hoppscotch.io",
+            "priority": "u=1, i",
+            "referer": "https://hoppscotch.io/",
+            "sec-ch-ua": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Google Chrome\";v=\"138\"",
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-platform": "\"macOS\"",
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "cross-site",
+            "x-forwarded-for": "172.18.0.1",
+            "x-forwarded-host": "n8n.srv906513.hstgr.cloud",
+            "x-forwarded-port": "443",
+            "x-forwarded-proto": "https",
+            "x-forwarded-server": "8541fe7fceb1",
+            "x-real-ip": "172.18.0.1"
+          },
+          "params": {},
+          "query": {},
+          "body": "{\n\"userId\": \"\",\n\"title\": \"my first post\",\n\"description\": \"my linkedin first post ever\",\n\"length\": 5,\n\"audience\": \"General\",\n\"tone\": \"Professional\"\n}\n",
+          "webhookUrl": "https://n8n.srv906513.hstgr.cloud/webhook-test/postCarfter",
+          "executionMode": "test"
+        }
+      }
+    ]
+  },
+  "versionId": "76c998ce-b23b-46a8-9c3f-9e5e5dfb0731",
+  "triggerCount": 0,
+  "tags": []
+}
