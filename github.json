@@ -1,0 +1,761 @@
+{
+  "createdAt": "2025-07-17T20:49:59.817Z",
+  "updatedAt": "2025-07-22T15:36:27.000Z",
+  "id": "Kkd0znkbtuxq1ujV",
+  "name": "github",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "id": "50f29745-3402-48c8-be1f-8c278a5f0ca1",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [
+        -704,
+        288
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "filters": {},
+        "requestOptions": {}
+      },
+      "id": "651dac33-b2c6-4076-88d0-8258f80bf0ad",
+      "name": "Retrieve workflows",
+      "type": "n8n-nodes-base.n8n",
+      "position": [
+        -32,
+        288
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "n8nApi": {
+          "id": "DiO6rFzUVhjZhvq0",
+          "name": "n8n account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "name"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a55ebf60-3fa4-4871-bcf5-111307d1a14d",
+      "name": "Aggregate",
+      "type": "n8n-nodes-base.aggregate",
+      "position": [
+        -256,
+        288
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "list",
+        "owner": {
+          "__rl": true,
+          "value": "https://github.com/davidHarush",
+          "mode": "url"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "n8nBackup",
+          "mode": "list",
+          "cachedResultName": "n8nBackup",
+          "cachedResultUrl": "https://github.com/davidHarush/n8nBackup"
+        },
+        "filePath": "="
+      },
+      "id": "4f1bbe1e-cf29-4932-954c-fbdb8d6687f1",
+      "name": "List files from repo",
+      "type": "n8n-nodes-base.github",
+      "position": [
+        -480,
+        288
+      ],
+      "webhookId": "354d699e-44b0-4444-9d31-af7fd4ff5561",
+      "typeVersion": 1,
+      "alwaysOutputData": true,
+      "credentials": {
+        "githubApi": {
+          "id": "R6xPYkyml7J10KgP",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "edit",
+        "owner": {
+          "__rl": true,
+          "value": "https://github.com/davidHarush",
+          "mode": "url"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "n8nBackup",
+          "mode": "list",
+          "cachedResultName": "n8nBackup",
+          "cachedResultUrl": "https://github.com/davidHarush/n8nBackup"
+        },
+        "filePath": "={{ $('Commit date & file name').item.json.fileName }}",
+        "fileContent": "={{ $('To base64').item.json.data }}",
+        "commitMessage": "=backup-{{ $('Commit date & file name').item.json.commitDate }}"
+      },
+      "id": "7a429267-bc7b-4d2f-8944-d8298c9b3faa",
+      "name": "Update file",
+      "type": "n8n-nodes-base.github",
+      "position": [
+        1088,
+        192
+      ],
+      "webhookId": "27218087-8df7-474d-a39f-70cfa9c34ec8",
+      "typeVersion": 1,
+      "credentials": {
+        "githubApi": {
+          "id": "R6xPYkyml7J10KgP",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $('Aggregate').item.json.name }}",
+              "operation": "contains",
+              "value2": "={{ $('Retrieve workflows').item.json.name.replace(/\\s+/g, '-').toLowerCase() }}.json"
+            }
+          ]
+        }
+      },
+      "id": "e6f6eff3-806f-4005-9ad4-6a1ca61eeb56",
+      "name": "Check if file exists",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        864,
+        288
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "operation": "toJson",
+        "mode": "each",
+        "options": {
+          "format": true
+        }
+      },
+      "id": "5d6eb039-419f-48d5-af21-25384aa3c4b1",
+      "name": "Json file",
+      "type": "n8n-nodes-base.convertToFile",
+      "position": [
+        192,
+        288
+      ],
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "operation": "binaryToPropery",
+        "options": {}
+      },
+      "id": "7d4e5488-0e59-4ceb-9aa7-54fbd029fe90",
+      "name": "To base64",
+      "type": "n8n-nodes-base.extractFromFile",
+      "position": [
+        416,
+        288
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "### Retrieve previous file names from Github",
+        "height": 492,
+        "width": 476,
+        "color": 5
+      },
+      "id": "1e5a80fb-22aa-40b7-8d04-dfbdf13ec3c0",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -576,
+        80
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "fe4a36ef-9f04-40e3-99bd-cc517a49b440",
+              "name": "commitDate",
+              "type": "string",
+              "value": "={{ $now.format('dd-MM-yyyy/H:mm') }}"
+            },
+            {
+              "id": "b0fe1bcc-e79c-4a6b-b8b4-44222c8bf4e8",
+              "name": "fileName",
+              "type": "string",
+              "value": "={{ $('Retrieve workflows').item.json.name.replace(/\\s+/g, '-').toLowerCase() }}.json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d3c7fc99-fe4f-4fd7-aec7-f06caebe498d",
+      "name": "Commit date & file name",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        640,
+        288
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "content": "### Retrieve and process workflows from n8n...!!!",
+        "height": 508,
+        "width": 684,
+        "color": 3
+      },
+      "id": "625ab32e-9f85-4aa2-a0c6-fdb05c3599db",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -96,
+        64
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "### Commit + edit/create files if needed",
+        "height": 508,
+        "width": 700,
+        "color": 4
+      },
+      "id": "01a7bebd-181d-4d97-a4c7-4e947aaa4147",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        592,
+        64
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "owner": {
+          "__rl": true,
+          "value": "https://github.com/davidHarush",
+          "mode": "url"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "n8nBackup",
+          "mode": "list",
+          "cachedResultName": "n8nBackup",
+          "cachedResultUrl": "https://github.com/davidHarush/n8nBackup"
+        },
+        "filePath": "={{ $('Retrieve workflows').item.json.name.replace(/\\s+/g, '-').toLowerCase() }}.json",
+        "fileContent": "={{ $('To base64').item.json.data }}",
+        "commitMessage": "=backup-{{ $node['Commit date & file name'].json.commitDate }}"
+      },
+      "id": "cdb8e4b3-1920-446f-974e-77af08a81a63",
+      "name": "Upload new file",
+      "type": "n8n-nodes-base.github",
+      "position": [
+        1088,
+        384
+      ],
+      "webhookId": "ce4b561b-acb9-4cd8-b76f-4928dada9674",
+      "typeVersion": 1,
+      "credentials": {
+        "githubApi": {
+          "id": "R6xPYkyml7J10KgP",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "id": "c3a4535e-541d-4a06-9ba1-25004b6ad7c8",
+      "name": "Schedule Trigger1",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [
+        -1504,
+        1008
+      ],
+      "typeVersion": 1.2,
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "filters": {},
+        "requestOptions": {}
+      },
+      "id": "d3904f48-910d-4633-90e9-edd80dfac053",
+      "name": "Retrieve workflows1",
+      "type": "n8n-nodes-base.n8n",
+      "position": [
+        -832,
+        1008
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "n8nApi": {
+          "id": "DiO6rFzUVhjZhvq0",
+          "name": "n8n account"
+        }
+      },
+      "disabled": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "name"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "3f536370-73f0-40fa-9ab8-26bbc2c2d576",
+      "name": "Aggregate1",
+      "type": "n8n-nodes-base.aggregate",
+      "position": [
+        -1056,
+        1008
+      ],
+      "typeVersion": 1,
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "list",
+        "owner": {
+          "__rl": true,
+          "value": "https://github.com/davidHarush",
+          "mode": "url"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "n8nBackup",
+          "mode": "list",
+          "cachedResultName": "n8nBackup",
+          "cachedResultUrl": "https://github.com/davidHarush/n8nBackup"
+        },
+        "filePath": "="
+      },
+      "id": "83570e93-0c5a-4d34-9a43-e76bcd4c03ad",
+      "name": "List files from repo1",
+      "type": "n8n-nodes-base.github",
+      "position": [
+        -1280,
+        1008
+      ],
+      "webhookId": "354d699e-44b0-4444-9d31-af7fd4ff5561",
+      "typeVersion": 1,
+      "alwaysOutputData": true,
+      "credentials": {
+        "githubApi": {
+          "id": "R6xPYkyml7J10KgP",
+          "name": "GitHub account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "edit",
+        "owner": {
+          "__rl": true,
+          "value": "https://github.com/davidHarush",
+          "mode": "url"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "n8nBackup",
+          "mode": "list",
+          "cachedResultName": "n8nBackup",
+          "cachedResultUrl": "https://github.com/davidHarush/n8nBackup"
+        },
+        "filePath": "={{ $('Retrieve workflows1').item.json.name.replace(/\\s+/g, '-').toLowerCase() }}-{{ $('Retrieve workflows1').item.json.name }}.json",
+        "fileContent": "={{ $('To base').item.json.data }}",
+        "commitMessage": "=backup-{{ $('Commit date & file name1').item.json.commitDate }}"
+      },
+      "id": "d3ee8696-7ef6-4e55-a242-adff885110fb",
+      "name": "Update file1",
+      "type": "n8n-nodes-base.github",
+      "position": [
+        288,
+        912
+      ],
+      "webhookId": "27218087-8df7-474d-a39f-70cfa9c34ec8",
+      "typeVersion": 1,
+      "credentials": {
+        "githubApi": {
+          "id": "R6xPYkyml7J10KgP",
+          "name": "GitHub account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $('Aggregate1').item.json.name }}",
+              "operation": "contains",
+              "value2": "={{ $('Retrieve workflows1').item.json.name.replace(/\\s+/g, '-').toLowerCase() }}-{{ $('Retrieve workflows1').item.json.tags[0].name }}.json"
+            }
+          ]
+        }
+      },
+      "id": "0dde48d5-bb56-4fc3-82b3-8b543339e9a5",
+      "name": "Check if file exists1",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        64,
+        1008
+      ],
+      "typeVersion": 1,
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "toJson",
+        "mode": "each",
+        "options": {
+          "format": true
+        }
+      },
+      "id": "13e4de44-dc2e-420b-bf4c-270d06b279dd",
+      "name": "Json file1",
+      "type": "n8n-nodes-base.convertToFile",
+      "position": [
+        -608,
+        1008
+      ],
+      "typeVersion": 1.1,
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "binaryToPropery",
+        "options": {}
+      },
+      "id": "a60396e0-7b87-4799-b60f-d1e013aec488",
+      "name": "To base",
+      "type": "n8n-nodes-base.extractFromFile",
+      "position": [
+        -384,
+        1008
+      ],
+      "typeVersion": 1,
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "fe4a36ef-9f04-40e3-99bd-cc517a49b440",
+              "name": "commitDate",
+              "type": "string",
+              "value": "={{ $now.format('dd-MM-yyyy/H:mm') }}"
+            },
+            {
+              "id": "b0fe1bcc-e79c-4a6b-b8b4-44222c8bf4e8",
+              "name": "fileName",
+              "type": "string",
+              "value": "={{ $('Retrieve workflows1').item.json.name.replace(/\\s+/g, '-').toLowerCase() }}-{{ $('Retrieve workflows1').item.json.tags[0].name }}.json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "cdaffb30-18dc-4070-b699-8672facc512d",
+      "name": "Commit date & file name1",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -160,
+        1008
+      ],
+      "typeVersion": 3.4,
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "owner": {
+          "__rl": true,
+          "value": "https://github.com/davidHarush",
+          "mode": "url"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "n8nBackup",
+          "mode": "list",
+          "cachedResultName": "n8nBackup",
+          "cachedResultUrl": "https://github.com/davidHarush/n8nBackup"
+        },
+        "filePath": "={{ $('Retrieve workflows1').item.json.name.replace(/\\s+/g, '-').toLowerCase() }}-{{ $('Retrieve workflows1').item.json.tags[0].name }}.json",
+        "fileContent": "={{ $('To base').item.json.data }}",
+        "commitMessage": "=backup-{{ $node['Commit date & file name1'].json.commitDate }}"
+      },
+      "id": "3fa4187a-29e1-4708-8966-2d6241ff22e5",
+      "name": "Upload new file1",
+      "type": "n8n-nodes-base.github",
+      "position": [
+        288,
+        1104
+      ],
+      "webhookId": "ce4b561b-acb9-4cd8-b76f-4928dada9674",
+      "typeVersion": 1,
+      "credentials": {
+        "githubApi": {
+          "id": "R6xPYkyml7J10KgP",
+          "name": "GitHub account"
+        }
+      },
+      "disabled": true
+    }
+  ],
+  "connections": {
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Retrieve workflows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Json file": {
+      "main": [
+        [
+          {
+            "node": "To base64",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "To base64": {
+      "main": [
+        [
+          {
+            "node": "Commit date & file name",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "List files from repo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retrieve workflows": {
+      "main": [
+        [
+          {
+            "node": "Json file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check if file exists": {
+      "main": [
+        [
+          {
+            "node": "Update file",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Upload new file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List files from repo": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Commit date & file name": {
+      "main": [
+        [
+          {
+            "node": "Check if file exists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger1": {
+      "main": [
+        [
+          {
+            "node": "List files from repo1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retrieve workflows1": {
+      "main": [
+        [
+          {
+            "node": "Json file1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate1": {
+      "main": [
+        [
+          {
+            "node": "Retrieve workflows1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List files from repo1": {
+      "main": [
+        [
+          {
+            "node": "Aggregate1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check if file exists1": {
+      "main": [
+        [
+          {
+            "node": "Update file1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Upload new file1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Json file1": {
+      "main": [
+        [
+          {
+            "node": "To base",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "To base": {
+      "main": [
+        [
+          {
+            "node": "Commit date & file name1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Commit date & file name1": {
+      "main": [
+        [
+          {
+            "node": "Check if file exists1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "7e0656dd-1e77-440c-ad90-1294534d5cca",
+  "triggerCount": 0,
+  "tags": []
+}
