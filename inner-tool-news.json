@@ -1,0 +1,515 @@
+{
+  "createdAt": "2025-07-17T20:47:28.960Z",
+  "updatedAt": "2025-07-17T20:56:54.000Z",
+  "id": "WMM3dxVRuk21kuz3",
+  "name": "inner-tool-news",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "263fbe6c-f9cc-4f24-9a3b-700627f97ffc",
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        -128,
+        432
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3f5dc168-156a-4786-93f5-0a0a8bff76a0",
+              "name": "title",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "6ad07714-9a59-44de-9a32-575b2c7b914c",
+              "name": "link",
+              "value": "={{ $json.link }}",
+              "type": "string"
+            },
+            {
+              "id": "12d62329-af2b-4698-a040-a3e00a48d5f0",
+              "name": "pubDate",
+              "value": "={{ $json.pubDate }}",
+              "type": "string"
+            },
+            {
+              "id": "faad2a1b-8a34-4d54-9c76-4bb751787bd8",
+              "name": "content",
+              "value": "={{ $json.content }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        592,
+        224
+      ],
+      "id": "6d3663b0-6f11-4f39-a791-2ee63803d66b",
+      "name": "Edit Fields5"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "gpt-4o"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1472,
+        656
+      ],
+      "id": "3d761825-4b51-4b6e-bc5d-3e03538c11f3",
+      "name": "OpenAI Chat Model3",
+      "credentials": {
+        "openAiApi": {
+          "id": "tTRY0oek56OlQ2X6",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://rcs.mako.co.il/rss/31750a2610f26110VgnVCM1000005201000aRCRD.xml?Partner=interlink",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        368,
+        224
+      ],
+      "id": "a7c89260-3b5a-4b6e-ab7f-6496dc32dbb9",
+      "name": "Mako RSS1"
+    },
+    {
+      "parameters": {
+        "url": "https://www.ynet.co.il/Integration/StoryRss2.xml",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        368,
+        432
+      ],
+      "id": "fe54d18b-72db-4c17-8f6f-9770813ad76d",
+      "name": "Ynet RSS1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3f5dc168-156a-4786-93f5-0a0a8bff76a0",
+              "name": "title",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "6ad07714-9a59-44de-9a32-575b2c7b914c",
+              "name": "link",
+              "value": "={{ $json.link }}",
+              "type": "string"
+            },
+            {
+              "id": "12d62329-af2b-4698-a040-a3e00a48d5f0",
+              "name": "pubDate",
+              "value": "={{ $json.pubDate }}",
+              "type": "string"
+            },
+            {
+              "id": "faad2a1b-8a34-4d54-9c76-4bb751787bd8",
+              "name": "content",
+              "value": "={{ $json.content }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        592,
+        432
+      ],
+      "id": "92d6c651-6453-4729-9ecd-4b5b30934140",
+      "name": "Edit Fields6"
+    },
+    {
+      "parameters": {
+        "jsCode": "// items is the array of all 197 entries\n// Build a single multi‐line string containing title, description, categories & date\nconst summary = items\n  .map((item, i) => {\n    const { title, content,isoDate } = item.json;\n    return `${i + 1}.\\n` +\n           `Title: ${title}\\n` +\n           `Description: ${content}\\n` +\n           `Date: ${isoDate}`;\n  })\n  .join('\\n\\n');\n\n// Return it under one field called summaryInput\nreturn [{\n  json: {\n    summaryInput: summary\n  }\n}];\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1248,
+        432
+      ],
+      "id": "b4f30cfd-d7f8-402b-8b2b-e20b5c228e4c",
+      "name": "Code2"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        816,
+        336
+      ],
+      "id": "ac8024ef-28e4-44e4-8644-ce8d8303f862",
+      "name": "Merge4"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolWikipedia",
+      "typeVersion": 1,
+      "position": [
+        1600,
+        656
+      ],
+      "id": "ef9dec35-b3f4-484c-99cc-670160b300dc",
+      "name": "Wikipedia2"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dateTimeTool",
+      "typeVersion": 2,
+      "position": [
+        1712,
+        656
+      ],
+      "id": "7cb31cf5-599b-40b2-94aa-1b44d0731349",
+      "name": "Date & Time1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=משימתך: מתוך כותרות החדשות המצורפות, עצב סיכום תמציתי\nמרתק ואמין ב 6-4 נקודות ממוספרות, בעברית בלבד.\nהתמקד באירועים הפוליטיים והדיפלומטיים החשובים בישראל היום.\nתוסיף עוד 3-4 נושאים מהעולם כדי לייצר תמונה רחבה יותר \n\nואז לסיכום תוסיף פסקה אחת שלך , תובנות שלך מחדשות היום \nהפירמוט של הטקסט, התצוגה והשפה צריכה להיות ברורה ומושכת את העין\nתוסיף תאריך ושעה בהתחלה או בסוף \n------------\n\n{{ $json.summaryInput }}\n",
+        "options": {
+          "systemMessage": "You are my daily news curator. Provide an accurate, unbiased, summary highlighting the key political and diplomatic developments for today. All output must be in Hebrew, and do not translate the original news headlines—they are only for context.\nyou can use wikipedia, serp, memory tools if needed"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        1632,
+        432
+      ],
+      "id": "08f279fd-26c5-42f6-bc78-fc74e34925e2",
+      "name": "AI news summarizer1"
+    },
+    {
+      "parameters": {
+        "url": "http://rss.cnn.com/rss/cnn_topstories.rss",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        592,
+        624
+      ],
+      "id": "9969fcf6-7fb2-47fb-aae0-8fa5f1f51fc3",
+      "name": "RSS Read1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3f5dc168-156a-4786-93f5-0a0a8bff76a0",
+              "name": "title",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "6ad07714-9a59-44de-9a32-575b2c7b914c",
+              "name": "link",
+              "value": "={{ $json.link }}",
+              "type": "string"
+            },
+            {
+              "id": "12d62329-af2b-4698-a040-a3e00a48d5f0",
+              "name": "pubDate",
+              "value": "={{ $json.pubDate }}",
+              "type": "string"
+            },
+            {
+              "id": "faad2a1b-8a34-4d54-9c76-4bb751787bd8",
+              "name": "content",
+              "value": "=\n{{ $json.title }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        816,
+        624
+      ],
+      "id": "1c892910-1600-4a61-b964-1119f35d48af",
+      "name": "Edit Fields7"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1040,
+        432
+      ],
+      "id": "0777b454-0358-4501-a9ee-97fc72d2dbb4",
+      "name": "Merge5"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolSerpApi",
+      "typeVersion": 1,
+      "position": [
+        1840,
+        656
+      ],
+      "id": "10c32023-18a9-41c8-ba97-d2b900825e9b",
+      "name": "SerpAPI4",
+      "credentials": {
+        "serpApi": {
+          "id": "vzc99giWBpN7NBG9",
+          "name": "SerpAPI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "530815619",
+        "text": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2048,
+        432
+      ],
+      "id": "158333d0-8e79-4ba8-a510-db77b219faac",
+      "name": "Send a text message",
+      "webhookId": "7cd39515-3611-411c-a119-875943e1ae44",
+      "credentials": {
+        "telegramApi": {
+          "id": "e1X2vX46CWIkFhUM",
+          "name": "Telegram account"
+        }
+      },
+      "disabled": true
+    }
+  ],
+  "connections": {
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "Mako RSS1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Ynet RSS1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "RSS Read1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields5": {
+      "main": [
+        [
+          {
+            "node": "Merge4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI news summarizer1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mako RSS1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ynet RSS1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields6": {
+      "main": [
+        [
+          {
+            "node": "Merge4",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "AI news summarizer1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge4": {
+      "main": [
+        [
+          {
+            "node": "Merge5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wikipedia2": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI news summarizer1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Date & Time1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI news summarizer1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Read1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields7": {
+      "main": [
+        [
+          {
+            "node": "Merge5",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge5": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SerpAPI4": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI news summarizer1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateId": "self-building-ai-agent",
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "AI news summarizer1": [
+      {
+        "json": {
+          "output": "**סיכום חדשות – 15 ביולי 2025**\n\n**שעה: 9:00**\n\n**התפתחויות פוליטיות ודיפלומטיות בישראל:**\n\n1. **פרישת יהדות התורה מהממשלה**: פרישת הסיעה מהממשלה גורמת לתסבוכת פוליטית נוספת בישראל, כשהכנסת עלולה להתפזר אם לא תימצא פשרה. קולות בסיעות אחרות קוראים לגשר על הפערים לפני פרישה.\n\n2. **ועידת ש\"ס**: ש\"ס שוקלת אף היא פרישה מהממשלה בעקבות חוק ההשתמטות, מה שעלול להחליש את יציבות הקואליציה ולגרום לשינויים מהותיים במבנה הפוליטי הנוכחי בישראל.\n\n3. **הרחבת סמכויות השיטור המקומי**: הכנסת אישרה חוק המרחיב את סמכויות הפיקוח של השיטור המקומי, כולל מניעת אלימות ואכיפת חוקי עזר עירוניים. החוק זוכה לתמיכה בזכות שיפור בתחושת הביטחון האישי.\n\n4. **מחאת הדרוזים בארץ**: דרוזים מוחים על רקע עימותים בסוריה, חוסמים כבישים ומאשימים את ממשלת ישראל באי-מענה לצרכיהם.\n\n5. **תגובות להצהרת טראמפ**: מספר פוליטיקאים ישראלים הביעו חשש מהצהרת טראמפ על הגברת לחץ על רוסיה וביקשו ליישם מדיניות מאוזנת בין הכוחות.\n\n**התפתחויות בינלאומיות:**\n\n1. **ביקור מזכ\"ל נאט\"ו בוושינגטון**: מזכ\"ל נאט\"ו מבקר בארה\"ב לפגישות עם בכירים אמריקאים, במטרה לחזק את שיתוף הפעולה הביטחוני ולדון באתגרים גלובליים.\n\n2. **טראמפ וזלנסקי**: נשיא ארה\"ב, דונלד טראמפ, קרא לנשיא אוקראינה להגביר תקיפות נגד מטרות רוסיות, כולל ניסיונות להפעיל לחץ כלכלי על רוסיה.\n\n3. **עימותים בספרד**: עיירה בספרד הופכת לשדה קרב בעקבות עימותים בין מקומיים למהגרים, וממשלת ספרד מאשימה פעילי ימין קיצוני בליבוי האש.\n\n4. **שינויים במשפט בינלאומי**: בית הדין למבקשי מקלט בצרפת העניק מעמד פליט לאם פלסטינית ובנה, עקב רדיפה על ידי צה\"ל, מה שיש השלכות על מדיניות הקליטה האירופאית.\n\n**תובנות:**\n\nהחדשות היום מראות קיטוב פוליטי הולך וגובר בישראל, שממשיכה להתמודד עם אתגרים מבחוץ ומבפנים. מאוד טעון לצפות כיצד ישראל תחבר את הקשתות הפוליטיות אל מול הפרישה המסתמנת של ש\"ס ויהדות התורה, וכן איך תיגש לדיפלומטיה הגלובלית המתחדשת עם השפעתו הגוברת של טראמפ על המזרח התיכון. חיבורים אסטרטגיים ומעשים זהירים נדרשים בזירה הדיפלומטית כדי לספק איזון ראוי."
+        }
+      }
+    ]
+  },
+  "versionId": "9ebb5f62-49c3-4197-8948-3a4448a825f2",
+  "triggerCount": 0,
+  "tags": []
+}
