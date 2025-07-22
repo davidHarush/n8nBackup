@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-17T20:49:59.817Z",
-  "updatedAt": "2025-07-22T15:36:27.000Z",
+  "updatedAt": "2025-07-22T15:41:39.000Z",
   "id": "Kkd0znkbtuxq1ujV",
   "name": "github",
   "active": false,
@@ -234,7 +234,7 @@
     },
     {
       "parameters": {
-        "content": "### Retrieve and process workflows from n8n...!!!",
+        "content": "### Retrieve and process workflows from n8n.",
         "height": 508,
         "width": 684,
         "color": 3
@@ -755,7 +755,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "7e0656dd-1e77-440c-ad90-1294534d5cca",
+  "versionId": "05c8e48a-9b29-4065-ad1e-ec1dc8220dee",
   "triggerCount": 0,
   "tags": []
 }
