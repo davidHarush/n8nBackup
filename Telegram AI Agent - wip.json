@@ -1,0 +1,1380 @@
+{
+  "createdAt": "2025-07-25T17:09:09.109Z",
+  "updatedAt": "2025-08-02T17:37:41.000Z",
+  "id": "SDH5M3e0nMXo7Xht",
+  "name": "Telegram AI Agent - wip",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "d5e60eb2-267c-4f68-aefe-439031bcaceb",
+      "name": "OpenAI Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        -352,
+        -1424
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "3cccdT1hyMrXCzp5",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.text }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=You are a friendly Agent designed for the Telegram app. \nYou get a message from\nthe user: {\nid: {{ $json.message.from.id }}\nfirst name: {{ $json.message.from.first_name }}\nuser name: {{ $json.message.from.username }}\n}\n\nThe message comes from this chat room {\ntype: {{ $json.message.chat.type }}\nid: {{ $json.message.chat.id }}\nuser name: {{ $json.message.chat.username }}\ntitle: {{ $json.message.chat.title }}\n}\n\nat data: {{ $json.message.date }}\n\n\nRules:\n1. If the chat type is \"supergroup\" or \"group\":\n   - Answer ONLY if the message mentions you (contains \"@The_DH_Bot\").\n2. If the chat type is \"private\", always answer.\n3. If you do respond, always in a friendly and helpful tone.\n"
+        }
+      },
+      "id": "41174c8a-6ac8-42bd-900e-ca15196600c5",
+      "name": "Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        160,
+        -1648
+      ]
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1472,
+        -1296
+      ],
+      "id": "d6f30bf3-ca9d-4105-abbe-b4e1b75fe7d5",
+      "name": "Telegram Trigger",
+      "webhookId": "da386ac2-d396-498c-a57b-6c7a1851e3db",
+      "credentials": {
+        "telegramApi": {
+          "id": "HpzirYeF6mhKsgbi",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2448,
+        -1440
+      ],
+      "id": "99d5bd76-68d9-426e-a738-8f03249cfb41",
+      "name": "Send a text message",
+      "webhookId": "e65cf000-8d12-4be1-91d0-5d1a4e748b39",
+      "credentials": {
+        "telegramApi": {
+          "id": "HpzirYeF6mhKsgbi",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryZep",
+      "typeVersion": 1.3,
+      "position": [
+        -1472,
+        832
+      ],
+      "id": "14b0eff3-a964-4e11-9292-a0dbbeae1957",
+      "name": "Zep",
+      "credentials": {
+        "zepApi": {
+          "id": "0bOBiAiGW3u12mko",
+          "name": "Zep Api account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryZep",
+      "typeVersion": 1.3,
+      "position": [
+        -1472,
+        1040
+      ],
+      "id": "87499bc3-49c2-4a77-8888-2ad1baf4deaf",
+      "name": "Zep1",
+      "credentials": {
+        "zepApi": {
+          "id": "0bOBiAiGW3u12mko",
+          "name": "Zep Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "messages": {
+          "messageValues": [
+            {
+              "type": "user",
+              "message": "={{ $json.message.text }}"
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryManager",
+      "typeVersion": 1.1,
+      "position": [
+        848,
+        -720
+      ],
+      "id": "3adb1c39-c0ad-44c5-90bd-75c610858a95",
+      "name": "Chat Memory Manager"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cf36c55c-74e4-4ce3-9109-d5959a3c8064",
+              "leftValue": "={{ $json.message.chat.type }}",
+              "rightValue": "={{\"private\"}}",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -576,
+        -944
+      ],
+      "id": "2c2ec8c8-f068-4e19-aa1d-b1cb19b90f88",
+      "name": "is private chat ?"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "553af9d2-a846-44f3-89a2-b9ff3e2f0566",
+              "leftValue": "={{ $json.message.text }}",
+              "rightValue": "={{\"@The_DH_Bot\"}}",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "86b0c53c-0750-4932-83a9-57e79d678948",
+              "leftValue": "",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -800,
+        -1296
+      ],
+      "id": "35a5df2f-faae-485a-a1cf-5fec733ac360",
+      "name": "is bot mention?"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5942174e-61f3-4a59-afec-c1c976500551",
+              "name": "=sessionId",
+              "value": "={{ $json.message.chat.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1248,
+        -1296
+      ],
+      "id": "5dbee896-0f8b-4fe4-b6e3-7b11a5a099f4",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -224,
+        -1424
+      ],
+      "id": "13147f53-137f-4435-8cae-397140925f00",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        944,
+        -496
+      ],
+      "id": "2c9c9c6f-0b37-4a99-8459-f2276000032a",
+      "name": "Simple Memory1"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolCalculator",
+      "typeVersion": 1,
+      "position": [
+        1088,
+        -1216
+      ],
+      "id": "a5e4ae59-622a-4fa9-ae91-4f9df78b109c",
+      "name": "Calculator"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolSerpApi",
+      "typeVersion": 1,
+      "position": [
+        1216,
+        -1216
+      ],
+      "id": "51d4f711-8742-447b-87f7-c1a7ab1ba76f",
+      "name": "SerpAPI",
+      "credentials": {
+        "serpApi": {
+          "id": "cECarDbKzV3VuLZK",
+          "name": "SerpAPI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        960,
+        -1216
+      ],
+      "id": "bf388682-bb2e-4fa0-8e30-af7432c27b00",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "3cccdT1hyMrXCzp5",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "includeTime": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Include_Current_Time', ``, 'boolean') }}",
+        "outputFieldName": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Output_Field_Name', ``, 'string') }}",
+        "options": {
+          "timezone": "Asia/Jerusalem"
+        }
+      },
+      "type": "n8n-nodes-base.dateTimeTool",
+      "typeVersion": 2,
+      "position": [
+        1344,
+        -1216
+      ],
+      "id": "e50775b2-c6f7-4d7e-a31e-538890a2f3d5",
+      "name": "Date & Time"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolWikipedia",
+      "typeVersion": 1,
+      "position": [
+        1472,
+        -1216
+      ],
+      "id": "cba08315-622b-4b4e-9349-51d9afb5f698",
+      "name": "Wikipedia"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        192,
+        -1216
+      ],
+      "id": "e8f5674a-34fe-4be9-a929-a69fb4d786ea",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "3cccdT1hyMrXCzp5",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolSerpApi",
+      "typeVersion": 1,
+      "position": [
+        320,
+        -1216
+      ],
+      "id": "e1154ca3-f7ed-4a72-9c25-13b789c7a7a2",
+      "name": "SerpAPI1",
+      "credentials": {
+        "serpApi": {
+          "id": "cECarDbKzV3VuLZK",
+          "name": "SerpAPI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://www.bleepingcomputer.com/feed/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedReadTool",
+      "typeVersion": 1.2,
+      "position": [
+        448,
+        -1216
+      ],
+      "id": "844647de-18d5-442b-beff-7f3ece19370b",
+      "name": "bleepingcomputer"
+    },
+    {
+      "parameters": {
+        "includeTime": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Include_Current_Time', ``, 'boolean') }}",
+        "outputFieldName": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Output_Field_Name', ``, 'string') }}",
+        "options": {
+          "timezone": "=Asia/Jerusalem"
+        }
+      },
+      "type": "n8n-nodes-base.dateTimeTool",
+      "typeVersion": 2,
+      "position": [
+        -1472,
+        -400
+      ],
+      "id": "f5ac4ea9-5280-404b-a8e5-7546207d2ecf",
+      "name": "Date & Time1"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "family09687667346947656727@group.calendar.google.com",
+          "mode": "list",
+          "cachedResultName": "היומן המשפחתי"
+        },
+        "returnAll": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Return_All', ``, 'boolean') }}",
+        "timeMin": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('After', ``, 'string') }}",
+        "timeMax": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Before', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        1856,
+        -1216
+      ],
+      "id": "4d9e3aa7-f176-4224-81b9-552d74eba43a",
+      "name": "Get events",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "rCCaAfdsLkxUeIZ5",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "calendar": {
+          "__rl": true,
+          "value": "family09687667346947656727@group.calendar.google.com",
+          "mode": "list",
+          "cachedResultName": "היומן המשפחתי"
+        },
+        "eventId": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Event_ID', ``, 'string') }}",
+        "useDefaultReminders": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Use_Default_Reminders', ``, 'boolean') }}",
+        "updateFields": {}
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        1984,
+        -1216
+      ],
+      "id": "4e1d8e98-6fa9-40ee-9a6b-639f2ac4edf6",
+      "name": "Update event",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "rCCaAfdsLkxUeIZ5",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "family09687667346947656727@group.calendar.google.com",
+          "mode": "list",
+          "cachedResultName": "היומן המשפחתי"
+        },
+        "start": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Start', ``, 'string') }}",
+        "end": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('End', ``, 'string') }}",
+        "useDefaultReminders": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Use_Default_Reminders', ``, 'boolean') }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        2112,
+        -1216
+      ],
+      "id": "8a315ea0-7df3-4f6d-9db3-c31625090005",
+      "name": "Create event",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "rCCaAfdsLkxUeIZ5",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "iw.jewish#holiday@group.v.calendar.google.com",
+          "mode": "list",
+          "cachedResultName": "חגים בישראל"
+        },
+        "returnAll": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Return_All', ``, 'boolean') }}",
+        "timeMin": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('After', ``, 'string') }}",
+        "timeMax": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Before', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        2240,
+        -1216
+      ],
+      "id": "075a21a4-8ee5-4e07-aef1-a369770ed6b6",
+      "name": "חגים",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "rCCaAfdsLkxUeIZ5",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -192,
+        -1216
+      ],
+      "id": "5a468dcd-13ba-414a-b8d5-16320f8ba5e1",
+      "name": "OpenAI Chat Model3",
+      "credentials": {
+        "openAiApi": {
+          "id": "3cccdT1hyMrXCzp5",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "returnAll": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Return_All', ``, 'boolean') }}",
+        "simple": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Simplify', ``, 'boolean') }}",
+        "filters": {},
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        -64,
+        -1216
+      ],
+      "id": "aac9a758-e692-4dc6-8ecb-4936bbd050f4",
+      "name": "Get many messages in Gmail",
+      "webhookId": "79fc4643-fc3d-48e2-87bc-27a820a9c04e",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "s94Z0Vh9P5AZsLgD",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toolDescription": "Email AI Agent",
+        "text": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Prompt__User_Message_', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agentTool",
+      "typeVersion": 2.2,
+      "position": [
+        -96,
+        -1424
+      ],
+      "id": "e57e47f4-107b-4974-8010-efcdd023263f",
+      "name": "Email AI Agent"
+    },
+    {
+      "parameters": {
+        "toolDescription": "News AI Agent",
+        "text": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Prompt__User_Message_', ``, 'string') }}",
+        "options": {
+          "systemMessage": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('System_Message', ``, 'string') }}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agentTool",
+      "typeVersion": 2.2,
+      "position": [
+        416,
+        -1424
+      ],
+      "id": "b2b88266-8371-4d4d-9ba9-4cdfdb74b3a2",
+      "name": "News AI Agent"
+    },
+    {
+      "parameters": {
+        "toolDescription": "General Tools News AI Agent.\nlike Wikipedia, Calculator , OpenWeather and more...",
+        "text": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Prompt__User_Message_', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agentTool",
+      "typeVersion": 2.2,
+      "position": [
+        1184,
+        -1424
+      ],
+      "id": "9df3bc52-e8f4-4b7b-b0a5-d2231394e8a6",
+      "name": "General Tools News AI Agent"
+    },
+    {
+      "parameters": {
+        "cityName": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('City', ``, 'string') }}",
+        "language": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Language', ``, 'string') }}"
+      },
+      "type": "n8n-nodes-base.openWeatherMapTool",
+      "typeVersion": 1,
+      "position": [
+        1600,
+        -1216
+      ],
+      "id": "f7105afd-e481-426f-a633-90daad933268",
+      "name": "OpenWeather",
+      "credentials": {
+        "openWeatherMapApi": {
+          "id": "udoUwG3Wswn5rGS4",
+          "name": "OpenWeatherMap account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "includeTime": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Include_Current_Time', ``, 'boolean') }}",
+        "options": {
+          "timezone": "Asia/Jerusalem"
+        }
+      },
+      "type": "n8n-nodes-base.dateTimeTool",
+      "typeVersion": 2,
+      "position": [
+        64,
+        -1216
+      ],
+      "id": "5b817389-026e-4c3f-82be-a13eb6bfa043",
+      "name": "Date & Time2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "553af9d2-a846-44f3-89a2-b9ff3e2f0566",
+              "leftValue": "={{ $json.message.from.id.toString() }}",
+              "rightValue": "={{ \"530815619\" }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "86b0c53c-0750-4932-83a9-57e79d678948",
+              "leftValue": "",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1024,
+        -1296
+      ],
+      "id": "635399ae-2453-4768-9ef4-18b1f236937f",
+      "name": "is bot mention?1"
+    },
+    {
+      "parameters": {
+        "toolDescription": "ynet - מבזקים",
+        "url": "=https://www.ynet.co.il/Integration/StoryRss1854.xml",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedReadTool",
+      "typeVersion": 1.2,
+      "position": [
+        576,
+        -1216
+      ],
+      "id": "4a4170c8-ebd5-48df-9550-2dae4efb87f1",
+      "name": "ynet - מבזקים"
+    },
+    {
+      "parameters": {
+        "toolDescription": "ynet english",
+        "url": "=https://www.ynet.co.il/3rdparty/mobile/rss/ynetnews/3082/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedReadTool",
+      "typeVersion": 1.2,
+      "position": [
+        704,
+        -1216
+      ],
+      "id": "6277856b-077b-44d3-8283-fa8b7a2a9490",
+      "name": "ynet english"
+    },
+    {
+      "parameters": {
+        "toolDescription": "ynet - חדשות",
+        "url": "=https://www.ynet.co.il/Integration/StoryRss2.xml",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedReadTool",
+      "typeVersion": 1.2,
+      "position": [
+        832,
+        -1216
+      ],
+      "id": "bd6a2abe-1d54-4acf-9925-cb0b82c6e812",
+      "name": "ynet - חדשות"
+    },
+    {
+      "parameters": {
+        "toolDescription": "חדשות - mako",
+        "url": "=https://storage.googleapis.com/mako-sitemaps/rssWebSub.xml",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedReadTool",
+      "typeVersion": 1.2,
+      "position": [
+        -1472,
+        208
+      ],
+      "id": "70238bb9-6856-4d13-8097-e053b3ec379c",
+      "name": "חדשות - mako"
+    },
+    {
+      "parameters": {
+        "toolDescription": "New York Times MiddleEast",
+        "url": "=https://rss.nytimes.com/services/xml/rss/nyt/MiddleEast.xml",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedReadTool",
+      "typeVersion": 1.2,
+      "position": [
+        -1472,
+        624
+      ],
+      "id": "1274f4d2-f31f-4a78-944f-0b056a17043a",
+      "name": "New York Times MiddleEast"
+    },
+    {
+      "parameters": {
+        "toolDescription": "New York Times World",
+        "url": "=https://rss.nytimes.com/services/xml/rss/nyt/World.xml",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedReadTool",
+      "typeVersion": 1.2,
+      "position": [
+        -1472,
+        416
+      ],
+      "id": "1622006f-655c-41c1-b816-695bc16210e9",
+      "name": "New York Times World"
+    },
+    {
+      "parameters": {
+        "operation": "sendChatAction",
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}"
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        944,
+        -1040
+      ],
+      "id": "326d7f24-d9ee-411c-8507-703fbdb56170",
+      "name": "Send a chat action",
+      "webhookId": "8acafbc7-2890-4928-9c06-c7baa05ba6dd",
+      "credentials": {
+        "telegramApi": {
+          "id": "HpzirYeF6mhKsgbi",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toolDescription": "AI Agent that can call calendar tool",
+        "text": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Prompt__User_Message_', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agentTool",
+      "typeVersion": 2.2,
+      "position": [
+        1888,
+        -1424
+      ],
+      "id": "5e8fddbe-602c-455a-bdca-7cdc185010cc",
+      "name": "AI Agent Tool"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1728,
+        -1216
+      ],
+      "id": "1ba1fedf-24d5-4349-bb67-8f35d20efd25",
+      "name": "OpenAI Chat Model2",
+      "credentials": {
+        "openAiApi": {
+          "id": "3cccdT1hyMrXCzp5",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserAutofixing",
+      "typeVersion": 1,
+      "position": [
+        -512,
+        -640
+      ],
+      "id": "806873a9-8f10-427f-9ae2-3be300ac286f",
+      "name": "Auto-fixing Output Parser"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -1472,
+        -192
+      ],
+      "id": "fbd87df9-8374-4953-826b-fddafe36d79b",
+      "name": "OpenAI Chat Model4",
+      "credentials": {
+        "openAiApi": {
+          "id": "3cccdT1hyMrXCzp5",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -1472,
+        -16
+      ],
+      "id": "d374438e-ef99-4244-b57a-2da8cb50690f",
+      "name": "Structured Output Parser"
+    }
+  ],
+  "connections": {
+    "OpenAI Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Zep": {
+      "ai_memory": [
+        []
+      ]
+    },
+    "Zep1": {
+      "ai_memory": [
+        []
+      ]
+    },
+    "is private chat ?": {
+      "main": [
+        [
+          {
+            "node": "Agent",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send a chat action",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Chat Memory Manager",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "is bot mention?": {
+      "main": [
+        [
+          {
+            "node": "Agent",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send a chat action",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "is private chat ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "is bot mention?1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "Chat Memory Manager",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculator": {
+      "ai_tool": [
+        [
+          {
+            "node": "General Tools News AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SerpAPI": {
+      "ai_tool": [
+        [
+          {
+            "node": "General Tools News AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "General Tools News AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Date & Time": {
+      "ai_tool": [
+        [
+          {
+            "node": "General Tools News AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wikipedia": {
+      "ai_tool": [
+        [
+          {
+            "node": "General Tools News AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "News AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SerpAPI1": {
+      "ai_tool": [
+        [
+          {
+            "node": "News AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "bleepingcomputer": {
+      "ai_tool": [
+        [
+          {
+            "node": "News AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Date & Time1": {
+      "ai_tool": [
+        []
+      ]
+    },
+    "Get events": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent Tool",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update event": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent Tool",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create event": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent Tool",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "חגים": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent Tool",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Email AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many messages in Gmail": {
+      "ai_tool": [
+        [
+          {
+            "node": "Email AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email AI Agent": {
+      "ai_tool": [
+        [
+          {
+            "node": "Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "News AI Agent": {
+      "ai_tool": [
+        [
+          {
+            "node": "Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "General Tools News AI Agent": {
+      "ai_tool": [
+        [
+          {
+            "node": "Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenWeather": {
+      "ai_tool": [
+        [
+          {
+            "node": "General Tools News AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Date & Time2": {
+      "ai_tool": [
+        [
+          {
+            "node": "Email AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "is bot mention?1": {
+      "main": [
+        [
+          {
+            "node": "is bot mention?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ynet - מבזקים": {
+      "ai_tool": [
+        [
+          {
+            "node": "News AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ynet english": {
+      "ai_tool": [
+        [
+          {
+            "node": "News AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ynet - חדשות": {
+      "ai_tool": [
+        [
+          {
+            "node": "News AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "חדשות - mako": {
+      "ai_tool": [
+        []
+      ]
+    },
+    "New York Times MiddleEast": {
+      "ai_tool": [
+        []
+      ]
+    },
+    "New York Times World": {
+      "ai_tool": [
+        []
+      ]
+    },
+    "AI Agent Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent Tool",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Auto-fixing Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model4": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Auto-fixing Output Parser",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Auto-fixing Output Parser",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateId": "self-building-ai-agent",
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "a43a27c1-7d9d-45e5-b6bd-09268126b01b",
+  "triggerCount": 1,
+  "tags": []
+}
