@@ -1,0 +1,141 @@
+{
+  "createdAt": "2025-07-31T20:40:44.737Z",
+  "updatedAt": "2025-08-02T09:07:10.000Z",
+  "id": "jePUBX3n3CSSHfqe",
+  "name": "CalendarTool",
+  "active": false,
+  "isArchived": true,
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "family09687667346947656727@group.calendar.google.com",
+          "mode": "list",
+          "cachedResultName": "היומן המשפחתי"
+        },
+        "returnAll": true,
+        "timeMin": "={{ $json.startDate }}",
+        "timeMax": "={{ $json.endDate }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        448,
+        192
+      ],
+      "id": "ca993ed5-21bd-48ff-807f-015078f6f991",
+      "name": "Get many events",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "rCCaAfdsLkxUeIZ5",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5262eab4-2f9d-4956-a184-bf2dc5ccbc6c",
+              "name": "id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "100682bf-a2ef-4fa5-8bb3-2872127faaf8",
+              "name": "summary",
+              "value": "={{ $json.summary }}",
+              "type": "string"
+            },
+            {
+              "id": "f84433ec-806a-4a36-ab94-23ceae576aab",
+              "name": "creator",
+              "value": "={{ $json.creator.email }}",
+              "type": "string"
+            },
+            {
+              "id": "bdc87de0-30d8-4057-bbe8-7462199d0015",
+              "name": "start",
+              "value": "={{ $json.start }}",
+              "type": "object"
+            },
+            {
+              "id": "1c203933-131a-42bb-a4c4-8163ffa56a73",
+              "name": "end",
+              "value": "={{ $json.end }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        672,
+        192
+      ],
+      "id": "f0543fd2-ac90-458e-9538-4851e7b3f524",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "startDate"
+            },
+            {
+              "name": "endDate"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        224,
+        192
+      ],
+      "id": "a6c1b6e8-9003-470e-842b-8962ff6b67c3",
+      "name": "CalendarTool"
+    }
+  ],
+  "connections": {
+    "Get many events": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CalendarTool": {
+      "main": [
+        [
+          {
+            "node": "Get many events",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "03a89da1-35da-44c8-8200-9e81c1fcf32a",
+  "triggerCount": 0,
+  "tags": []
+}
