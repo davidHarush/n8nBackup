@@ -1,0 +1,725 @@
+{
+  "createdAt": "2025-08-02T09:19:36.656Z",
+  "updatedAt": "2025-08-02T17:55:38.000Z",
+  "id": "o5wtjNo34tnjitIj",
+  "name": "Telegram - BotTechFeed",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "f487366f-69c0-4bd5-9ab9-f97f4a290495",
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        -624,
+        32
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3f5dc168-156a-4786-93f5-0a0a8bff76a0",
+              "name": "title",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "6ad07714-9a59-44de-9a32-575b2c7b914c",
+              "name": "link",
+              "value": "={{ $json.link }}",
+              "type": "string"
+            },
+            {
+              "id": "12d62329-af2b-4698-a040-a3e00a48d5f0",
+              "name": "pubDate",
+              "value": "={{ $json.pubDate }}",
+              "type": "string"
+            },
+            {
+              "id": "faad2a1b-8a34-4d54-9c76-4bb751787bd8",
+              "name": "content",
+              "value": "={{ $json.content }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -176,
+        32
+      ],
+      "id": "30f978cb-31cd-4e2c-91fd-04b7ab483a45",
+      "name": "Edit Fields5"
+    },
+    {
+      "parameters": {
+        "url": "https://techcrunch.com/feed/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        -400,
+        32
+      ],
+      "id": "fed9ddf0-e25d-4c9e-abc9-084c441074ca",
+      "name": "Mako RSS1"
+    },
+    {
+      "parameters": {
+        "url": "https://www.cnet.com/rss/news",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        -400,
+        224
+      ],
+      "id": "a3f47b5e-60f7-4df9-8d7d-e9d95fb8e0f2",
+      "name": "Ynet RSS1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3f5dc168-156a-4786-93f5-0a0a8bff76a0",
+              "name": "title",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "6ad07714-9a59-44de-9a32-575b2c7b914c",
+              "name": "link",
+              "value": "={{ $json.link }}",
+              "type": "string"
+            },
+            {
+              "id": "12d62329-af2b-4698-a040-a3e00a48d5f0",
+              "name": "pubDate",
+              "value": "={{ $json.pubDate }}",
+              "type": "string"
+            },
+            {
+              "id": "faad2a1b-8a34-4d54-9c76-4bb751787bd8",
+              "name": "content",
+              "value": "={{ $json.content }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -176,
+        224
+      ],
+      "id": "855ca847-c0a5-4346-822a-03ba4b586534",
+      "name": "Edit Fields6"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        48,
+        128
+      ],
+      "id": "a6be3ded-7884-4f25-8b5c-6b83263329c5",
+      "name": "Merge4"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dateTimeTool",
+      "typeVersion": 2,
+      "position": [
+        1296,
+        544
+      ],
+      "id": "48210a3c-d2ee-43e5-896b-93dc35e01e0a",
+      "name": "Date & Time1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=תפקידך לסכם ולייצר פייד חדשות יומי מהתוכן המתקבל\n\nקיבלת רשימה ארוכה של חדשות באנגלית בפורמט:\nTitle: ...\nDescription: ...\nDate: ...\nLink: ...\n\n🔹 המשימות שלך:\n1. בחר את 6-8 הידיעות החשובות והמעניינות ביותר מהקלט.\n2. סכם כל ידיעה ב־3–4 משפטים קצרים וברורים בעברית.\n3.התחלת כל ידיעה חייבת להיות בעברית!! חשוב מאוד !!! (על מנת לשמור על כיוון הטקסט מימין לשמאל)– אפילו אם יש שם חברה באנגלית אז ניתן להשתמש במילת פתיח למשל ״חברת openai\".\n4. בסוף כל ידיעה הוסף שורה עם קישור לקריאה מלאה בפורמט HTML:\n<a href=\"URL\">לכתבה המלאה</a>\n5. הפלט הסופי חייב להיות הודעה אחת בלבד, בפורמט HTML חוקי ומותאם לטלגרם. \n   מותר להשתמש רק בתגיות הבאות: <b>, <i>, <u>, <s>, <a href=\"URL\">, <code>, <pre>.\n   אסור להשתמש ב־<div>, <p>,<br> <span> או תגיות אחרות.\n6. סדר את הידיעות כרשימה ממוספרת (1., 2., 3. ...), כשהמספר נמצא באותה השורה עם תחילת הטקסט.\n7. השאר שורה ריקה בין כל ידיעה כדי להקל על הקריאה.\n8. חלק את הסיכום לפסקאות וירידות שורה, כך שהתוכן יהיה נוח לקריאה ולא צפוף.\n9. אין להוסיף הסברים, דעות או טקסט נוסף – הפלט הוא סיכום החדשות בלבד.\n\nקלט:\n{{$json.summaryInput}}\n",
+        "options": {
+          "systemMessage": "תפקידך לסכם ולייצר פייד חדשות יומי מהתוכן המתקבל\n\n🔹 כלים זמינים לך:\n- Wikipedia – לחיפוש והבנת רקע על נושאים או מושגים בחדשות.\n- Date & Time – לבדוק את התאריך והשעה הנוכחיים אם נדרש.\n- SerpAPI – לחיפוש מידע נוסף מהאינטרנט במקרה שיש צורך בהקשר נוסף."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        1264,
+        320
+      ],
+      "id": "be9ae312-0ebb-40ae-af07-125d0dc0a558",
+      "name": "AI news summarizer1"
+    },
+    {
+      "parameters": {
+        "url": "https://technologyreview.com/feed/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        -400,
+        416
+      ],
+      "id": "e990011d-ac9a-442a-8874-6072684e0013",
+      "name": "RSS Read1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3f5dc168-156a-4786-93f5-0a0a8bff76a0",
+              "name": "title",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "6ad07714-9a59-44de-9a32-575b2c7b914c",
+              "name": "link",
+              "value": "={{ $json.link }}",
+              "type": "string"
+            },
+            {
+              "id": "12d62329-af2b-4698-a040-a3e00a48d5f0",
+              "name": "pubDate",
+              "value": "={{ $json.pubDate }}",
+              "type": "string"
+            },
+            {
+              "id": "faad2a1b-8a34-4d54-9c76-4bb751787bd8",
+              "name": "content",
+              "value": "=\n{{ $json.title }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -176,
+        416
+      ],
+      "id": "533b9b28-cb39-4969-b649-84a873ec27da",
+      "name": "Edit Fields7"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        272,
+        320
+      ],
+      "id": "48b0c711-8168-4f93-819d-dd053e45ea35",
+      "name": "Merge5"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolSerpApi",
+      "typeVersion": 1,
+      "position": [
+        1424,
+        544
+      ],
+      "id": "01e622de-2c4c-4252-9459-4d6cd21e8665",
+      "name": "SerpAPI4",
+      "credentials": {
+        "serpApi": {
+          "id": "cECarDbKzV3VuLZK",
+          "name": "SerpAPI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "-1002544742097",
+        "text": "=++---------- {{ new Date().toLocaleDateString('he-IL', { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' }) \n}} ----------++\n\n\n{{ $json.output }}",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1760,
+        320
+      ],
+      "id": "d8d4e01d-b36c-4c1d-9058-e9b8afb594f6",
+      "name": "Send a text message",
+      "webhookId": "7cd39515-3611-411c-a119-875943e1ae44",
+      "credentials": {
+        "telegramApi": {
+          "id": "HpzirYeF6mhKsgbi",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1168,
+        544
+      ],
+      "id": "40039cba-ec4c-4085-9925-a731dfde7b1c",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "3e4I4idKS4czltyG",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 11
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -624,
+        608
+      ],
+      "id": "27b0cbb3-a60d-4a17-bc2e-a03d79668656",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "https://www.phonearena.com/feed/news",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        -400,
+        608
+      ],
+      "id": "f5960617-1c03-41f7-b745-589d6e8b85bc",
+      "name": "RSS Read"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3f5dc168-156a-4786-93f5-0a0a8bff76a0",
+              "name": "title",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "6ad07714-9a59-44de-9a32-575b2c7b914c",
+              "name": "link",
+              "value": "={{ $json.link }}",
+              "type": "string"
+            },
+            {
+              "id": "12d62329-af2b-4698-a040-a3e00a48d5f0",
+              "name": "pubDate",
+              "value": "={{ $json.pubDate }}",
+              "type": "string"
+            },
+            {
+              "id": "faad2a1b-8a34-4d54-9c76-4bb751787bd8",
+              "name": "content",
+              "value": "=\n{{ $json.title }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -176,
+        608
+      ],
+      "id": "5352d947-80b8-4a58-8c3d-7d530f330bca",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        48,
+        512
+      ],
+      "id": "08974120-9a92-4a27-9b48-95d17a84eca9",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "sortFieldsUi": {
+          "sortField": [
+            {
+              "fieldName": "pubDate"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.sort",
+      "typeVersion": 1,
+      "position": [
+        496,
+        320
+      ],
+      "id": "e473f930-679b-4dbe-b0d0-64fcf9cc9d3d",
+      "name": "Sort"
+    },
+    {
+      "parameters": {
+        "maxItems": 50
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        720,
+        320
+      ],
+      "id": "efb3ea13-2d04-4275-9b25-b3da5324041f",
+      "name": "Limit"
+    },
+    {
+      "parameters": {
+        "jsCode": "const summary = items\n  .map((item, i) => {\n    const { title, content, isoDate, pubDate, link } = item.json;\n\n    const date = isoDate || pubDate || \"\";\n\n    const shortDesc = content\n      ? content.length > 200\n        ? content.substring(0, 200) + \"...\"\n        : content\n      : \"\";\n\n    return `${i + 1}.\\n` +\n           `Title: ${title}\\n` +\n           `Description: ${shortDesc}\\n` +\n           `Date: ${date}\\n` +\n           `Link: ${link || \"\"}`;\n  })\n  .join('\\n\\n');\n\nreturn [{\n  json: {\n    summaryInput: summary\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        944,
+        320
+      ],
+      "id": "b0bc1edc-5327-455f-8b03-3ffc66445082",
+      "name": "combine all to one"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolWikipedia",
+      "typeVersion": 1,
+      "position": [
+        1552,
+        544
+      ],
+      "id": "a5f642b6-17a6-4156-ac87-ab7336018e4a",
+      "name": "Wikipedia"
+    }
+  ],
+  "connections": {
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "Mako RSS1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Ynet RSS1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "RSS Read1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "RSS Read",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields5": {
+      "main": [
+        [
+          {
+            "node": "Merge4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mako RSS1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ynet RSS1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields6": {
+      "main": [
+        [
+          {
+            "node": "Merge4",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge4": {
+      "main": [
+        [
+          {
+            "node": "Merge5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Date & Time1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI news summarizer1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Read1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields7": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge5": {
+      "main": [
+        [
+          {
+            "node": "Sort",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SerpAPI4": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI news summarizer1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI news summarizer1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI news summarizer1": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Mako RSS1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Ynet RSS1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "RSS Read1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "RSS Read",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Read": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Merge5",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Sort": {
+      "main": [
+        [
+          {
+            "node": "Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit": {
+      "main": [
+        [
+          {
+            "node": "combine all to one",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "combine all to one": {
+      "main": [
+        [
+          {
+            "node": "AI news summarizer1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wikipedia": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI news summarizer1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "d45fe9f3-75ae-4374-93e4-ffb20a3a74cc",
+  "triggerCount": 1,
+  "tags": []
+}
