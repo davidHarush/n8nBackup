@@ -1,9 +1,9 @@
 {
   "createdAt": "2025-08-02T17:38:05.705Z",
-  "updatedAt": "2025-08-02T19:33:36.000Z",
+  "updatedAt": "2025-08-02T19:36:31.000Z",
   "id": "MhRnb6RKysO6nMJf",
   "name": "GitHub backup",
-  "active": false,
+  "active": true,
   "isArchived": false,
   "nodes": [
     {
@@ -202,7 +202,7 @@
               "id": "b0fe1bcc-e79c-4a6b-b8b4-44222c8bf4e8",
               "name": "fileName",
               "type": "string",
-              "value": "={{ $('Retrieve workflows').item.json.name }}.json\"\n"
+              "value": "={{ $('Retrieve workflows').item.json.name }}.json"
             }
           ]
         },
@@ -232,7 +232,7 @@
           "cachedResultName": "n8nBackup",
           "cachedResultUrl": "https://github.com/davidHarush/n8nBackup"
         },
-        "filePath": "={{ $('Commit date & file name').item.json.fileName }}\n.json",
+        "filePath": "={{ $('Commit date & file name').item.json.fileName}}",
         "fileContent": "={{ $('To base64').item.json.data }}",
         "commitMessage": "=backup-{{ $node['Commit date & file name'].json.commitDate }}"
       },
@@ -296,7 +296,8 @@
         448
       ],
       "id": "cce794bf-88d5-4f5b-b1aa-7a7df0ab1036",
-      "name": "When clicking ‘Execute workflow’"
+      "name": "When clicking ‘Execute workflow’",
+      "disabled": true
     },
     {
       "parameters": {
@@ -331,7 +332,8 @@
           "id": "YYCMAOtGUvvjcPv7",
           "name": "GitHub account"
         }
-      }
+      },
+      "disabled": true
     },
     {
       "parameters": {
@@ -366,7 +368,8 @@
           "id": "YYCMAOtGUvvjcPv7",
           "name": "GitHub account"
         }
-      }
+      },
+      "disabled": true
     }
   ],
   "connections": {
@@ -502,12 +505,16 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "staticData": null,
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
   "meta": {
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "422882da-64f7-4c8f-b9df-37ebcc905ea5",
-  "triggerCount": 0,
+  "versionId": "3a794c19-3d03-467d-8db9-f7936f36208d",
+  "triggerCount": 1,
   "tags": []
 }
