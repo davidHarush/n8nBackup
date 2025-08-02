@@ -1,0 +1,2021 @@
+{
+  "createdAt": "2025-08-01T13:18:38.030Z",
+  "updatedAt": "2025-08-02T09:07:02.000Z",
+  "id": "KmTlVin7WLuHp2R4",
+  "name": "sreaper",
+  "active": false,
+  "isArchived": true,
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -3840,
+        336
+      ],
+      "id": "cfb2b10d-46bb-4563-a119-156ad5c5597d",
+      "name": "When chat message received",
+      "webhookId": "01600a51-c3cf-4a4f-9059-697be236ed69"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "aa9156b4-7556-4229-938b-38e0d9391015",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": "sitemap",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -3056,
+        336
+      ],
+      "id": "ad2d5b5f-b795-4735-bec6-df2d587e9778",
+      "name": "If sitemap exists"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.message.content.baseUrl }}/robots.txt",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -3280,
+        336
+      ],
+      "id": "fc63684f-4eec-477e-9bfd-095337c410d5",
+      "name": "Check robots",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.xml",
+      "typeVersion": 1,
+      "position": [
+        -736,
+        512
+      ],
+      "id": "d6bd3426-67b8-4aa6-ab77-fc941c7c0722",
+      "name": "XML",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b9a4d5b0-2385-49cd-9228-df1c56284cf1",
+              "leftValue": "={{ $json.message.content.pathway }}",
+              "rightValue": "url",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1312,
+        320
+      ],
+      "id": "22d7e71e-33d0-4d6a-9708-ab6a3ab98005",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1HjUSIQwi9NOb_STLWnlphjGAbDChYabzizzZDlU_iDg",
+          "mode": "list",
+          "cachedResultName": "Scrape webiste for free",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1HjUSIQwi9NOb_STLWnlphjGAbDChYabzizzZDlU_iDg/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1HjUSIQwi9NOb_STLWnlphjGAbDChYabzizzZDlU_iDg/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "List of URLs": "={{ $('List all URLS').all().map(item => item.json.url).join('\\n') }}\n",
+            "Website URL": "={{ $('Extract base URL').first().json.message.content.baseUrl }}",
+            "content Chunk 1": "={{ $json.chunk_1 }}",
+            "content Chunk 2": "={{ $json.chunk_2 }}",
+            "content Chunk 3": "={{ $json.chunk_3 }}",
+            "content Chunk 4": "={{ $json.chunk_4 }}",
+            "content Chunk 5": "={{ $json.chunk_5 }}",
+            "content Chunk 6": "={{ $json.chunk_6 }}",
+            "content Chunk 7": "={{ $json.chunk_7 }}",
+            "content Chunk 8": "={{ $json.chunk_8 }}",
+            "content Chunk 9": "={{ $json.chunk_9 }}",
+            "content Chunk 10": "={{ $json.chunk_10 }}",
+            "Sidemap": "={{ $('Get sidemap').all()[0].json.message.content.sitemap }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "Website URL",
+              "displayName": "Website URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Sidemap",
+              "displayName": "Sidemap",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "XML",
+              "displayName": "XML",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "List of URLs",
+              "displayName": "List of URLs",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "content Chunk 1",
+              "displayName": "content Chunk 1",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "content Chunk 2",
+              "displayName": "content Chunk 2",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "content Chunk 3",
+              "displayName": "content Chunk 3",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "content Chunk 4",
+              "displayName": "content Chunk 4",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "content Chunk 5",
+              "displayName": "content Chunk 5",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "content Chunk 6",
+              "displayName": "content Chunk 6",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "content Chunk 7",
+              "displayName": "content Chunk 7",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "content Chunk 8",
+              "displayName": "content Chunk 8",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "content Chunk 9",
+              "displayName": "content Chunk 9",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "content Chunk 10",
+              "displayName": "content Chunk 10",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        224,
+        48
+      ],
+      "id": "469f7a69-d4a8-4d98-a2fa-8e8f7f116945",
+      "name": "Google Sheets1"
+    },
+    {
+      "parameters": {
+        "jsCode": "function extractAllLocs(data) {\n    const locs = [];\n\n    function findLocs(obj) {\n        if (!obj) return;\n\n        // If it's an object, check for loc key and continue recursion\n        if (typeof obj === 'object') {\n            for (const key in obj) {\n                if (key === 'loc' && typeof obj[key] === 'string') {\n                    locs.push(obj[key]);\n                } else {\n                    findLocs(obj[key]);\n                }\n            }\n        }\n        // If it's an array, loop through each item\n        else if (Array.isArray(obj)) {\n            obj.forEach(findLocs);\n        }\n    }\n\n    findLocs(data);\n    return locs.map(url => ({ url }));\n}\n\n// Usage in n8n:\nconst data = $input.first().json.urlset; // Extracting from the urlset\n\nconst urls = extractAllLocs(data);\n\nreturn urls.map(item => ({ json: item }));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -560,
+        512
+      ],
+      "id": "e5706061-4b3e-4474-a9aa-6ccd84d55f17",
+      "name": "find URLs"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36"
+            }
+          ]
+        },
+        "options": {
+          "batching": {
+            "batch": {
+              "batchSize": 1
+            }
+          },
+          "allowUnauthorizedCerts": false,
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -912,
+        128
+      ],
+      "id": "583cce18-5e02-4fe1-aec2-3b9ac12f6d94",
+      "name": "GET URLs"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -912,
+        512
+      ],
+      "id": "e05cb2eb-1d63-44b6-b887-1ec3b118327e",
+      "name": "GET XML",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Extract base URL').item.json.message.content.baseUrl }}/sitemap.xml",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -2640,
+        112
+      ],
+      "id": "33cdc98f-c856-4750-acd1-0734b1c49f58",
+      "name": "sitemap.xml",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Extract base URL').item.json.message.content.baseUrl }}/sitemap_index.xml",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -2640,
+        256
+      ],
+      "id": "96a08b7a-3c2e-40ea-8a3f-85bf4ea23540",
+      "name": "sitemap_index.xml",
+      "alwaysOutputData": false,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Extract base URL').item.json.message.content.baseUrl }}/site-map.xml",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -2640,
+        400
+      ],
+      "id": "4b961777-cbbb-4311-ab36-a57bc0ab3eee",
+      "name": "site-map.xml",
+      "executeOnce": false,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Extract base URL').item.json.message.content.baseUrl }}/sitemap.json",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -2640,
+        528
+      ],
+      "id": "3791b656-01b8-439f-8072-dd742de10900",
+      "name": "sitemap.json",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $('Check for XML or URL').first().json.message;\n\nconst content = data.content;\n\nconst urls = [];\n\nObject.keys(content).forEach(key => {\n  if (key.startsWith('loc')) {\n    urls.push({ json: { url: content[key] } });\n  }\n});\n\nreturn urls;\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1072,
+        128
+      ],
+      "id": "e0adfbda-5974-42c3-8d45-8452ef9819b6",
+      "name": "List all URLS"
+    },
+    {
+      "parameters": {
+        "jsCode": "const content = $input.first().json.message.content;\n\n// Extract all `loc1`, `loc2`, etc., into an array\nconst urls = Object.values(content);\n\n// Return each URL as a separate item\nreturn urls.map(url => ({\n  json: { url }\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1072,
+        512
+      ],
+      "id": "a2ac190d-888a-481d-a16b-588283e55278",
+      "name": "List all the URLS"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=extract each of the seperate loc elements and return a JSON object as below, make sure that the first key value pair identifies if the pathways are regular urls or xml:\n\n{\n\"pathway\": \"xml\"\n\"loc1\":\"example1.com.xml\",\n\"loc2\":\"example2.com.xml\",\n\"loc3\":\"example3.com.xml\"\n}\n\nor\n\n\n{\n\"pathway\": \"url\"\n\"loc1\":\"example1.com\",\n\"loc2\":\"example2.com\",\n\"loc3\":\"example3.com\"\n}\n",
+              "role": "system"
+            },
+            {
+              "content": "={{ $json.data }}"
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        -1616,
+        320
+      ],
+      "id": "a790199b-1d58-42f2-9128-2c1651e5f455",
+      "name": "Check for XML or URL",
+      "credentials": {
+        "openAiApi": {
+          "id": "3cccdT1hyMrXCzp5",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are a URL normalization assistant. Your task is to convert any input URL into its **standard base URL format** and return the result as JSON.\n\nNormalization Rules:\n1. Ensure the URL starts with `https://` (add it if missing).\n2. Remove `www.` unless it is critical for the domain's identity.\n3. Remove everything after the domain (paths, query strings, fragments).\n4. Preserve subdomains (e.g., `blog.example.com` → `https://blog.example.com`).\n5. Convert the domain part to lowercase.\n6. Output the result in JSON format as:\n   {\n     \"baseUrl\": \"https://example.com\"\n   }\n\nExamples:\nInput: `n8n.io/path/page`\nOutput: `{ \"baseUrl\": \"https://n8n.io\" }`\n\nInput: `http://www.Example.COM/query=1`\nOutput: `{ \"baseUrl\": \"https://example.com\" }`\n\nReturn **only the JSON object** in the output. No additional text or explanations.\n",
+              "role": "system"
+            },
+            {
+              "content": "={{ $json.chatInput }}"
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        -3632,
+        336
+      ],
+      "id": "246a2e32-cc99-4f54-a24d-8806dcc10da6",
+      "name": "Extract base URL",
+      "credentials": {
+        "openAiApi": {
+          "id": "3cccdT1hyMrXCzp5",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const text = $input.first().json.content; \nconst charCount = text.length;\n\nreturn [\n  {\n    json: {\n      characterCount: charCount\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -384,
+        128
+      ],
+      "id": "106cd72f-acef-4078-ac5c-2dd0f5f355c0",
+      "name": "Check the character amount"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "6cfa49a8-1505-4775-9b3c-277ef0c12323",
+              "leftValue": "={{ $json.characterCount }}",
+              "rightValue": 50000,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -192,
+        128
+      ],
+      "id": "e37222b5-0fa0-4144-8d80-1cad7a469479",
+      "name": "Bigger than 50K?"
+    },
+    {
+      "parameters": {
+        "jsCode": "const text = $('Strip text').first().json.content;\nconst chunkSize = 50000;\nconst output = {};\n\nfor (let i = 0; i < text.length; i += chunkSize) {\n  const chunkNumber = Math.floor(i / chunkSize) + 1;\n  output[`chunk_${chunkNumber}`] = text.slice(i, i + chunkSize);\n}\n\nreturn [\n  {\n    json: output\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        48,
+        48
+      ],
+      "id": "055044bb-8c18-45e9-99fb-d5448b230152",
+      "name": "Split in 50k chunks1"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1HjUSIQwi9NOb_STLWnlphjGAbDChYabzizzZDlU_iDg",
+          "mode": "list",
+          "cachedResultName": "Untitled spreadsheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1HjUSIQwi9NOb_STLWnlphjGAbDChYabzizzZDlU_iDg/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1HjUSIQwi9NOb_STLWnlphjGAbDChYabzizzZDlU_iDg/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "List of URLs": "={{ $('List all URLS').all().map(item => item.json.url).join('\\n') }}\n",
+            "Website URL": "={{ $('Extract base URL').first().json.message.content.baseUrl }}",
+            "content Chunk 1": "={{ $('Strip text').item.json.content }}",
+            "Sidemap": "={{ $('Get sidemap').all()[0].json.message.content.sitemap }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "Website URL",
+              "displayName": "Website URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Sidemap",
+              "displayName": "Sidemap",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "XML",
+              "displayName": "XML",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "List of URLs",
+              "displayName": "List of URLs",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "content Chunk 1",
+              "displayName": "content Chunk 1",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "content Chunk 2",
+              "displayName": "content Chunk 2",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "content Chunk 3",
+              "displayName": "content Chunk 3",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "content Chunk 4",
+              "displayName": "content Chunk 4",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "content Chunk 5",
+              "displayName": "content Chunk 5",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "content Chunk 6",
+              "displayName": "content Chunk 6",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "content Chunk 7",
+              "displayName": "content Chunk 7",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "content Chunk 8",
+              "displayName": "content Chunk 8",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "content Chunk 9",
+              "displayName": "content Chunk 9",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "content Chunk 10",
+              "displayName": "content Chunk 10",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        48,
+        240
+      ],
+      "id": "7a5fc286-ecd5-4660-9aad-3aaf7ac7b467",
+      "name": "Google Sheets2"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "GPT-4O"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "output the sitemap value in json format of this structure:\n\n{\"sitemap\":\"www.example.com/sitemap.xml:}\n\nNote, only output one single sitemap value. If there are multiple, make the best choice on which is the correct one to use",
+              "role": "system"
+            },
+            {
+              "content": "={{ $json.data }}"
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        -2160,
+        320
+      ],
+      "id": "2d05f709-3ad9-463b-93dc-17b6c5919272",
+      "name": "Get sidemap",
+      "credentials": {
+        "openAiApi": {
+          "id": "3cccdT1hyMrXCzp5",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.message.content.sitemap }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1824,
+        320
+      ],
+      "id": "8e733dac-7d46-475f-8dff-a101d1f742c4",
+      "name": " get sitemap data1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get all input items\nconst items = $input.all();\n\n// Function to convert markdown to plain text\nfunction convertMarkdownToPlainText(markdown) {\n  // Ensure we're working with a string\n  let plainText = String(markdown);\n  \n  // Remove links: [text](URL)\n  plainText = plainText.replace(/\\[([^\\]]+)\\]\\([^\\)]+\\)/g, '$1');\n  \n  // Remove images: ![alt text](URL)\n  plainText = plainText.replace(/!\\[([^\\]]*)\\]\\([^\\)]+\\)/g, '$1');\n  \n  // Remove headers: # Header\n  plainText = plainText.replace(/(#+)\\s*(.*)/g, '$2');\n  \n  // Remove bold and italic formatting\n  plainText = plainText.replace(/\\*\\*|\\*|__|_/g, '');\n  \n  // Remove HTML special characters\n  plainText = plainText.replace(/([<>])/g, '');\n  \n  // Remove extra line breaks\n  plainText = plainText.replace(/\\n\\s*\\n/g, '\\n');\n  \n  // Remove bullet points or numbered list formatting\n  plainText = plainText.replace(/^\\s*[-*+]\\s+/gm, '');\n  \n  return plainText.trim();\n}\n\n// Process all items and combine them with page numbers and clear formatting\nconst combinedContent = items.map((item, index) => {\n  let content;\n  if (typeof item === 'object' && item !== null) {\n    content = item.data || item.content || item.text || JSON.stringify(item);\n  } else {\n    content = String(item);\n  }\n  \n  const pageNumber = index + 1;\n  const processedContent = convertMarkdownToPlainText(content);\n  \n  return `Page ${pageNumber}\\n──────────────────\\n\\n${processedContent}\\n\\n\\n`;\n}).join('\\n\\n'); // Double line breaks between pages\n\n// Return with both raw content and formatted content\nreturn [{\n  json: {\n    content: combinedContent,\n    rawContent: items.map((item, index) => ({\n      pageNumber: index + 1,\n      content: convertMarkdownToPlainText(String(item.data || item.content || item.text || item))\n    }))\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -560,
+        128
+      ],
+      "id": "a2bc7b3f-972a-4fdd-8e30-cc1404a2f4ae",
+      "name": "Strip text"
+    },
+    {
+      "parameters": {
+        "html": "={{ $json.data }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.markdown",
+      "typeVersion": 1,
+      "position": [
+        -736,
+        128
+      ],
+      "id": "7ba1bbb8-be85-4cee-b86d-f66b806be233",
+      "name": "Markdown",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1HjUSIQwi9NOb_STLWnlphjGAbDChYabzizzZDlU_iDg",
+          "mode": "list",
+          "cachedResultName": "Scrape webiste for free",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1HjUSIQwi9NOb_STLWnlphjGAbDChYabzizzZDlU_iDg/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1HjUSIQwi9NOb_STLWnlphjGAbDChYabzizzZDlU_iDg/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "XML": "={{ $('List all the URLS').all().map(item => item.json.url).join('\\n') }}",
+            "List of URLs": "={{ $('find URLs').all().map(item => item.json.url).join('\\n') }}\n",
+            "Website URL": "={{ $('Extract base URL').first().json.message.content.baseUrl }}",
+            "content Chunk 1": "={{ $json.chunk_1 }}",
+            "content Chunk 2": "={{ $json.chunk_2 }}",
+            "content Chunk 3": "={{ $json.chunk_3 }}",
+            "content Chunk 4": "={{ $json.chunk_4 }}",
+            "content Chunk 5": "={{ $json.chunk_5 }}",
+            "content Chunk 6": "={{ $json.chunk_6 }}",
+            "content Chunk 7": "={{ $json.chunk_7 }}",
+            "content Chunk 8": "={{ $json.chunk_8 }}",
+            "content Chunk 9": "={{ $json.chunk_9 }}",
+            "content Chunk 10": "={{ $json.chunk_10 }}",
+            "Sidemap": "={{ $('Get sidemap').all()[0].json.message.content.sitemap }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "Website URL",
+              "displayName": "Website URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Sidemap",
+              "displayName": "Sidemap",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "XML",
+              "displayName": "XML",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "List of URLs",
+              "displayName": "List of URLs",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "content Chunk 1",
+              "displayName": "content Chunk 1",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "content Chunk 2",
+              "displayName": "content Chunk 2",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "content Chunk 3",
+              "displayName": "content Chunk 3",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "content Chunk 4",
+              "displayName": "content Chunk 4",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "content Chunk 5",
+              "displayName": "content Chunk 5",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "content Chunk 6",
+              "displayName": "content Chunk 6",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "content Chunk 7",
+              "displayName": "content Chunk 7",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "content Chunk 8",
+              "displayName": "content Chunk 8",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "content Chunk 9",
+              "displayName": "content Chunk 9",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "content Chunk 10",
+              "displayName": "content Chunk 10",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        784,
+        416
+      ],
+      "id": "047c874e-0181-493e-9033-910c7f04c2fb",
+      "name": "Google Sheets"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36"
+            }
+          ]
+        },
+        "options": {
+          "batching": {
+            "batch": {
+              "batchSize": 1
+            }
+          },
+          "allowUnauthorizedCerts": false,
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -384,
+        512
+      ],
+      "id": "41eda599-0c7e-4de9-a92a-0ea4da4adb2c",
+      "name": "GET URLs1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const text = $input.first().json.content; \nconst charCount = text.length;\n\nreturn [\n  {\n    json: {\n      characterCount: charCount\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        192,
+        512
+      ],
+      "id": "1158cdef-639c-4c98-af53-ee881c3e97e2",
+      "name": "Check the character amount1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "6cfa49a8-1505-4775-9b3c-277ef0c12323",
+              "leftValue": "={{ $json.characterCount }}",
+              "rightValue": 50000,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        368,
+        512
+      ],
+      "id": "7630ba5a-37a5-45cd-afb6-5ee7bcde4ab9",
+      "name": "Bigger than 50K?1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const text = $('Strip text1').first().json.content;\nconst chunkSize = 50000;\nconst output = {};\n\nfor (let i = 0; i < text.length; i += chunkSize) {\n  const chunkNumber = Math.floor(i / chunkSize) + 1;\n  output[`chunk_${chunkNumber}`] = text.slice(i, i + chunkSize);\n}\n\nreturn [\n  {\n    json: output\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        592,
+        416
+      ],
+      "id": "373a992b-b8d3-4ccc-b73f-ad1c01a3efab",
+      "name": "Split in 50k chunks"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1HjUSIQwi9NOb_STLWnlphjGAbDChYabzizzZDlU_iDg",
+          "mode": "list",
+          "cachedResultName": "Untitled spreadsheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1HjUSIQwi9NOb_STLWnlphjGAbDChYabzizzZDlU_iDg/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1HjUSIQwi9NOb_STLWnlphjGAbDChYabzizzZDlU_iDg/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "XML": "={{ $('List all the URLS').all().map(item => item.json.url).join('\\n') }}",
+            "List of URLs": "={{ $('find URLs').all().map(item => item.json.url).join('\\n') }}\n",
+            "Website URL": "={{ $('Extract base URL').first().json.message.content.baseUrl }}",
+            "content Chunk 1": "={{ $('Strip text1').item.json.content }}",
+            "Sidemap": "={{ $('Get sidemap').all()[0].json.message.content.sitemap }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "Website URL",
+              "displayName": "Website URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Sidemap",
+              "displayName": "Sidemap",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "XML",
+              "displayName": "XML",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "List of URLs",
+              "displayName": "List of URLs",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "content Chunk 1",
+              "displayName": "content Chunk 1",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "content Chunk 2",
+              "displayName": "content Chunk 2",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "content Chunk 3",
+              "displayName": "content Chunk 3",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "content Chunk 4",
+              "displayName": "content Chunk 4",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "content Chunk 5",
+              "displayName": "content Chunk 5",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "content Chunk 6",
+              "displayName": "content Chunk 6",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "content Chunk 7",
+              "displayName": "content Chunk 7",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "content Chunk 8",
+              "displayName": "content Chunk 8",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "content Chunk 9",
+              "displayName": "content Chunk 9",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "content Chunk 10",
+              "displayName": "content Chunk 10",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        592,
+        640
+      ],
+      "id": "cb3acb81-32d6-4a04-947e-8e7275238b1f",
+      "name": "Google Sheets3"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get all input items\nconst items = $input.all();\n\n// Function to convert markdown to plain text\nfunction convertMarkdownToPlainText(markdown) {\n  // Ensure we're working with a string\n  let plainText = String(markdown);\n  \n  // Remove links: [text](URL)\n  plainText = plainText.replace(/\\[([^\\]]+)\\]\\([^\\)]+\\)/g, '$1');\n  \n  // Remove images: ![alt text](URL)\n  plainText = plainText.replace(/!\\[([^\\]]*)\\]\\([^\\)]+\\)/g, '$1');\n  \n  // Remove headers: # Header\n  plainText = plainText.replace(/(#+)\\s*(.*)/g, '$2');\n  \n  // Remove bold and italic formatting\n  plainText = plainText.replace(/\\*\\*|\\*|__|_/g, '');\n  \n  // Remove HTML special characters\n  plainText = plainText.replace(/([<>])/g, '');\n  \n  // Remove extra line breaks\n  plainText = plainText.replace(/\\n\\s*\\n/g, '\\n');\n  \n  // Remove bullet points or numbered list formatting\n  plainText = plainText.replace(/^\\s*[-*+]\\s+/gm, '');\n  \n  return plainText.trim();\n}\n\n// Process all items and combine them with page numbers and clear formatting\nconst combinedContent = items.map((item, index) => {\n  let content;\n  if (typeof item === 'object' && item !== null) {\n    content = item.data || item.content || item.text || JSON.stringify(item);\n  } else {\n    content = String(item);\n  }\n  \n  const pageNumber = index + 1;\n  const processedContent = convertMarkdownToPlainText(content);\n  \n  return `Page ${pageNumber}\\n──────────────────\\n\\n${processedContent}\\n\\n\\n`;\n}).join('\\n\\n'); // Double line breaks between pages\n\n// Return with both raw content and formatted content\nreturn [{\n  json: {\n    content: combinedContent,\n    rawContent: items.map((item, index) => ({\n      pageNumber: index + 1,\n      content: convertMarkdownToPlainText(String(item.data || item.content || item.text || item))\n    }))\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        16,
+        512
+      ],
+      "id": "15aae526-8f9f-41e1-ae0a-52ef3f3c7d55",
+      "name": "Strip text1"
+    },
+    {
+      "parameters": {
+        "html": "={{ $json.data }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.markdown",
+      "typeVersion": 1,
+      "position": [
+        -192,
+        512
+      ],
+      "id": "dedc1539-476b-47e1-b4ae-eba37494c06f",
+      "name": "Markdown1",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "content": "## Guess the sidemap\n",
+        "height": 720,
+        "width": 560,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2864,
+        16
+      ],
+      "id": "95b0518b-c5ca-4f0c-b2ee-fa81bc7feedd",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Input the URL\n",
+        "height": 260,
+        "width": 200,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -3872,
+        256
+      ],
+      "id": "96fdf19a-5200-4f34-a474-2c56b8c46edf",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Extract base URL\n\n",
+        "height": 260,
+        "width": 300,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -3664,
+        256
+      ],
+      "id": "2f002fb5-921d-456e-8adf-81fd1659ecfc",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Check for robots.txt\n\n",
+        "height": 260,
+        "width": 440,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -3344,
+        256
+      ],
+      "id": "338cb171-73c8-4a68-9758-160dfa0f01c6",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "## Get the Sidemap\n\n\n",
+        "height": 260,
+        "width": 600,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2256,
+        256
+      ],
+      "id": "157fab5e-e1a4-4d54-b413-9487ae4e3276",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "## Check for XML or URL\n\n",
+        "height": 260,
+        "width": 480,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1632,
+        256
+      ],
+      "id": "a3ca8c18-49c5-46f0-b249-1376b6fda762",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "content": "## Get URLs\n\n",
+        "height": 260,
+        "width": 340,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1120,
+        48
+      ],
+      "id": "19a3cd6d-15ba-4feb-bd36-8b8d2c45d64e",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "content": "## Clean text\n",
+        "height": 260,
+        "width": 320,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -752,
+        48
+      ],
+      "id": "e7b16ef1-e3b5-4c65-a29c-1f4672c2b13b",
+      "name": "Sticky Note7"
+    },
+    {
+      "parameters": {
+        "content": "## Check the character amount\n\n\n",
+        "height": 260,
+        "width": 380
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -416,
+        48
+      ],
+      "id": "b87fd098-8adc-4f4f-b2cd-6032640dafc5",
+      "name": "Sticky Note8"
+    },
+    {
+      "parameters": {
+        "content": "## Check the character amount\n\n\n",
+        "height": 260,
+        "width": 380,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        144,
+        432
+      ],
+      "id": "55d1ecb8-6c13-42a3-ab67-03e1bd757aee",
+      "name": "Sticky Note9"
+    },
+    {
+      "parameters": {
+        "content": "## Clean text\n",
+        "height": 260,
+        "width": 340,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -224,
+        432
+      ],
+      "id": "2a8a37e9-84c9-474e-850c-9b0a643c2fea",
+      "name": "Sticky Note10"
+    },
+    {
+      "parameters": {
+        "content": "## Get URLs\n\n",
+        "height": 260,
+        "width": 340,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -576,
+        432
+      ],
+      "id": "72714320-2785-47ad-a0d0-2ca5777ed585",
+      "name": "Sticky Note11"
+    },
+    {
+      "parameters": {
+        "content": "## Get XML Data\n",
+        "height": 260,
+        "width": 520,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1120,
+        432
+      ],
+      "id": "d2aeb3ca-a8a3-42bd-b0f6-38c3205cf6dd",
+      "name": "Sticky Note12"
+    },
+    {
+      "parameters": {
+        "content": "## Add all scraped data\n\n\n",
+        "height": 420,
+        "width": 440,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -16,
+        -32
+      ],
+      "id": "c2546494-12f8-4b95-b92f-a50dc418ef37",
+      "name": "Sticky Note13"
+    },
+    {
+      "parameters": {
+        "content": "## Add all scraped data\n\n\n",
+        "height": 460,
+        "width": 440,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        544,
+        336
+      ],
+      "id": "ae571463-51ca-44c8-b9ce-240377730887",
+      "name": "Sticky Note14"
+    }
+  ],
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Extract base URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check robots": {
+      "main": [
+        [
+          {
+            "node": "If sitemap exists",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If sitemap exists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If sitemap exists": {
+      "main": [
+        [
+          {
+            "node": "Get sidemap",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "sitemap.xml",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "sitemap_index.xml",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "site-map.xml",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "sitemap.json",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "XML": {
+      "main": [
+        [
+          {
+            "node": "find URLs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "List all URLS",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "List all the URLS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "find URLs": {
+      "main": [
+        [
+          {
+            "node": "GET URLs1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET URLs": {
+      "main": [
+        [
+          {
+            "node": "Markdown",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET XML": {
+      "main": [
+        [
+          {
+            "node": "XML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "sitemap.xml": {
+      "main": [
+        [
+          {
+            "node": "Get sidemap",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "sitemap_index.xml": {
+      "main": [
+        [
+          {
+            "node": "Get sidemap",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "site-map.xml": {
+      "main": [
+        [
+          {
+            "node": "Get sidemap",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "sitemap.json": {
+      "main": [
+        [
+          {
+            "node": "Get sidemap",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List all URLS": {
+      "main": [
+        [
+          {
+            "node": "GET URLs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List all the URLS": {
+      "main": [
+        [
+          {
+            "node": "GET XML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check for XML or URL": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract base URL": {
+      "main": [
+        [
+          {
+            "node": "Check robots",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check the character amount": {
+      "main": [
+        [
+          {
+            "node": "Bigger than 50K?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bigger than 50K?": {
+      "main": [
+        [
+          {
+            "node": "Split in 50k chunks1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Split in 50k chunks1": {
+      "main": [
+        []
+      ]
+    },
+    "Get sidemap": {
+      "main": [
+        [
+          {
+            "node": " get sitemap data1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    " get sitemap data1": {
+      "main": [
+        [
+          {
+            "node": "Check for XML or URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Strip text": {
+      "main": [
+        [
+          {
+            "node": "Check the character amount",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Markdown": {
+      "main": [
+        [
+          {
+            "node": "Strip text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET URLs1": {
+      "main": [
+        [
+          {
+            "node": "Markdown1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check the character amount1": {
+      "main": [
+        [
+          {
+            "node": "Bigger than 50K?1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bigger than 50K?1": {
+      "main": [
+        [
+          {
+            "node": "Split in 50k chunks",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Split in 50k chunks": {
+      "main": [
+        []
+      ]
+    },
+    "Strip text1": {
+      "main": [
+        [
+          {
+            "node": "Check the character amount1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Markdown1": {
+      "main": [
+        [
+          {
+            "node": "Strip text1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "2715fbaf-e843-4d5d-90fa-1fbc8733a705",
+  "triggerCount": 0,
+  "tags": []
+}
