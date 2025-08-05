@@ -1,0 +1,679 @@
+{
+  "createdAt": "2025-08-02T17:38:05.705Z",
+  "updatedAt": "2025-08-04T18:19:37.000Z",
+  "id": "MhRnb6RKysO6nMJf",
+  "name": "GitHub backup",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "id": "f663ecd5-bb36-4052-80e1-b54277136c1d",
+      "name": "Schedule Trigger2",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [
+        -1344,
+        2400
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "filters": {},
+        "requestOptions": {}
+      },
+      "id": "1d3fb1ee-e9f3-473f-9fea-894f04eb8133",
+      "name": "Retrieve workflows2",
+      "type": "n8n-nodes-base.n8n",
+      "position": [
+        -1120,
+        2400
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "n8nApi": {
+          "id": "2gLKKvTOfZpqaTKc",
+          "name": "n8n account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "toJson",
+        "mode": "each",
+        "options": {
+          "format": true
+        }
+      },
+      "id": "66117f7a-6da0-4043-9196-4cce00f110e3",
+      "name": "Json file2",
+      "type": "n8n-nodes-base.convertToFile",
+      "position": [
+        -672,
+        2400
+      ],
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "operation": "binaryToPropery",
+        "options": {}
+      },
+      "id": "6f9c3963-3263-4caa-a446-2c0ac5b5f1e7",
+      "name": "To base65",
+      "type": "n8n-nodes-base.extractFromFile",
+      "position": [
+        -448,
+        2400
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "fe4a36ef-9f04-40e3-99bd-cc517a49b440",
+              "name": "commitDate",
+              "type": "string",
+              "value": "={{ $now.format('dd-MM-yyyy/H:mm') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "01efed84-14a7-4873-84cb-4ceb327f0cba",
+      "name": "Commit date & file name2",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -224,
+        2400
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "owner": {
+          "__rl": true,
+          "value": "https://github.com/davidHarush",
+          "mode": "url"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "n8nBackup",
+          "mode": "list",
+          "cachedResultName": "n8nBackup",
+          "cachedResultUrl": "https://github.com/davidHarush/n8nBackup"
+        },
+        "filePath": "={{ $('Commit date & file name2').item.json.fileName}}",
+        "fileContent": "={{ $('To base65').item.json.data }}",
+        "commitMessage": "=backup-{{ $node['Commit date & file name2'].json.commitDate }}"
+      },
+      "id": "1e2d4165-9616-4c85-93c4-c9a1511ab909",
+      "name": "Upload new file2",
+      "type": "n8n-nodes-base.github",
+      "position": [
+        0,
+        2400
+      ],
+      "webhookId": "ce4b561b-acb9-4cd8-b76f-4928dada9674",
+      "typeVersion": 1,
+      "credentials": {
+        "githubApi": {
+          "id": "YYCMAOtGUvvjcPv7",
+          "name": "GitHub account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b8b9c5dd-d2f7-4446-8826-26ce6d169071",
+              "leftValue": "={{ $json.isArchived }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -896,
+        2400
+      ],
+      "id": "7c982f11-3057-4bf4-a19c-6b6605637914",
+      "name": "Filter2"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "delete",
+        "owner": {
+          "__rl": true,
+          "value": "https://github.com/davidHarush",
+          "mode": "url"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "n8nBackup",
+          "mode": "list",
+          "cachedResultName": "n8nBackup",
+          "cachedResultUrl": "https://github.com/davidHarush/n8nBackup"
+        },
+        "filePath": "={{ $json.name }}",
+        "commitMessage": "clear all - n8n"
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        -896,
+        2624
+      ],
+      "id": "d10bda2f-ba3f-46d7-b833-96bf46b57cf8",
+      "name": "Delete a file2",
+      "webhookId": "47a2ce0e-ac63-475b-8297-027c02ee710f",
+      "credentials": {
+        "githubApi": {
+          "id": "YYCMAOtGUvvjcPv7",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "list",
+        "owner": {
+          "__rl": true,
+          "value": "https://github.com/davidHarush",
+          "mode": "url"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "n8nBackup",
+          "mode": "list",
+          "cachedResultName": "n8nBackup",
+          "cachedResultUrl": "https://github.com/davidHarush/n8nBackup"
+        },
+        "filePath": "="
+      },
+      "id": "e43d09f4-7f45-4ee3-ae5c-d04216cf1e95",
+      "name": "List files from repo2",
+      "type": "n8n-nodes-base.github",
+      "position": [
+        -1120,
+        2624
+      ],
+      "webhookId": "354d699e-44b0-4444-9d31-af7fd4ff5561",
+      "typeVersion": 1,
+      "alwaysOutputData": true,
+      "credentials": {
+        "githubApi": {
+          "id": "YYCMAOtGUvvjcPv7",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "id": "017c35ae-6e08-49c9-8cb3-eb64f130c7e4",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [
+        -1152,
+        448
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "filters": {},
+        "requestOptions": {}
+      },
+      "id": "924fc25b-723d-40d3-8c38-665f2244cb4d",
+      "name": "Retrieve workflows",
+      "type": "n8n-nodes-base.n8n",
+      "position": [
+        -928,
+        448
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "n8nApi": {
+          "id": "2gLKKvTOfZpqaTKc",
+          "name": "n8n account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "toJson",
+        "mode": "each",
+        "options": {
+          "format": true
+        }
+      },
+      "id": "85fd45fb-efc4-4347-a9fa-3d1fac12aacf",
+      "name": "Json file",
+      "type": "n8n-nodes-base.convertToFile",
+      "position": [
+        -480,
+        448
+      ],
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "operation": "binaryToPropery",
+        "options": {}
+      },
+      "id": "22103570-3b9b-45e7-a0b9-0a22247b0c19",
+      "name": "To base64",
+      "type": "n8n-nodes-base.extractFromFile",
+      "position": [
+        -256,
+        448
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "fe4a36ef-9f04-40e3-99bd-cc517a49b440",
+              "name": "commitDate",
+              "type": "string",
+              "value": "={{ $now.format('dd-MM-yyyy/H:mm') }}"
+            },
+            {
+              "id": "b0fe1bcc-e79c-4a6b-b8b4-44222c8bf4e8",
+              "name": "fileName",
+              "type": "string",
+              "value": "={{ $('Retrieve workflows').item.json.name }}.json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "958f57ae-6717-4f0b-b7fb-5856054340bc",
+      "name": "Commit date & file name",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -32,
+        448
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "owner": {
+          "__rl": true,
+          "value": "https://github.com/davidHarush",
+          "mode": "url"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "n8nBackup",
+          "mode": "list",
+          "cachedResultName": "n8nBackup",
+          "cachedResultUrl": "https://github.com/davidHarush/n8nBackup"
+        },
+        "filePath": "={{ $('Commit date & file name').item.json.fileName}}",
+        "fileContent": "={{ $('To base64').item.json.data }}",
+        "commitMessage": "=backup-{{ $json.fileName }} - {{ $node['Commit date & file name'].json.commitDate }} "
+      },
+      "id": "9dbc3dfc-f12d-445b-baeb-f258ffc8e8aa",
+      "name": "Upload new file",
+      "type": "n8n-nodes-base.github",
+      "position": [
+        192,
+        448
+      ],
+      "webhookId": "ce4b561b-acb9-4cd8-b76f-4928dada9674",
+      "typeVersion": 1,
+      "credentials": {
+        "githubApi": {
+          "id": "YYCMAOtGUvvjcPv7",
+          "name": "GitHub account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1152,
+        672
+      ],
+      "id": "19072a6f-f19c-44d0-b0af-00191548f6f8",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "delete",
+        "owner": {
+          "__rl": true,
+          "value": "https://github.com/davidHarush",
+          "mode": "url"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "n8nBackup",
+          "mode": "list",
+          "cachedResultName": "n8nBackup",
+          "cachedResultUrl": "https://github.com/davidHarush/n8nBackup"
+        },
+        "filePath": "={{ $json.name }}",
+        "commitMessage": "clear all - n8n"
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        -704,
+        672
+      ],
+      "id": "35d6fb5b-5045-4c07-9a24-4b7dae596234",
+      "name": "Delete a file",
+      "webhookId": "47a2ce0e-ac63-475b-8297-027c02ee710f",
+      "credentials": {
+        "githubApi": {
+          "id": "YYCMAOtGUvvjcPv7",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "list",
+        "owner": {
+          "__rl": true,
+          "value": "https://github.com/davidHarush",
+          "mode": "url"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "n8nBackup",
+          "mode": "list",
+          "cachedResultName": "n8nBackup",
+          "cachedResultUrl": "https://github.com/davidHarush/n8nBackup"
+        },
+        "filePath": "="
+      },
+      "id": "012e42ca-4476-4a16-8145-a7d56eeec024",
+      "name": "List files from repo1",
+      "type": "n8n-nodes-base.github",
+      "position": [
+        -928,
+        672
+      ],
+      "webhookId": "354d699e-44b0-4444-9d31-af7fd4ff5561",
+      "typeVersion": 1,
+      "alwaysOutputData": true,
+      "credentials": {
+        "githubApi": {
+          "id": "YYCMAOtGUvvjcPv7",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b8b9c5dd-d2f7-4446-8826-26ce6d169071",
+              "leftValue": "={{ $json.isArchived }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -704,
+        448
+      ],
+      "id": "7e02c638-c66c-46be-ab61-a0fde71ea8b7",
+      "name": "Filter out archived workflow"
+    }
+  ],
+  "connections": {
+    "Schedule Trigger2": {
+      "main": [
+        [
+          {
+            "node": "Retrieve workflows2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retrieve workflows2": {
+      "main": [
+        [
+          {
+            "node": "Filter2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Json file2": {
+      "main": [
+        [
+          {
+            "node": "To base65",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "To base65": {
+      "main": [
+        [
+          {
+            "node": "Commit date & file name2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Commit date & file name2": {
+      "main": [
+        [
+          {
+            "node": "Upload new file2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter2": {
+      "main": [
+        [
+          {
+            "node": "Json file2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List files from repo2": {
+      "main": [
+        [
+          {
+            "node": "Delete a file2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Retrieve workflows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retrieve workflows": {
+      "main": [
+        [
+          {
+            "node": "Filter out archived workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Json file": {
+      "main": [
+        [
+          {
+            "node": "To base64",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "To base64": {
+      "main": [
+        [
+          {
+            "node": "Commit date & file name",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Commit date & file name": {
+      "main": [
+        [
+          {
+            "node": "Upload new file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "List files from repo1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List files from repo1": {
+      "main": [
+        [
+          {
+            "node": "Delete a file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter out archived workflow": {
+      "main": [
+        [
+          {
+            "node": "Json file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    },
+    "node:Schedule Trigger1": {
+      "recurrenceRules": []
+    },
+    "node:Schedule Trigger2": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "122bf3e5-9a00-4d33-9e8a-87db12285135",
+  "triggerCount": 3,
+  "tags": []
+}
