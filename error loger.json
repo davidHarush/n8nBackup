@@ -1,0 +1,67 @@
+{
+  "createdAt": "2025-08-05T14:49:32.514Z",
+  "updatedAt": "2025-08-05T14:54:20.000Z",
+  "id": "pRrSIrRjo9KjutF1",
+  "name": "error loger",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "246a5ca4-e904-461f-b1ae-16953e4f6903",
+      "name": "Error Trigger"
+    },
+    {
+      "parameters": {
+        "chatId": "530815619",
+        "text": "=++--------------------++",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        320,
+        0
+      ],
+      "id": "d16cd344-8bab-40fe-bdca-fb67d05ef1b1",
+      "name": "Send to David1",
+      "webhookId": "7cd39515-3611-411c-a119-875943e1ae44",
+      "credentials": {
+        "telegramApi": {
+          "id": "HpzirYeF6mhKsgbi",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Send to David1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "c1002e53-4ec4-48a4-b2bd-f91493cd8acb",
+  "triggerCount": 0,
+  "tags": []
+}
