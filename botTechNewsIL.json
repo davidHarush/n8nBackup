@@ -1,0 +1,906 @@
+{
+  "createdAt": "2025-08-05T06:41:54.872Z",
+  "updatedAt": "2025-08-07T18:48:24.000Z",
+  "id": "JOS83af9GvfuQJ2F",
+  "name": "botTechNewsIL",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3f5dc168-156a-4786-93f5-0a0a8bff76a0",
+              "name": "title",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "6ad07714-9a59-44de-9a32-575b2c7b914c",
+              "name": "link",
+              "value": "={{ $json.link }}",
+              "type": "string"
+            },
+            {
+              "id": "12d62329-af2b-4698-a040-a3e00a48d5f0",
+              "name": "pubDate",
+              "value": "={{ $json.pubDate }}",
+              "type": "string"
+            },
+            {
+              "id": "faad2a1b-8a34-4d54-9c76-4bb751787bd8",
+              "name": "content",
+              "value": "={{ $json.content }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        128,
+        0
+      ],
+      "id": "2244fd94-11dd-4d20-8abe-8b7426b8fdbe",
+      "name": "Edit Fields9"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3f5dc168-156a-4786-93f5-0a0a8bff76a0",
+              "name": "title",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "6ad07714-9a59-44de-9a32-575b2c7b914c",
+              "name": "link",
+              "value": "={{ $json.link }}",
+              "type": "string"
+            },
+            {
+              "id": "12d62329-af2b-4698-a040-a3e00a48d5f0",
+              "name": "pubDate",
+              "value": "={{ $json.pubDate }}",
+              "type": "string"
+            },
+            {
+              "id": "faad2a1b-8a34-4d54-9c76-4bb751787bd8",
+              "name": "content",
+              "value": "={{ $json.content }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        128,
+        192
+      ],
+      "id": "187608ea-b99e-4e23-b97f-91f5fb9c454d",
+      "name": "Edit Fields10"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dateTimeTool",
+      "typeVersion": 2,
+      "position": [
+        1600,
+        704
+      ],
+      "id": "d6efe2c3-b1be-4ee3-aaeb-1cbfef7b30cd",
+      "name": "Date & Time"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=תפקידך לסכם ולייצר פייד חדשות יומי מהתוכן המתקבל\n\nקיבלת רשימה ארוכה של חדשות באנגלית בפורמט:\n\n[\n{\n\"title\": <String>,\n\"link\": <String>,\n\"pubDate\": <String>,\n\"content\": <String>,\n\"timestamp\": <Int>\n},\n{\n\"title\": <String>,\n\"link\": <String>,\n\"pubDate\": <String>,\n\"content\": <String>,\n\"timestamp\": <Int>\n},\n{\n🔹 המשימות שלך:\n1. בחר את 6-8 הידיעות החשובות והמעניינות ביותר מהקלט.\n2. סכם כל ידיעה ב־3–4 משפטים קצרים וברורים בעברית.\n3.התחלת כל ידיעה ומשפט חייבים להיות בעברית!! חשוב מאוד !!! (על מנת לשמור על כיוון הטקסט מימין לשמאל)– אפילו אם יש שם חברה באנגלית אז ניתן להשתמש במילת פתיח למשל\nחברת xyz הודיעה ש\nולא \nxyz הודיעה ש\nחשוב מאוד !!!\n\n\n4. בסוף כל ידיעה הוסף שורה עם קישור לקריאה מלאה בפורמט HTML:\n<a href=\"URL\">לכתבה המלאה</a>\n5. הפלט הסופי חייב להיות הודעה אחת בלבד, בפורמט HTML חוקי ומותאם לטלגרם. \n   מותר להשתמש רק בתגיות הבאות: <b>, <i>, <u>, <s>, <a href=\"URL\">, <code>, <pre>.\n   אסור להשתמש ב־<div>, <p>,<br> <span> או תגיות אחרות.\n6. סדר את הידיעות כרשימה ממוספרת (1., 2., 3. ...), כשהמספר נמצא באותה השורה עם תחילת הטקסט.\n7. השאר שורה ריקה בין כל ידיעה כדי להקל על הקריאה.\n8. חלק את הסיכום לפסקאות וירידות שורה, כך שהתוכן יהיה נוח לקריאה ולא צפוף.\n9. שים לב אפילו זה בפורמט html אני לא מעוניין שתשתמש ב <b> אלא רק במקרים ממש חריגים \n9. אין להוסיף הסברים, דעות או טקסט נוסף – הפלט הוא סיכום החדשות בלבד.\n\nהערה, שים לב אם כתבה חוזרת ממספר אתרים שונים כנראה שהיא חשובה ואולי כדאי לכלול אותה בחדשות \n\n\n\nקלט:\n{{ $json.articalList.map(item => JSON.stringify(item)).join(',\\n') }}\n",
+        "options": {
+          "systemMessage": "תפקידך לסכם ולייצר פייד חדשות יומי מהתוכן המתקבל\n\n🔹 כלים זמינים לך:\n- Wikipedia – לחיפוש והבנת רקע על נושאים או מושגים בחדשות.\n- Date & Time – לבדוק את התאריך והשעה הנוכחיים אם נדרש.\n- SerpAPI – לחיפוש מידע נוסף מהאינטרנט במקרה שיש צורך בהקשר נוסף."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        1632,
+        480
+      ],
+      "id": "67d5d874-e356-4a56-99be-845119018450",
+      "name": "AI news summarizer"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3f5dc168-156a-4786-93f5-0a0a8bff76a0",
+              "name": "title",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "6ad07714-9a59-44de-9a32-575b2c7b914c",
+              "name": "link",
+              "value": "={{ $json.link }}",
+              "type": "string"
+            },
+            {
+              "id": "12d62329-af2b-4698-a040-a3e00a48d5f0",
+              "name": "pubDate",
+              "value": "={{ $json.pubDate }}",
+              "type": "string"
+            },
+            {
+              "id": "faad2a1b-8a34-4d54-9c76-4bb751787bd8",
+              "name": "content",
+              "value": "=\n{{ $json.title }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        128,
+        576
+      ],
+      "id": "8f314d30-215c-458f-b0d8-1c9e725010e2",
+      "name": "Edit Fields11"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolSerpApi",
+      "typeVersion": 1,
+      "position": [
+        1728,
+        704
+      ],
+      "id": "f2bc207c-2862-4127-a279-bcfc5d36b813",
+      "name": "SerpAPI",
+      "credentials": {
+        "serpApi": {
+          "id": "cECarDbKzV3VuLZK",
+          "name": "SerpAPI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1472,
+        704
+      ],
+      "id": "11e4aaa8-75f0-46b0-b017-f87103809b98",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "3e4I4idKS4czltyG",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 11
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -320,
+        480
+      ],
+      "id": "bf08a3f8-6607-4c4a-84d0-e5b2dbedba4f",
+      "name": "Schedule Trigger1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3f5dc168-156a-4786-93f5-0a0a8bff76a0",
+              "name": "title",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "6ad07714-9a59-44de-9a32-575b2c7b914c",
+              "name": "link",
+              "value": "={{ $json.link }}",
+              "type": "string"
+            },
+            {
+              "id": "12d62329-af2b-4698-a040-a3e00a48d5f0",
+              "name": "pubDate",
+              "value": "={{ $json.pubDate }}",
+              "type": "string"
+            },
+            {
+              "id": "faad2a1b-8a34-4d54-9c76-4bb751787bd8",
+              "name": "content",
+              "value": "=\n{{ $json.title }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        128,
+        768
+      ],
+      "id": "1edbd986-3031-4a27-b510-ee108c89f9c6",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolWikipedia",
+      "typeVersion": 1,
+      "position": [
+        1856,
+        704
+      ],
+      "id": "9bad7c6b-5878-4f16-9e6f-58ebfc3c6ff8",
+      "name": "Wikipedia1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3f5dc168-156a-4786-93f5-0a0a8bff76a0",
+              "name": "title",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "6ad07714-9a59-44de-9a32-575b2c7b914c",
+              "name": "link",
+              "value": "={{ $json.link }}",
+              "type": "string"
+            },
+            {
+              "id": "12d62329-af2b-4698-a040-a3e00a48d5f0",
+              "name": "pubDate",
+              "value": "={{ $json.pubDate }}",
+              "type": "string"
+            },
+            {
+              "id": "faad2a1b-8a34-4d54-9c76-4bb751787bd8",
+              "name": "content",
+              "value": "=\n{{ $json.title }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        128,
+        960
+      ],
+      "id": "b1a054a0-7626-4ca8-a3bc-1a64cf245ed2",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3f5dc168-156a-4786-93f5-0a0a8bff76a0",
+              "name": "title",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "6ad07714-9a59-44de-9a32-575b2c7b914c",
+              "name": "link",
+              "value": "={{ $json.link }}",
+              "type": "string"
+            },
+            {
+              "id": "12d62329-af2b-4698-a040-a3e00a48d5f0",
+              "name": "pubDate",
+              "value": "={{ $json.pubDate }}",
+              "type": "string"
+            },
+            {
+              "id": "faad2a1b-8a34-4d54-9c76-4bb751787bd8",
+              "name": "content",
+              "value": "={{ $json.content }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        128,
+        384
+      ],
+      "id": "df58406e-16ae-4910-84a0-b24c67c24001",
+      "name": "Edit Fields12"
+    },
+    {
+      "parameters": {
+        "maxItems": 50
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        1024,
+        480
+      ],
+      "id": "e62d6ec7-bb9c-478d-8c9f-f870c39a701d",
+      "name": "Limit to "
+    },
+    {
+      "parameters": {
+        "sortFieldsUi": {
+          "sortField": [
+            {
+              "fieldName": "timestamp",
+              "order": "descending"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.sort",
+      "typeVersion": 1,
+      "position": [
+        800,
+        480
+      ],
+      "id": "a28d95da-dd43-4e2e-8a2f-f9453c19f197",
+      "name": "Sort be timestamp1"
+    },
+    {
+      "parameters": {
+        "numberInputs": 8
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        352,
+        384
+      ],
+      "id": "05a361ba-8381-4ee1-a24a-6a5c80ce4d55",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  const pubDate = item.json.pubDate;\n  let timestamp = null;\n\n  try {\n    timestamp = new Date(pubDate).getTime();\n  } catch (e) {\n    timestamp = null; \n  }\n\n  return {\n    json: {\n      ...item.json,\n      timestamp \n    }\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        576,
+        480
+      ],
+      "id": "da20d5ac-713f-4b8a-a266-55ea9e717bf6",
+      "name": "Add timestamp to article1"
+    },
+    {
+      "parameters": {
+        "description": "תחשוב היטב ותמצא כתבות משמעותיות בעלות חשיבות, לא משהו איזוטרי וחסר השפעה"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolThink",
+      "typeVersion": 1.1,
+      "position": [
+        1984,
+        704
+      ],
+      "id": "97e068c1-6074-4243-9e68-a35050496b79",
+      "name": "Think1"
+    },
+    {
+      "parameters": {
+        "content": "# Sort and take only the last and updated news items.",
+        "height": 336,
+        "width": 928,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        496,
+        304
+      ],
+      "typeVersion": 1,
+      "id": "dd3d880c-80b6-4a1b-a713-3ed730524c09",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get input data (list of items)\nconst items = $input.all();\n\n// Wrap the list inside an object under 'wrappedList'\nreturn [\n  {\n    json: {\n      articalList: items.map(item => item.json)\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1248,
+        480
+      ],
+      "id": "e1911f86-f2e9-4fc3-9629-86fb8f407144",
+      "name": "wrap list"
+    },
+    {
+      "parameters": {
+        "chatId": "-1002544742097",
+        "text": "=++---------- {{ new Date().toLocaleDateString('he-IL', { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' }) \n}} ----------++\n\n\n{{ $json.output }}\n",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2192,
+        384
+      ],
+      "id": "4564223a-23aa-492e-ab97-e3a5dd120f54",
+      "name": "Send to group",
+      "webhookId": "7cd39515-3611-411c-a119-875943e1ae44",
+      "credentials": {
+        "telegramApi": {
+          "id": "HpzirYeF6mhKsgbi",
+          "name": "Telegram account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "url": "https://www.wired.com/feed/rss",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        -96,
+        960
+      ],
+      "id": "c7a71c69-4ac6-4707-88b8-95924baa1bff",
+      "name": "wired",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "url": "https://www.phonearena.com/feed/news",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        -96,
+        768
+      ],
+      "id": "9e5c261d-45e2-4898-8e8b-3a9731d10494",
+      "name": "Phone Arena",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "url": "https://technologyreview.com/feed/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        -96,
+        576
+      ],
+      "id": "51cc6f7d-3bc4-4daf-9e15-bdbba93a4367",
+      "name": "Technology Review",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "url": "https://www.engadget.com/rss.xml",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        -96,
+        384
+      ],
+      "id": "8a562769-7913-4975-a67f-b390fe7dc90b",
+      "name": "engadget",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "url": "https://www.cnet.com/rss/news",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        -96,
+        192
+      ],
+      "id": "0c6c5db5-c34a-4bb7-a9c9-83686de9d766",
+      "name": "cnet",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "url": "https://techcrunch.com/feed/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        -96,
+        0
+      ],
+      "id": "6a9abdc0-c4de-4fcc-9c68-fb36b432d96e",
+      "name": "Techcrunch",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "chatId": "@botTechNewsIL",
+        "text": "={{ new Date().toLocaleDateString('he-IL', { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' }) \n}}  🇮🇱\n\n\n{{ $json.output }}\n",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2192,
+        576
+      ],
+      "id": "f212f440-237b-4385-9575-92b64b62bad1",
+      "name": "Send to botTechNewsIL",
+      "webhookId": "7cd39515-3611-411c-a119-875943e1ae44",
+      "credentials": {
+        "telegramApi": {
+          "id": "HpzirYeF6mhKsgbi",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Edit Fields9": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields10": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Date & Time": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI news summarizer",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI news summarizer": {
+      "main": [
+        [
+          {
+            "node": "Send to botTechNewsIL",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send to group",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields11": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "SerpAPI": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI news summarizer",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI news summarizer",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Techcrunch",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "cnet",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Technology Review",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Phone Arena",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "wired",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "engadget",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 4
+          }
+        ]
+      ]
+    },
+    "Wikipedia1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI news summarizer",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 5
+          }
+        ]
+      ]
+    },
+    "Edit Fields12": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Limit to ": {
+      "main": [
+        [
+          {
+            "node": "wrap list",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sort be timestamp1": {
+      "main": [
+        [
+          {
+            "node": "Limit to ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Add timestamp to article1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add timestamp to article1": {
+      "main": [
+        [
+          {
+            "node": "Sort be timestamp1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Think1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI news summarizer",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "wrap list": {
+      "main": [
+        [
+          {
+            "node": "AI news summarizer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "wired": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Phone Arena": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Technology Review": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields11",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "engadget": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields12",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "cnet": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Techcrunch": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Jerusalem",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "staticData": {
+    "node:Schedule Trigger1": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": null,
+  "pinData": {},
+  "versionId": "604850bb-9c11-47e5-8483-b251cc993958",
+  "triggerCount": 1,
+  "tags": []
+}
