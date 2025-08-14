@@ -1,0 +1,682 @@
+{
+  "createdAt": "2025-08-05T14:49:32.514Z",
+  "updatedAt": "2025-08-13T12:21:46.000Z",
+  "id": "pRrSIrRjo9KjutF1",
+  "name": "error loger",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        -336,
+        96
+      ],
+      "id": "246a5ca4-e904-461f-b1ae-16953e4f6903",
+      "name": "Error Trigger"
+    },
+    {
+      "parameters": {
+        "chatId": "530815619",
+        "text": "=++--------------------++",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -112,
+        96
+      ],
+      "id": "d16cd344-8bab-40fe-bdca-fb67d05ef1b1",
+      "name": "Send to David1",
+      "webhookId": "7cd39515-3611-411c-a119-875943e1ae44",
+      "credentials": {
+        "telegramApi": {
+          "id": "HpzirYeF6mhKsgbi",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -336,
+        -128
+      ],
+      "id": "dcc14a68-846a-4820-8ab0-c420b130c450",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://technologyreview.com/feed/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        -112,
+        -128
+      ],
+      "id": "822bcd4e-b629-4e62-a869-794d02e20556",
+      "name": "RSS Read"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "base": {
+          "__rl": true,
+          "value": "appJFutnWTvrgulvU",
+          "mode": "list",
+          "cachedResultName": "n8n_test",
+          "cachedResultUrl": "https://airtable.com/appJFutnWTvrgulvU"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblZ2095WGsRTCf7D",
+          "mode": "list",
+          "cachedResultName": "Table 1",
+          "cachedResultUrl": "https://airtable.com/appJFutnWTvrgulvU/tblZ2095WGsRTCf7D"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "title": "={{ $json.title }}",
+            "text": "={{ $json.content }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "text",
+              "displayName": "text",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Assignee",
+              "displayName": "Assignee",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Todo",
+                  "value": "Todo"
+                },
+                {
+                  "name": "In progress",
+                  "value": "In progress"
+                },
+                {
+                  "name": "Done",
+                  "value": "Done"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Attachments",
+              "displayName": "Attachments",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Attachment Summary",
+              "displayName": "Attachment Summary",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        112,
+        -128
+      ],
+      "id": "50be3e80-5ebd-40ea-b65d-d933539888c2",
+      "name": "Create or update a record",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "5Yf8B8LtEWrLhond",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appJFutnWTvrgulvU",
+          "mode": "list",
+          "cachedResultName": "n8n_test",
+          "cachedResultUrl": "https://airtable.com/appJFutnWTvrgulvU"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblZ2095WGsRTCf7D",
+          "mode": "list",
+          "cachedResultName": "Table 1",
+          "cachedResultUrl": "https://airtable.com/appJFutnWTvrgulvU/tblZ2095WGsRTCf7D"
+        },
+        "filterByFormula": "{{}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        144,
+        80
+      ],
+      "id": "0230d658-9848-4589-9200-86b0863997b4",
+      "name": "Search records",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "5Yf8B8LtEWrLhond",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "0d620026-32dc-416b-8dc6-aec6f335fa96",
+              "leftValue": "={{ $json.title }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        352,
+        80
+      ],
+      "id": "fca1acef-804c-4270-ab35-2c9bcd9f4180",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "curlImport": "",
+        "httpVariantWarning": "",
+        "method": "GET",
+        "url": "",
+        "": "",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "auth0ManagementApi",
+        "provideSslCertificates": false,
+        "sendQuery": false,
+        "sendHeaders": false,
+        "sendBody": false,
+        "options": {},
+        "infoMessage": ""
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        496,
+        -128
+      ],
+      "id": "0b3e9083-f46a-414c-a9bb-aaf047e28a1d",
+      "name": "Auth0 HTTP Request",
+      "extendsCredential": "auth0ManagementApi"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -160,
+        -304
+      ],
+      "id": "3c73569c-ff1f-468a-af50-f9db87292166",
+      "name": "HTTP Request"
+    }
+  ],
+  "connections": {
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Send to David1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "RSS Read",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Read": {
+      "main": [
+        [
+          {
+            "node": "Create or update a record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search records": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create or update a record": {
+      "main": [
+        []
+      ]
+    },
+    "Auth0 HTTP Request": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "Search records": [
+      {
+        "json": {
+          "id": "rec0g6uErvaOrgcFO",
+          "createdTime": "2025-08-12T16:15:09.000Z",
+          "title": "The Download: how AI is improving itself, and hidden greenhouse gases",
+          "text": "This is today&#8217;s edition of The Download, our weekday newsletter that provides a daily dose of what&#8217;s going on in the world of technology. Five ways that AI is learning to improve itself Last week, Mark Zuckerberg declared that Meta aims to achieve smarter-than-human AI. He seems to have a recipe for achieving that goal, and the&#8230;",
+          "Attachment Summary": {
+            "state": "error",
+            "errorType": "emptyDependency",
+            "value": null,
+            "isStale": false
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "rec2P6hlqmym7FeCX",
+          "createdTime": "2025-08-12T16:15:01.000Z",
+          "title": "The Download: meet the judges using AI, and GPT-5’s health promises",
+          "text": "This is today&#8217;s edition of The Download, our weekday newsletter that provides a daily dose of what&#8217;s going on in the world of technology. Meet the early-adopter judges using AI The propensity for AI systems to make mistakes that humans miss has been on full display in the US legal system as of late. The follies began&#8230;",
+          "Attachment Summary": {
+            "state": "error",
+            "errorType": "emptyDependency",
+            "value": null,
+            "isStale": false
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "rec4vXopyQM2fzvb4",
+          "createdTime": "2025-08-12T16:09:05.000Z",
+          "Attachment Summary": {
+            "state": "error",
+            "errorType": "emptyDependency",
+            "value": null,
+            "isStale": false
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "rec7qRULIXIhkQHlc",
+          "createdTime": "2025-08-12T16:12:18.000Z",
+          "Attachment Summary": {
+            "state": "error",
+            "errorType": "emptyDependency",
+            "value": null,
+            "isStale": false
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recEPZ98P8igJvOKd",
+          "createdTime": "2025-08-12T16:15:08.000Z",
+          "title": "GPT-5 is here. Now what?",
+          "text": "At long last, OpenAI has released GPT-5. The new system abandons the distinction between OpenAI’s flagship models and its o series of reasoning models, automatically routing user queries to a fast nonreasoning model or a slower reasoning version. It is now available to everyone through the ChatGPT web interface—though nonpaying users may need to wait&#8230;",
+          "Attachment Summary": {
+            "state": "error",
+            "errorType": "emptyDependency",
+            "value": null,
+            "isStale": false
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recIh0yZV1RLr5CXI",
+          "createdTime": "2025-08-12T16:09:05.000Z",
+          "Attachment Summary": {
+            "state": "error",
+            "errorType": "emptyDependency",
+            "value": null,
+            "isStale": false
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recK9UmWL84xQvhYH",
+          "createdTime": "2025-08-12T16:12:14.000Z",
+          "Attachment Summary": {
+            "state": "error",
+            "errorType": "emptyDependency",
+            "value": null,
+            "isStale": false
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recNlOVil6iapEd1j",
+          "createdTime": "2025-08-12T16:15:03.000Z",
+          "title": "Sam Altman and the whale",
+          "text": "My colleague Grace Huckins has a great story on OpenAI’s release of GPT-5, its long-awaited new flagship model. One of the takeaways, however, is that while GPT-5 may make for a better experience than the previous versions, it isn’t something revolutionary. “GPT-5 is, above all else,” Grace concludes, “a refined product.” This is pretty much&#8230;",
+          "Attachment Summary": {
+            "state": "error",
+            "errorType": "emptyDependency",
+            "value": null,
+            "isStale": false
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recWegNUuIGphMXIW",
+          "createdTime": "2025-08-12T16:15:06.000Z",
+          "title": "This quantum radar could image buried objects",
+          "text": "Physicists have created a new type of radar that could help improve underground imaging, using a cloud of atoms in a glass cell to detect reflected radio waves. The radar is a type of quantum sensor, an emerging technology that uses the quantum-mechanical properties of objects as measurement devices. It’s still a prototype, but its&#8230;",
+          "Attachment Summary": {
+            "state": "error",
+            "errorType": "emptyDependency",
+            "value": null,
+            "isStale": false
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recWzavntVK2yOFRh",
+          "createdTime": "2025-08-12T16:15:07.000Z",
+          "title": "The Download: GPT-5 is here, and Intel’s CEO drama",
+          "text": "This is today&#8217;s edition of The Download, our weekday newsletter that provides a daily dose of what&#8217;s going on in the world of technology. GPT-5 is here. Now what? At long last, OpenAI has released GPT-5. The new system abandons the distinction between OpenAI’s flagship models and its o series of reasoning models, automatically routing user queries&#8230;",
+          "Attachment Summary": {
+            "state": "error",
+            "errorType": "emptyDependency",
+            "value": null,
+            "isStale": false
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recfVBZqjuOfJD1Bp",
+          "createdTime": "2025-08-12T16:12:21.000Z",
+          "Attachment Summary": {
+            "state": "error",
+            "errorType": "emptyDependency",
+            "value": null,
+            "isStale": false
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recgWS1XMLsMVh8cv",
+          "createdTime": "2025-08-12T16:12:16.000Z",
+          "Attachment Summary": {
+            "state": "error",
+            "errorType": "emptyDependency",
+            "value": null,
+            "isStale": false
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recgvAdKdgKX2dbEe",
+          "createdTime": "2025-08-12T16:15:10.000Z",
+          "title": "The greenhouse gases we’re not accounting for",
+          "text": "In the spring of 2021, climate scientists were stumped.&#160; The global economy was just emerging from the covid-19 lockdowns, but for some reason the levels of methane—a greenhouse gas emitted mainly through agriculture and fossil-fuel production—had soared in the atmosphere the previous year, rising at the fastest rate on record. Researchers around the world set&#8230;",
+          "Attachment Summary": {
+            "state": "error",
+            "errorType": "emptyDependency",
+            "value": null,
+            "isStale": false
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recjf3jIbwGJsVLAm",
+          "createdTime": "2025-08-12T16:15:05.000Z",
+          "title": "The Download: a quantum radar, and chipmakers’ deal with the US government",
+          "text": "This is today&#8217;s edition of The Download, our weekday newsletter that provides a daily dose of what&#8217;s going on in the world of technology. This quantum radar could image buried objects Physicists have created a new type of radar that could help improve underground imaging, using a cloud of atoms in a glass cell to detect reflected&#8230;",
+          "Attachment Summary": {
+            "state": "error",
+            "errorType": "emptyDependency",
+            "value": null,
+            "isStale": false
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "reckqjefc8b9nzX1O",
+          "createdTime": "2025-08-12T16:15:02.000Z",
+          "title": "What you may have missed about GPT-5",
+          "text": "Before OpenAI released GPT-5 last Thursday, CEO Sam Altman said its capabilities made him feel “useless relative to the AI.” He said working on it carries a weight he imagines the developers of the atom bomb must have felt. As tech giants converge on models that do more or less the same thing, OpenAI’s new&#8230;",
+          "Attachment Summary": {
+            "state": "error",
+            "errorType": "emptyDependency",
+            "value": null,
+            "isStale": false
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "reclXOLsF6MfCFkQ5",
+          "createdTime": "2025-08-12T16:12:15.000Z",
+          "Attachment Summary": {
+            "state": "error",
+            "errorType": "emptyDependency",
+            "value": null,
+            "isStale": false
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recmGTf1GN3kD8645",
+          "createdTime": "2025-08-12T16:12:20.000Z",
+          "Attachment Summary": {
+            "state": "error",
+            "errorType": "emptyDependency",
+            "value": null,
+            "isStale": false
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recoINN8amr36FxfN",
+          "createdTime": "2025-08-12T16:12:17.000Z",
+          "Attachment Summary": {
+            "state": "error",
+            "errorType": "emptyDependency",
+            "value": null,
+            "isStale": false
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recu4vpqRw61CACPl",
+          "createdTime": "2025-08-12T16:09:05.000Z",
+          "Attachment Summary": {
+            "state": "error",
+            "errorType": "emptyDependency",
+            "value": null,
+            "isStale": false
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recvYLHve5j30HZgS",
+          "createdTime": "2025-08-12T16:12:23.000Z",
+          "Attachment Summary": {
+            "state": "error",
+            "errorType": "emptyDependency",
+            "value": null,
+            "isStale": false
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recxtQ2eWCXrbDbl1",
+          "createdTime": "2025-08-12T16:12:24.000Z",
+          "Attachment Summary": {
+            "state": "error",
+            "errorType": "emptyDependency",
+            "value": null,
+            "isStale": false
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recyK1QLWLyZSflNR",
+          "createdTime": "2025-08-12T16:15:04.000Z",
+          "title": "Meet the early-adopter judges using AI",
+          "text": "The propensity for AI systems to make mistakes and for humans to miss those mistakes has been on full display in the US legal system as of late. The follies began when lawyers—including some at prestigious firms—submitted documents citing cases that didn’t exist. Similar mistakes soon spread to other roles in the courts. In December,&#8230;",
+          "Attachment Summary": {
+            "state": "error",
+            "errorType": "emptyDependency",
+            "value": null,
+            "isStale": false
+          }
+        }
+      },
+      {
+        "json": {
+          "id": "recz99nyV7FhRdVP4",
+          "createdTime": "2025-08-12T16:12:19.000Z",
+          "Attachment Summary": {
+            "state": "error",
+            "errorType": "emptyDependency",
+            "value": null,
+            "isStale": false
+          }
+        }
+      }
+    ]
+  },
+  "versionId": "e3186144-3054-470a-b09a-d17da1557052",
+  "triggerCount": 0,
+  "tags": []
+}
