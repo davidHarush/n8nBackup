@@ -1,0 +1,790 @@
+{
+  "createdAt": "2025-08-17T20:24:22.499Z",
+  "updatedAt": "2025-08-17T20:24:27.000Z",
+  "id": "JPFGVg4qstVy4URo",
+  "name": "Save Youtube Playlists",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -464,
+        -448
+      ],
+      "id": "a463b423-f58e-49fb-935f-42ae7d4bc2e7",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "resource": "playlistItem",
+        "operation": "getAll",
+        "playlistId": "={{ $json.playlist_id }}",
+        "returnAll": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.youTube",
+      "typeVersion": 1,
+      "position": [
+        -16,
+        -384
+      ],
+      "id": "97458dc7-06f6-4a1b-98dd-64ca129c6f05",
+      "name": "Get many playlist items"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://youtubetotranscript.com/transcript",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "youtube_url",
+              "value": "=https://www.youtube.com/watch?v={{ $('Limit max items for testing').item.json.contentDetails.videoId }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1104,
+        -648
+      ],
+      "id": "c8a917d1-2d2b-47de-8393-395516169d2c",
+      "name": "Transcript Method 1",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://tactiq-apps-prod.tactiq.io/transcript",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "videoUrl",
+              "value": "=https://www.youtube.com/watch?v={{ $json.contentDetails.videoId }}"
+            },
+            {
+              "name": "langCode",
+              "value": "\"en\""
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1776,
+        -912
+      ],
+      "id": "7b88c954-db16-44af-9c84-bcaba37cf7a6",
+      "name": "Transcript Method 2",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=please create a summarization for the text bellow:\n{{ $json.fullTranscript }}\nthe output should be in hebrew, unless there are english words.\nthe number of sentences should be twice as the duration: {{ $json.duration }}. if the duration in minutes is 5, then use 10 sentences to summarize.\n\n",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        2464,
+        -864
+      ],
+      "id": "dd5e2caf-ab1c-495b-bb91-556d06bf1277",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "model": "mistral-large-latest",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatMistralCloud",
+      "typeVersion": 1,
+      "position": [
+        2544,
+        -640
+      ],
+      "id": "de9f9c3f-018c-4a8f-8c80-2f4d7f1dbcc8",
+      "name": "Mistral Cloud Chat Model"
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": false
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        656,
+        -456
+      ],
+      "id": "048fa4a2-0ccc-4ee3-ae1f-87ae7d358c26",
+      "name": "Loop Over Items",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        3520,
+        -672
+      ],
+      "id": "1d0e8a16-7f66-4080-8a7e-388f2be97da9",
+      "name": "Wait",
+      "webhookId": "db4d3127-01f1-4d89-bc53-c8d596b6f900",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "let allItems = []\nfor (const item of $input.all()){\n  let splitText = \"\"\n  if (item.json.data.includes('id=\"transcript\"')){\n    splitText = 'id=\"transcript\"';\n  } else {\n    splitText = 'id=\\\"transcript\"\\\"';\n  }\n  allItems.push(item.json.data.split(splitText)[1].split(\"</div>\")[0])\n}\nreturn allItems.map(item =>({parsed: item}))\n\n// return $input.all().map(item=>({parsed: item.json.data.split('id=\"transcript\"')[1].split(\"</div>\")[0]}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1552,
+        -720
+      ],
+      "id": "1a281881-ef21-42aa-9946-eb0e3e1c765f",
+      "name": "parse results to text"
+    },
+    {
+      "parameters": {
+        "jsCode": "function parseCaptions(data) {\n  // Access the \"parsed\" property of the first object in the array\n  const htmlText = data; //[0].parsed; \n  \n  // Regular expression to match <span> tags and capture the data\n  const regex = /<span data-start=\"([^\"]+)\" data-duration=\"([^\"]+)\"[\\s\\S]*?>\\n\\s*([^<]+)\\n\\s*<\\/span>/g;\n\n  const captions = [];\n  let match;\n  \n  // Loop through all matches found by the regex\n  while ((match = regex.exec(htmlText)) !== null) {\n    // The captured groups from the regex\n    const start = parseFloat(match[1]);\n    const duration = parseFloat(match[2]);\n    const text = match[3].trim();\n    \n    // Push the new object into the captions array\n    captions.push({\n      start: start,\n      dur: duration,\n      text: text,\n    });\n  }\n\n  return captions;\n}\n\nreturn $input.all().map(item=>({captions: parseCaptions(item.json.parsed)}))"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1776,
+        -720
+      ],
+      "id": "5d76a101-bedd-4652-802b-8d18a20a9e84",
+      "name": "parse text to captions"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "nyRO5IVFxruxGkTI",
+          "mode": "list",
+          "cachedResultName": "concatenate captions"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        2224,
+        -864
+      ],
+      "id": "b73f5c3a-4f1c-4cc3-9ce8-7bfc84e839a0",
+      "name": "concatenate captions"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1c1abf5d-5785-46ce-bc72-328a8e283641",
+              "name": "text",
+              "value": "={{ $json.text }}",
+              "type": "string"
+            },
+            {
+              "id": "feacfd82-814d-4375-9892-9f59d611e569",
+              "name": "snippet.title",
+              "value": "={{ $('Limit max items for testing').item.json.snippet.title }}",
+              "type": "string"
+            },
+            {
+              "id": "eb23f999-db35-42d8-b045-8b1128a6b82e",
+              "name": "contentDetails.videoId",
+              "value": "={{ $('Limit max items for testing').item.json.contentDetails.videoId }}",
+              "type": "string"
+            },
+            {
+              "id": "172935a0-ad9e-4856-a110-68e77d7c65db",
+              "name": "snippet.position",
+              "value": "={{ $('Limit max items for testing').item.json.snippet.position }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2848,
+        -864
+      ],
+      "id": "719259d2-1a69-4ade-9685-31fdf990fc02",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "keys": {
+          "key": [
+            {
+              "currentKey": "snippet.title",
+              "newKey": "title"
+            },
+            {
+              "currentKey": "snippet.position",
+              "newKey": "position"
+            },
+            {
+              "currentKey": "contentDetails.videoId",
+              "newKey": "videoId"
+            }
+          ]
+        },
+        "additionalOptions": {}
+      },
+      "type": "n8n-nodes-base.renameKeys",
+      "typeVersion": 1,
+      "position": [
+        3072,
+        -864
+      ],
+      "id": "781020a6-8f67-48e2-81a8-730f889695e3",
+      "name": "Rename Keys"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e7b7238f-2ef3-4b61-947d-b9a0c33f895d",
+              "leftValue": "={{ $input.first().json.hasField('error') }}",
+              "rightValue": "=true",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2000,
+        -816
+      ],
+      "id": "872a79d8-48de-4bfc-92d1-e6ce49885d9f",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "0b77c61d-62d8-423c-8b1c-2755f5bc3f21",
+              "leftValue": "={{ $input.first().json.hasField('error') }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1328,
+        -648
+      ],
+      "id": "7d123b18-7deb-4b86-85a6-c37ab69cb617",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f8dda2aa-d701-4747-8ba0-3d6b4e230690",
+              "leftValue": "={{ ($json.snippet.position % 2).toString() }}",
+              "rightValue": "0",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        880,
+        -736
+      ],
+      "id": "ebebe083-93ef-45fc-9407-6e8d6efd2b41",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "amount": 10
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2224,
+        -576
+      ],
+      "id": "ad21fc26-5737-4d80-a366-a66835a77e21",
+      "name": "Wait1",
+      "webhookId": "068d7d36-7eb1-4e48-9edc-29b0b0b145dc"
+    },
+    {
+      "parameters": {
+        "jsCode": "return Object.values($input.first().json).map(({position, title, videoId})=>({position,title,videoId}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -16,
+        -576
+      ],
+      "id": "af8e2688-8496-4c8a-a6e7-6103fa6a3996",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "advanced": true,
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "position",
+              "field2": "snippet.position"
+            }
+          ]
+        },
+        "joinMode": "keepNonMatches",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        208,
+        -456
+      ],
+      "id": "bef40d5c-8a77-4e6e-94a6-c95a0682610c",
+      "name": "Keep only videos that weren't uploaded yet"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a3317b2f-97ed-40e6-ba7e-f149d7587547",
+              "name": "playlist_id",
+              "value": "PLrNmo94geFHaFnDinwnPSJHM32Iui9J-Z",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -240,
+        -384
+      ],
+      "id": "8170acac-302c-4f97-b1bd-ef902134bd66",
+      "name": "set playlist ID"
+    },
+    {
+      "parameters": {
+        "maxItems": 140
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        432,
+        -456
+      ],
+      "id": "734ebe98-84c3-4597-b77f-aa2f6bdf37da",
+      "name": "Limit max items for testing"
+    },
+    {
+      "parameters": {
+        "projectId": "=",
+        "operation": "get"
+      },
+      "type": "n8n-nodes-base.googleFirebaseRealtimeDatabase",
+      "typeVersion": 1,
+      "position": [
+        -240,
+        -576
+      ],
+      "id": "43410990-eee2-4721-9e61-572c62370636",
+      "name": "get list of saved videos",
+      "credentials": {
+        "googleFirebaseRealtimeDatabaseOAuth2Api": {
+          "id": "tIUU7Xot6BlaG9Qe",
+          "name": "Google Firebase Realtime Database account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "projectId": "=tagula-market-news-ai-default-rtdb",
+        "operation": "push",
+        "path": "micha_stocks_academy",
+        "attributes": "=title,position,videoId,text"
+      },
+      "type": "n8n-nodes-base.googleFirebaseRealtimeDatabase",
+      "typeVersion": 1,
+      "position": [
+        3296,
+        -864
+      ],
+      "id": "ddd1e811-b9b8-4213-95e7-e94898fa9bd2",
+      "name": "store saved video to DB"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "get list of saved videos",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "set playlist ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many playlist items": {
+      "main": [
+        [
+          {
+            "node": "Keep only videos that weren't uploaded yet",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Transcript Method 1": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mistral Cloud Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "parse results to text": {
+      "main": [
+        [
+          {
+            "node": "parse text to captions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "parse text to captions": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "concatenate captions": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Rename Keys",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Rename Keys": {
+      "main": [
+        [
+          {
+            "node": "store saved video to DB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transcript Method 2": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "concatenate captions",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "parse results to text",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Transcript Method 2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Transcript Method 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Keep only videos that weren't uploaded yet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Keep only videos that weren't uploaded yet": {
+      "main": [
+        [
+          {
+            "node": "Limit max items for testing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set playlist ID": {
+      "main": [
+        [
+          {
+            "node": "Get many playlist items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit max items for testing": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get list of saved videos": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "store saved video to DB": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "d23a804b-0b8d-41e0-a0d1-6ab7a3f43ee4",
+  "triggerCount": 0,
+  "tags": []
+}
