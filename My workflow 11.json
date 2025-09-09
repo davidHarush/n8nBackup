@@ -1,0 +1,69 @@
+{
+  "createdAt": "2025-08-18T19:22:30.707Z",
+  "updatedAt": "2025-08-18T19:22:30.707Z",
+  "id": "bIKmDeUwDtqbJa2b",
+  "name": "My workflow 11",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "path": "23772513-cd1b-4122-8df2-f55b5d3fcf8a"
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpTrigger",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "f11749a0-741c-461e-97a7-e79d47bf6bd3",
+      "name": "MCP Server Trigger",
+      "webhookId": "23772513-cd1b-4122-8df2-f55b5d3fcf8a"
+    },
+    {
+      "parameters": {
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        96,
+        208
+      ],
+      "id": "bf7b7f71-0a4f-4032-830b-173fdbc7f751",
+      "name": "HTTP Request",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "CsziIfn1Ac8C8Unu",
+          "name": "Header Auth account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "HTTP Request": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "69dd488f-a346-4c71-b221-58ddcd9809e7",
+  "triggerCount": 0,
+  "tags": []
+}
