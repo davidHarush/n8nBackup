@@ -1,0 +1,489 @@
+{
+  "updatedAt": "2025-11-22T08:26:44.000Z",
+  "createdAt": "2025-11-20T21:26:08.529Z",
+  "id": "OOCREzcRaYtfYhjU",
+  "name": "From Google Drive to Instagram, TikTok & YouTube with Airtable Tracking",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -368,
+        352
+      ],
+      "id": "1201d795-812c-4da6-aac9-fe77024d44c6",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dateTime",
+      "typeVersion": 2,
+      "position": [
+        -32,
+        352
+      ],
+      "id": "84ec0ca6-57cd-4643-b6c5-ccbb51253a38",
+      "name": "Date & Time"
+    },
+    {
+      "parameters": {
+        "operation": "formatDate",
+        "date": "={{ $json.currentDate }}",
+        "format": "yyyy-MM-dd",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dateTime",
+      "typeVersion": 2,
+      "position": [
+        192,
+        352
+      ],
+      "id": "773a68fc-cfcf-4716-9978-2ded412db224",
+      "name": "Date & Time1"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "https://drive.google.com/file/d/1_Ipoqt-HXp1wfzFnM0na-iv1u0w8zC7_/view?usp=drive_link",
+          "mode": "url"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDriveTool",
+      "typeVersion": 3,
+      "position": [
+        640,
+        576
+      ],
+      "id": "2f355f88-6450-458d-a820-674fe01f6637",
+      "name": "Download file in Google Drive",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "XRcQMmqFCIXxSneK",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "https://drive.google.com/file/d/1RThqlClW0ohOLYQmvb6GvPgwjq_4HHxb/view?usp=sharing",
+          "mode": "url"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDriveTool",
+      "typeVersion": 3,
+      "position": [
+        768,
+        576
+      ],
+      "id": "4f9159a4-5873-42c5-8d22-84e810f3e545",
+      "name": "Download file in Google Drive1",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "XRcQMmqFCIXxSneK",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "model": "gpt-image-1",
+        "prompt": "=Create a visually striking, emotionally expressive Facebook post image inspired by the following original content:\n{{ $json.output.content }}\nwith the topic: {{ $json.output.topic }}.\n\nYour goal is NOT to illustrate the text literally.\nInstead, visually express the core emotional theme, mood, or tension behind the content:\n- overwhelm vs clarity\n- noise vs focus\n- chaos vs simplicity\n- emotional reactions to conversation overload\n- the human experience of trying to keep up\n\nChoose a unique visual concept every time. Avoid repeating stylistic templates.\n\nYou may draw inspiration from these style families:\n• Emotional / expressive — feelings, tension, chaos, relief\n• Abstract / geometric — shapes, motion, patterns representing cognitive load\n• Minimal tech — modern gradients, digital atmospheres, symbolic elements\n• Playful / illustration — light cartoon exaggeration, relatable humor\n• High-contrast dramatic — darkness vs glowing light, visual conflict\n• Surreal — distorted message bubbles, melting information, fragmented noise\n\nGuidelines:\n• Do NOT use screenshots, UI mockups, chat bubbles, or the WhatsApp logo.\n• Do NOT depict a fake app interface.\n• Avoid including long text in the image (max 1–2 short words if necessary).\n• Make each image visually fresh, varied, and scroll-stopping.\n• The style should match the **tone of the written content**—not just random.\n\nOutput a single, high-quality image suitable for social media.\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2,
+      "position": [
+        1104,
+        448
+      ],
+      "id": "80670adb-4f81-4363-b6f2-a60bac395fd0",
+      "name": "Generate an image",
+      "credentials": {
+        "openAiApi": {
+          "id": "3cccdT1hyMrXCzp5",
+          "name": "OpenAi account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "name": "={{ $('Date & Time1').item.json.formattedDate }}_{{ $('Code in JavaScript').item.json.mode }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "19gtkJcskR2uDA2_uZHTvmRZLC-WJkgoG",
+          "mode": "list",
+          "cachedResultName": "whatsappSummarizer_posts",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/19gtkJcskR2uDA2_uZHTvmRZLC-WJkgoG"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1328,
+        448
+      ],
+      "id": "acf3c428-f073-43a1-8f98-54c1a90d978d",
+      "name": "Upload file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "XRcQMmqFCIXxSneK",
+          "name": "Google Drive account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1o_MPwJ-KZ1vxxB4annX2c1_y6DM0-NUS5e4a2DPix64",
+          "mode": "list",
+          "cachedResultName": "posts",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1o_MPwJ-KZ1vxxB4annX2c1_y6DM0-NUS5e4a2DPix64/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1o_MPwJ-KZ1vxxB4annX2c1_y6DM0-NUS5e4a2DPix64/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "mode": "={{ $('Code in JavaScript').item.json.mode }}",
+            "date": "={{ $('Date & Time1').item.json.formattedDate }}",
+            "topic": "={{ $json.output.topic }}",
+            "hashtag": "={{ $json.output.hashtag }}",
+            "content": "={{ $json.output.content }}"
+          },
+          "matchingColumns": [
+            "date"
+          ],
+          "schema": [
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "mode",
+              "displayName": "mode",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "topic",
+              "displayName": "topic",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "content",
+              "displayName": "content",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "hashtag",
+              "displayName": "hashtag",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1104,
+        256
+      ],
+      "id": "94e9ac05-8c8e-4fe8-9556-c507e14391e9",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "t0kMqdoxGvvWONGj",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a content strategist and creative writer for the app \"WhatsApp Summarizer\".\n\nYou receive:\n- Knowledge-base files describing the product, its use cases, and real user behavior.\n- A “mode” parameter: \"{{ $json.mode }}\".\n  This defines the style of the content you should write.\n\nFirst, analyze the documents and infer:\n- Who is the target audience? (their lifestyle, pain points, motivations)\n- What situations or frustrations they experience when dealing with WhatsApp conversations.\n- What tone of voice will feel natural and trustworthy for them.\n\nBased on this analysis, create ONE original and valuable content piece in English.\nThis is NOT a marketing ad and NOT a sales pitch.\n\nUse the selected mode to choose the writing style:\n- If mode = \"educational_tips\": write practical, helpful tips that empower the audience.\n- If mode = \"storytelling\": write a short, relatable mini-story from real life.\n- If mode = \"relatable_rant\": write a humorous or emotional mini-rant that expresses what the audience secretly feels.\n- If mode = \"behind_the_scenes\": reveal a hidden truth, insight, or observation about chat overload, communication chaos, or daily digital life.\n- If mode = \"mixed\": freely blend the above styles in a natural way.\n\nContent requirements:\n- 3-7 sentences.\n- Authentic, human, and relatable.\n- Provide insight, value, or emotional resonance.\n- Connect naturally to the real-world frustrations and needs described in the knowledge base.\n- Do NOT invent fake product features.\n\nFinally, add a hashtag for the post and return your answer in strict JSON.",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        640,
+        352
+      ],
+      "id": "262b0247-8578-4617-bcb4-bc95f229180e",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-5-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-5-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        512,
+        576
+      ],
+      "id": "dc7c849a-995a-459f-bc1d-60078dcb77d1",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "3cccdT1hyMrXCzp5",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"content\": \"<post>\",\n  \"audience_summary\": \"<who this is aimed at and why it resonates>\",\n  \"topic\": \"<short label for the main idea>\",\n  \"hashtag\": \"<hashtag for this post>\",\n  \"mode\": \"<mode for this post>\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        960,
+        624
+      ],
+      "id": "58d9aa82-28d5-496e-b237-7923f4bceabc",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get all incoming items\nconst items = $input.all();\n\n// Decide mode based on current weekday\nconst day = new Date().getDay(); \n\nlet mode;\n\nswitch (day) {\n\tcase 1:\n\t\tmode = 'educational_tips';      // Monday\n\t\tbreak;\n\tcase 2:\n\t\tmode = 'storytelling';          // Tuesday\n\t\tbreak;\n\tcase 3:\n\t\tmode = 'relatable_rant';        // Wednesday\n\t\tbreak;\n\tcase 4:\n\t\tmode = 'behind_the_scenes';     // Thursday\n\t\tbreak;\n\tdefault:\n\t\tmode = 'mixed';                 // Friday/Sat/Sun\n\t\tbreak;\n}\n\n// Attach \"mode\" to every item\nfor (const item of items) {\n\tif (!item.json) {\n\t\titem.json = {};\n\t}\n\titem.json.mode = mode;\n}\n\nreturn items;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        384,
+        352
+      ],
+      "id": "d8a2ce50-4300-4ea6-b63f-2172e6e88d80",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -384,
+        496
+      ],
+      "id": "0949672f-ab6f-4c31-9887-fa5304fcde1d",
+      "name": "Schedule Trigger"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Date & Time",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Date & Time": {
+      "main": [
+        [
+          {
+            "node": "Date & Time1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Date & Time1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file in Google Drive": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file in Google Drive1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate an image": {
+      "main": [
+        [
+          {
+            "node": "Upload file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "Generate an image",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Date & Time",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "7885483b-8be0-4bcf-b477-ff58012b3fae",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2025-11-20T21:26:08.547Z",
+      "createdAt": "2025-11-20T21:26:08.547Z",
+      "role": "workflow:owner",
+      "workflowId": "OOCREzcRaYtfYhjU",
+      "projectId": "0zP1zvCUNJRhmJuK"
+    }
+  ],
+  "tags": []
+}
