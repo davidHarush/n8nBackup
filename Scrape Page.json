@@ -1,0 +1,508 @@
+{
+  "updatedAt": "2025-08-25T08:03:29.000Z",
+  "createdAt": "2025-08-21T20:26:19.538Z",
+  "id": "FWZ8IeKndUD1ws8M",
+  "name": "Scrape Page",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8e492899-002d-4339-b197-4d9325bc01d6",
+              "name": "url",
+              "value": "={{ $json.url }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -800,
+        576
+      ],
+      "id": "418f9740-bc94-462c-93c7-2497a17b5cd8",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -576,
+        672
+      ],
+      "id": "9e7f9c32-1c3a-4d9c-b72b-8ec9f606ce6c",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "extractionValues": {
+          "values": [
+            {
+              "key": "links",
+              "cssSelector": "a",
+              "returnValue": "attribute",
+              "attribute": "href",
+              "returnArray": true
+            },
+            {
+              "key": "linkTexts",
+              "cssSelector": "a",
+              "returnArray": true
+            },
+            {
+              "key": "linkExtra",
+              "cssSelector": "a",
+              "returnValue": "attribute",
+              "attribute": "title",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.htmlExtract",
+      "typeVersion": 1,
+      "position": [
+        -352,
+        768
+      ],
+      "id": "9c49c026-aef1-40b7-a3fd-4718bfaf3166",
+      "name": "HTML Extract – Links"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "# n8n Code (Python) — normalize links, best text (text -> title -> slug), dedupe, classify\n# Optional filters for product/category pages are provided below (toggle flags).\n\nfrom urllib.parse import urljoin, urlparse, unquote\nimport re\n\n# ---------------------- Config ----------------------\n# Deduplicate by full URL (True) or by path only (False)\nDEDUP_BY_FULL_URL = True\n\n# Skip pager labels\nSKIP_PAGER = True\n\n# Optional filters (set only one of them to True if you want to filter)\nFILTER_PRODUCTS_ONLY = False     # keep only product pages\nFILTER_CATEGORIES_ONLY = False   # keep only category pages\n# ----------------------------------------------------\n\nPRODUCT_REGEX = re.compile(r\"^/catalogue/.+?_\\d+/(index\\.html)?$\", re.IGNORECASE)\nCATEGORY_REGEX = re.compile(r\"^/catalogue/category/.+?/index\\.html$\", re.IGNORECASE)\n\ndef slug_to_title(path: str) -> str:\n    # Pick a good segment even if URL ends with index.html\n    parts = [p for p in path.split(\"/\") if p]\n    if not parts:\n        return \"\"\n    candidate = parts[-1]\n    if candidate.lower() == \"index.html\" and len(parts) >= 2:\n        candidate = parts[-2]\n    candidate = re.sub(r\"_[0-9]+$\", \"\", candidate)   # drop trailing _123\n    candidate = re.sub(r\"\\.html$\", \"\", candidate)    # drop .html\n    candidate = candidate.replace(\"-\", \" \")\n    candidate = re.sub(r\"\\s+\", \" \", candidate).strip()\n    return candidate.title()\n\ndef is_product(path: str) -> bool:\n    return bool(PRODUCT_REGEX.match(path))\n\ndef is_category(path: str) -> bool:\n    return bool(CATEGORY_REGEX.match(path))\n\nincoming = items if 'items' in globals() else [item]\nout_items = []\n\nfor it in incoming:\n    data = it.get(\"json\", it) if isinstance(it, dict) else getattr(it, \"json\", {})\n\n    base_url    = data.get(\"$('Edit Fields').first().json.url\")\n    links       = data.get(\"links\") or []\n    link_texts  = data.get(\"linkTexts\") or []\n    # support either \"linkTitles\" or \"linkExtra\" from HTML Extract\n    link_titles = data.get(\"linkTitles\") or data.get(\"linkExtra\") or []\n\n    seen = set()\n    clean = []\n\n    for i, href in enumerate(links):\n        if not isinstance(href, str):\n            continue\n        h = href.strip()\n        if not h:\n            continue\n        lower = h.lower()\n        if lower.startswith((\"#\", \"mailto:\", \"tel:\", \"javascript:\")):\n            continue\n\n        abs_url = urljoin(base_url, h)\n        parsed = urlparse(abs_url)\n        path = parsed.path + ((\"?\" + parsed.query) if parsed.query else \"\")\n\n        # Optional filtering\n        if FILTER_PRODUCTS_ONLY and not is_product(parsed.path):\n            continue\n        if FILTER_CATEGORIES_ONLY and not is_category(parsed.path):\n            continue\n\n        # Dedup\n        key = abs_url if DEDUP_BY_FULL_URL else parsed.path\n        if key in seen:\n            continue\n        seen.add(key)\n\n        # Build best text: linkTexts -> linkTitles -> slug\n        t1 = (link_texts[i] if i < len(link_texts) else \"\") or \"\"\n        t2_raw = link_titles[i] if i < len(link_titles) else None\n        t2 = \"\" if t2_raw is None else str(t2_raw)\n        text = (t1 or t2).strip()\n        if not text:\n            text = slug_to_title(unquote(parsed.path))\n\n        if SKIP_PAGER and text.lower() in {\"next\", \"previous\"}:\n            continue\n\n        pb = urlparse(base_url)\n        link_type = \"internal\" if pb.hostname == parsed.hostname else \"external\"\n\n        clean.append({\n            \"href\": abs_url,\n            \"text\": text,\n            \"type\": link_type,\n            \"host\": parsed.hostname or \"\",\n            \"path\": path,\n        })\n\n    # Sort: internal first, then by path\n    clean.sort(key=lambda x: (0 if x[\"type\"] == \"internal\" else 1, x[\"path\"]))\n    out_items.append({\"json\": {\"links\": clean}})\n\nreturn out_items\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -128,
+        768
+      ],
+      "id": "e49701ae-4d19-4b8d-ae3f-f6e7374663fb",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "from bs4 import BeautifulSoup\nimport re\nfrom math import ceil\n\ndef clean_text(s: str) -> str:\n    s = re.sub(r\"\\s+\", \" \", s or \"\").strip()\n    return s\n\ndef reading_time_minutes(words_count: int, wpm: int = 200) -> int:\n    return max(1, ceil(words_count / max(1, wpm)))\n\nout_items = []\n\nfor it in items:\n    data = it.get(\"json\", {})\n    html = (data.get(\"data\") or data.get(\"body\") or \"\").strip()\n\n    soup = BeautifulSoup(html, \"html.parser\")\n\n    # הסרה של תגיות לא־טקסטואליות כדי לנקות את bodyText\n    for tag in soup([\"script\", \"style\", \"noscript\", \"template\"]):\n        tag.decompose()\n\n    # כותרות\n    h1_all = [clean_text(h.get_text()) for h in soup.find_all(\"h1\")]\n    h2_all = [clean_text(h.get_text()) for h in soup.find_all(\"h2\")]\n    h3_all = [clean_text(h.get_text()) for h in soup.find_all(\"h3\")]\n\n    # מטא\n    def msel(name=None, prop=None, attr=\"content\"):\n        if name:\n            el = soup.find(\"meta\", attrs={\"name\": name})\n        elif prop:\n            el = soup.find(\"meta\", property=prop)\n        else:\n            el = None\n        return (el.get(attr) if el and el.has_attr(attr) else \"\") or \"\"\n\n    title_tag = clean_text(soup.title.string if soup.title and soup.title.string else \"\")\n    meta_desc = clean_text(msel(name=\"description\"))\n    og_title = clean_text(msel(prop=\"og:title\"))\n    og_desc = clean_text(msel(prop=\"og:description\"))\n    og_image = msel(prop=\"og:image\")\n    tw_title = clean_text(msel(name=\"twitter:title\"))\n    tw_desc  = clean_text(msel(name=\"twitter:description\"))\n    meta_keywords = clean_text(msel(name=\"keywords\"))\n    meta_robots   = clean_text(msel(name=\"robots\"))\n\n    canonical_href = \"\"\n    link_canon = soup.find(\"link\", rel=lambda v: v and \"canonical\" in [x.lower() for x in (v if isinstance(v, list) else [v])])\n    if link_canon and link_canon.has_attr(\"href\"):\n        canonical_href = link_canon[\"href\"]\n\n    html_tag = soup.find(\"html\")\n    lang_attr = (html_tag.get(\"lang\") if html_tag and html_tag.has_attr(\"lang\") else \"\") or \"\"\n\n    # טקסט גוף נקי וקצר יותר (למניעת נפחים מיותרים)\n    body_text_full = clean_text(soup.get_text(\" \", strip=True))\n    words = re.findall(r\"\\w+\", body_text_full)\n    words_count = len(words)\n    read_minutes = reading_time_minutes(words_count)\n\n    # אקסרפט קצר (לדשבורד/תצוגה)\n    excerpt = (body_text_full[:600] + \"…\") if len(body_text_full) > 600 else body_text_full\n\n    # כותרת סופית מועמדת: עדיפות H1, אח\"כ og/twitter/title\n    page_title = (\n        (h1_all[0] if h1_all else \"\") or\n        og_title or\n        tw_title or\n        title_tag\n    )\n\n    out = {\n        # בסיס\n        \"titleTag\": title_tag,\n        \"pageTitle\": page_title,\n        \"metaDescription\": meta_desc,\n        \"ogTitle\": og_title,\n        \"ogDescription\": og_desc,\n        \"ogImage\": og_image,\n        \"twitterTitle\": tw_title,\n        \"twitterDescription\": tw_desc,\n        \"canonicalHref\": canonical_href,\n        \"langAttr\": lang_attr,\n        \"metaKeywords\": meta_keywords,\n        \"metaRobots\": meta_robots,\n\n        # כותרות\n        \"h1All\": h1_all,\n        \"h2All\": h2_all,\n        \"h3All\": h3_all,\n\n        # טקסט\n        \"bodyText\": body_text_full,\n        \"excerpt\": excerpt,\n\n        # מדדים\n        \"wordCount\": words_count,\n        \"readingTimeMinutes\": read_minutes,\n    }\n\n    out_items.append({\"json\": out})\n\nreturn out_items\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        96,
+        576
+      ],
+      "id": "a7726d65-588b-429c-87c7-a221e8237168",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "numberInputs": 3,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        320,
+        560
+      ],
+      "id": "ea02268a-8158-41a1-941b-b471b6f40da8",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "08385448-f1fe-4388-931c-1e6f2f0dc2da",
+              "name": "mainUrl",
+              "value": "={{ $json.url }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        96,
+        384
+      ],
+      "id": "c4d8939b-ef80-4117-b740-5bce1f4016bc",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "# Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor item in _input.all():\n  item.json.myNewField = 1\nreturn _input.all()"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        96,
+        768
+      ],
+      "id": "7b3d77e8-66c9-4d15-8f3a-893e02b63c6d",
+      "name": "Code4"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "# Wrap all extracted page info into {url, data}\nout = []\nfor it in items:\n    j = it.get(\"json\", {}) or {}\n\n    # ה־mainUrl הוא הכתובת של הדף שחפרנו עליו\n    u = j.get(\"mainUrl\") or j.get(\"url\") or \"\"\n\n    # נזרוק את ה-mainUrl מתוך data כדי לא לשכפל\n    data_copy = {k: v for k, v in j.items() if k not in {\"mainUrl\", \"url\"}}\n\n    out.append({\n        \"json\": {\n            \"url\": u,\n            \"data\": data_copy\n        }\n    })\n\nreturn out\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        544,
+        576
+      ],
+      "id": "9b0a2f9f-6639-431b-ae6c-718b586aedce",
+      "name": "Code5"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1024,
+        -128
+      ],
+      "id": "d5c873fa-c336-4b69-b9cc-589d458fb3d7",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "inputSource": "jsonExample",
+        "jsonExample": "{\n  \"url\": \"{string}\"\n}"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1024,
+        576
+      ],
+      "id": "02f42cce-6753-4bc2-b419-7e304d55a4af",
+      "name": "ScrapePage"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "FWZ8IeKndUD1ws8M",
+          "mode": "list",
+          "cachedResultName": "Scrape Page"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "url": "https://www.n12.co.il/"
+          },
+          "matchingColumns": [
+            "url"
+          ],
+          "schema": [
+            {
+              "id": "url",
+              "displayName": "url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        -800,
+        -224
+      ],
+      "id": "d6a2b8f6-6200-453d-bfdb-d26d6fa45951",
+      "name": "Execute Workflow"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8e492899-002d-4339-b197-4d9325bc01d6",
+              "name": "url",
+              "value": "=https://www.n12.co.il/",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -800,
+        -32
+      ],
+      "id": "50da90ee-3840-4c46-9f75-5f2933698376",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "operation": "extractHtml"
+      },
+      "type": "n8n-nodes-crawl-and-scrape.crawleeNode",
+      "typeVersion": 1,
+      "position": [
+        -576,
+        -224
+      ],
+      "id": "7833066d-383e-4c97-86bf-9d196a4dbf97",
+      "name": "Html"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}"
+      },
+      "type": "n8n-nodes-crawl-and-scrape.crawleeNode",
+      "typeVersion": 1,
+      "position": [
+        -576,
+        -32
+      ],
+      "id": "3a35a480-a6e4-4d92-b2b4-97b7947f7aac",
+      "name": "Links"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "operation": "extractText"
+      },
+      "type": "n8n-nodes-crawl-and-scrape.crawleeNode",
+      "typeVersion": 1,
+      "position": [
+        -576,
+        160
+      ],
+      "id": "bfa60e3d-1471-420c-98f1-c00fc116a063",
+      "name": "Text"
+    },
+    {
+      "parameters": {
+        "content": "[\n  {\n    \"url\": \"https://www.example.com/\",\n    \"data\": {\n      \"titleTag\": \"Example Page Title | Site Name\",\n      \"pageTitle\": \"Example Page Title | Site Name\",\n      \"metaDescription\": \"A short description of the page's content, intended for search engines.\",\n      \"ogTitle\": \"Example Page Title | Site Name\",\n      \"ogDescription\": \"A short description of the page's content, intended for social media sharing.\",\n      \"ogImage\": \"https://www.example.com/images/social-share-image.jpg\",\n      \"twitterTitle\": \"\",\n      \"twitterDescription\": \"\",\n      \"canonicalHref\": \"https://www.example.com\",\n      \"langAttr\": \"\",\n      \"metaKeywords\": \"\",\n      \"metaRobots\": \"\",\n      \"h1All\": [\n        \"The Main Heading (H1) of the Page\"\n      ],\n      \"h2All\": [\n        \"First Subheading (H2)\",\n        \"Second Subheading (H2)\"\n      ],\n      \"h3All\": [],\n      \"excerpt\": \"This is the beginning of the article, introducing the main topics that will be discussed in the text...\",\n      \"wordCount\": 350,\n      \"readingTimeMinutes\": 2,\n      \"links\": [\n        {\n          \"href\": \"/news/internal-article\",\n          \"text\": \"Example Internal Link\",\n          \"type\": \"internal\",\n          \"host\": \"\",\n          \"path\": \"/news/internal-article\"\n        },\n        {\n          \"href\": \"https://www.external-site.com/\",\n          \"text\": \"Example External Link\",\n          \"type\": \"external\",\n          \"host\": \"www.external-site.com\",\n          \"path\": \"/\"\n        }\n      ]\n    }\n  }\n]",
+        "height": 1184,
+        "width": 736
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -336,
+        -256
+      ],
+      "typeVersion": 1,
+      "id": "66688687-ed26-4a41-830c-733233f92020",
+      "name": "Sticky Note"
+    }
+  ],
+  "connections": {
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "HTML Extract – Links",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML Extract – Links": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Code4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code4": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Code5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ScrapePage": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Execute Workflow",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Html",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Links",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Links": {
+      "main": [
+        []
+      ]
+    },
+    "Html": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "6d610bfd-9942-424b-9dfe-552f243f4038",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2025-08-21T20:26:19.542Z",
+      "createdAt": "2025-08-21T20:26:19.542Z",
+      "role": "workflow:owner",
+      "workflowId": "FWZ8IeKndUD1ws8M",
+      "projectId": "0zP1zvCUNJRhmJuK"
+    }
+  ],
+  "tags": []
+}
