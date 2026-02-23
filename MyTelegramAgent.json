@@ -1,0 +1,1075 @@
+{
+  "updatedAt": "2025-08-21T18:43:31.000Z",
+  "createdAt": "2025-08-18T06:16:39.567Z",
+  "id": "cdxIZshX1f6iGygS",
+  "name": "MyTelegramAgent",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -320,
+        352
+      ],
+      "id": "5a559fd1-29a1-4953-bb2f-d6e237d646b3",
+      "name": "Telegram Trigger",
+      "webhookId": "d114da54-e594-4a7c-a761-5c33b3afebb7",
+      "credentials": {
+        "telegramApi": {
+          "id": "HpzirYeF6mhKsgbi",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.text }}",
+        "options": {
+          "systemMessage": "אתה סוכן חכם שמחובר לטלגרם \nקיבלת הודעה מהמשתמש הזה :\nid:  {{ $json.message.from.id }}\nuser name: {{ $json.message.from.username }}\n\nבחדר צאט הזה:\nid:{{ $json.message.chat.id }}\ntype:{{ $json.message.chat.type }}\n",
+          "maxIterations": 20
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.1,
+      "position": [
+        576,
+        352
+      ],
+      "id": "fed13260-54ba-4c70-b3b8-397c5cd9ce17",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-5-nano",
+          "mode": "list",
+          "cachedResultName": "gpt-5-nano"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        352,
+        576
+      ],
+      "id": "fbc2ef07-5141-4bc3-9082-3292e6140f16",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "3cccdT1hyMrXCzp5",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Telegram Trigger').item.json.message.chat.id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        480,
+        576
+      ],
+      "id": "d4699bcc-d13a-493a-af8b-71681973c4bf",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1264,
+        352
+      ],
+      "id": "dc571d09-7d7e-4c90-a0fa-79364cefb1d0",
+      "name": "Send a text message",
+      "webhookId": "2b4a73dc-15b2-4c14-bfe2-54ed5f87fa75",
+      "credentials": {
+        "telegramApi": {
+          "id": "HpzirYeF6mhKsgbi",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "text": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Text', ``, 'string') }}",
+        "translateTo": "he"
+      },
+      "type": "n8n-nodes-base.googleTranslateTool",
+      "typeVersion": 2,
+      "position": [
+        608,
+        576
+      ],
+      "id": "cc51b509-a24a-4e59-8511-72b9cbf6b067",
+      "name": "Translate a language in Google Translate",
+      "credentials": {
+        "googleTranslateOAuth2Api": {
+          "id": "BgBnUYsXu3gXARuA",
+          "name": "Google Translate account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "4a756ac1-e62b-4b0d-b7e0-fe62b23f9617",
+              "leftValue": "={{ $json.message.from.id.toString() }}",
+              "rightValue": "530815619",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -96,
+        352
+      ],
+      "id": "5b7046f3-3ca4-4fdd-8760-a801bbc86d05",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "endpointUrl": "https://n8n.srv910049.hstgr.cloud/mcp/79b0a5f9-2356-4641-b88b-211ef84398e9",
+        "serverTransport": "httpStreamable"
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+      "typeVersion": 1.1,
+      "position": [
+        736,
+        576
+      ],
+      "id": "ee42a8bd-8bfd-48e2-bff6-1e9ece6affe8",
+      "name": "McpCalendar"
+    },
+    {
+      "parameters": {
+        "endpointUrl": "https://n8n.srv910049.hstgr.cloud/mcp/10e193c8-ec50-4c58-818e-3a8eb21af142",
+        "serverTransport": "httpStreamable"
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+      "typeVersion": 1.1,
+      "position": [
+        864,
+        576
+      ],
+      "id": "e56bffbf-fdf8-4ec8-a5b7-5e4b24a922bc",
+      "name": "McpGoogleTasks"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "Sorry i'm not active for you ",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        128,
+        496
+      ],
+      "id": "e537cdf6-c070-4a39-92c0-6791d29063cb",
+      "name": "not active",
+      "webhookId": "2b4a73dc-15b2-4c14-bfe2-54ed5f87fa75",
+      "credentials": {
+        "telegramApi": {
+          "id": "HpzirYeF6mhKsgbi",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "deleteMessage",
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "messageId": "={{ $json.id_to_remove }}"
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -320,
+        -176
+      ],
+      "id": "b12399a4-bf12-497f-94c5-04c9030d2a3f",
+      "name": "Delete a chat message",
+      "webhookId": "5ed4e962-2c0d-49bd-bb4e-bdebb988f646",
+      "credentials": {
+        "telegramApi": {
+          "id": "HpzirYeF6mhKsgbi",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "=על זה, המתן ",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        128,
+        48
+      ],
+      "id": "1a91502a-1c14-4251-a249-641391948710",
+      "name": "Send on it message",
+      "webhookId": "2b4a73dc-15b2-4c14-bfe2-54ed5f87fa75",
+      "credentials": {
+        "telegramApi": {
+          "id": "HpzirYeF6mhKsgbi",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1200,
+        32
+      ],
+      "id": "7796add2-2941-4f56-bcfa-fb2edf5ae175",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "79b8948b-b840-46fa-94e0-1c5419c05d18",
+              "name": "id_to_remove",
+              "value": "={{ $json.result.message_id }}",
+              "type": "string"
+            },
+            {
+              "id": "c35ef44f-381b-486b-9166-7987ecc70531",
+              "name": "chat_id",
+              "value": "=",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        672,
+        48
+      ],
+      "id": "e12b26ea-9e36-4c10-9db9-691827889274",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "endpointUrl": "https://n8n.srv910049.hstgr.cloud/mcp/790f792d-caf9-49ad-9a37-75c5c7d39222",
+        "serverTransport": "httpStreamable"
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+      "typeVersion": 1.1,
+      "position": [
+        1072,
+        928
+      ],
+      "id": "bf240de5-7b51-4ba4-8627-331e083cf34b",
+      "name": "MCP Client"
+    },
+    {
+      "parameters": {
+        "text": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Prompt__User_Message_', ``, 'string') }}",
+        "options": {
+          "systemMessage": "אתה מנהל כלי mcp \nבמידה והוא החזיר שגיאה 429 זה אומר של \n\n\nThe Firecrawl API has a rate limit to ensure the stability and reliability of the service. The rate limit is applied to all endpoints and is based on the number of requests made within a specific time frame.\nWhen you exceed the rate limit, you will receive a 429 response code."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agentTool",
+      "typeVersion": 2.2,
+      "position": [
+        880,
+        704
+      ],
+      "id": "cbf195d6-8793-4eb3-b721-094b586025d7",
+      "name": "AI Agent Tool"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        752,
+        912
+      ],
+      "id": "99e03149-44ba-40f7-aab5-6291ce9b39b0",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "3cccdT1hyMrXCzp5",
+          "name": "OpenAi account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Translate a language in Google Translate": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send on it message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "not active",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "McpCalendar": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "McpGoogleTasks": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send on it message": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        []
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MCP Client": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent Tool",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent Tool",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "executionTimeout": 900,
+    "timezone": "Asia/Jerusalem"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "150d6b5f-8496-4011-a296-77a5ea4b0273",
+  "activeVersionId": "150d6b5f-8496-4011-a296-77a5ea4b0273",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2025-08-18T06:16:39.569Z",
+      "createdAt": "2025-08-18T06:16:39.569Z",
+      "role": "workflow:owner",
+      "workflowId": "cdxIZshX1f6iGygS",
+      "projectId": "0zP1zvCUNJRhmJuK"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-01-06T10:55:31.850Z",
+    "createdAt": "2026-01-06T10:55:31.850Z",
+    "versionId": "150d6b5f-8496-4011-a296-77a5ea4b0273",
+    "workflowId": "cdxIZshX1f6iGygS",
+    "nodes": [
+      {
+        "parameters": {
+          "updates": [
+            "message"
+          ],
+          "additionalFields": {}
+        },
+        "type": "n8n-nodes-base.telegramTrigger",
+        "typeVersion": 1.2,
+        "position": [
+          -320,
+          352
+        ],
+        "id": "5a559fd1-29a1-4953-bb2f-d6e237d646b3",
+        "name": "Telegram Trigger",
+        "webhookId": "d114da54-e594-4a7c-a761-5c33b3afebb7",
+        "credentials": {
+          "telegramApi": {
+            "id": "HpzirYeF6mhKsgbi",
+            "name": "Telegram account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "={{ $json.message.text }}",
+          "options": {
+            "systemMessage": "אתה סוכן חכם שמחובר לטלגרם \nקיבלת הודעה מהמשתמש הזה :\nid:  {{ $json.message.from.id }}\nuser name: {{ $json.message.from.username }}\n\nבחדר צאט הזה:\nid:{{ $json.message.chat.id }}\ntype:{{ $json.message.chat.type }}\n",
+            "maxIterations": 20
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 2.1,
+        "position": [
+          576,
+          352
+        ],
+        "id": "fed13260-54ba-4c70-b3b8-397c5cd9ce17",
+        "name": "AI Agent"
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "gpt-5-nano",
+            "mode": "list",
+            "cachedResultName": "gpt-5-nano"
+          },
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.2,
+        "position": [
+          352,
+          576
+        ],
+        "id": "fbc2ef07-5141-4bc3-9082-3292e6140f16",
+        "name": "OpenAI Chat Model",
+        "credentials": {
+          "openAiApi": {
+            "id": "3cccdT1hyMrXCzp5",
+            "name": "OpenAi account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "sessionIdType": "customKey",
+          "sessionKey": "={{ $('Telegram Trigger').item.json.message.chat.id }}"
+        },
+        "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+        "typeVersion": 1.3,
+        "position": [
+          480,
+          576
+        ],
+        "id": "d4699bcc-d13a-493a-af8b-71681973c4bf",
+        "name": "Simple Memory"
+      },
+      {
+        "parameters": {
+          "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+          "text": "={{ $json.output }}",
+          "additionalFields": {}
+        },
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          1264,
+          352
+        ],
+        "id": "dc571d09-7d7e-4c90-a0fa-79364cefb1d0",
+        "name": "Send a text message",
+        "webhookId": "2b4a73dc-15b2-4c14-bfe2-54ed5f87fa75",
+        "credentials": {
+          "telegramApi": {
+            "id": "HpzirYeF6mhKsgbi",
+            "name": "Telegram account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "text": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Text', ``, 'string') }}",
+          "translateTo": "he"
+        },
+        "type": "n8n-nodes-base.googleTranslateTool",
+        "typeVersion": 2,
+        "position": [
+          608,
+          576
+        ],
+        "id": "cc51b509-a24a-4e59-8511-72b9cbf6b067",
+        "name": "Translate a language in Google Translate",
+        "credentials": {
+          "googleTranslateOAuth2Api": {
+            "id": "BgBnUYsXu3gXARuA",
+            "name": "Google Translate account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "4a756ac1-e62b-4b0d-b7e0-fe62b23f9617",
+                "leftValue": "={{ $json.message.from.id.toString() }}",
+                "rightValue": "530815619",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -96,
+          352
+        ],
+        "id": "5b7046f3-3ca4-4fdd-8760-a801bbc86d05",
+        "name": "If"
+      },
+      {
+        "parameters": {
+          "endpointUrl": "https://n8n.srv910049.hstgr.cloud/mcp/79b0a5f9-2356-4641-b88b-211ef84398e9",
+          "serverTransport": "httpStreamable"
+        },
+        "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+        "typeVersion": 1.1,
+        "position": [
+          736,
+          576
+        ],
+        "id": "ee42a8bd-8bfd-48e2-bff6-1e9ece6affe8",
+        "name": "McpCalendar"
+      },
+      {
+        "parameters": {
+          "endpointUrl": "https://n8n.srv910049.hstgr.cloud/mcp/10e193c8-ec50-4c58-818e-3a8eb21af142",
+          "serverTransport": "httpStreamable"
+        },
+        "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+        "typeVersion": 1.1,
+        "position": [
+          864,
+          576
+        ],
+        "id": "e56bffbf-fdf8-4ec8-a5b7-5e4b24a922bc",
+        "name": "McpGoogleTasks"
+      },
+      {
+        "parameters": {
+          "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+          "text": "Sorry i'm not active for you ",
+          "additionalFields": {}
+        },
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          128,
+          496
+        ],
+        "id": "e537cdf6-c070-4a39-92c0-6791d29063cb",
+        "name": "not active",
+        "webhookId": "2b4a73dc-15b2-4c14-bfe2-54ed5f87fa75",
+        "credentials": {
+          "telegramApi": {
+            "id": "HpzirYeF6mhKsgbi",
+            "name": "Telegram account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "deleteMessage",
+          "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+          "messageId": "={{ $json.id_to_remove }}"
+        },
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          -320,
+          -176
+        ],
+        "id": "b12399a4-bf12-497f-94c5-04c9030d2a3f",
+        "name": "Delete a chat message",
+        "webhookId": "5ed4e962-2c0d-49bd-bb4e-bdebb988f646",
+        "credentials": {
+          "telegramApi": {
+            "id": "HpzirYeF6mhKsgbi",
+            "name": "Telegram account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+          "text": "=על זה, המתן ",
+          "additionalFields": {}
+        },
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          128,
+          48
+        ],
+        "id": "1a91502a-1c14-4251-a249-641391948710",
+        "name": "Send on it message",
+        "webhookId": "2b4a73dc-15b2-4c14-bfe2-54ed5f87fa75",
+        "credentials": {
+          "telegramApi": {
+            "id": "HpzirYeF6mhKsgbi",
+            "name": "Telegram account"
+          }
+        }
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3.2,
+        "position": [
+          1200,
+          32
+        ],
+        "id": "7796add2-2941-4f56-bcfa-fb2edf5ae175",
+        "name": "Merge"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "79b8948b-b840-46fa-94e0-1c5419c05d18",
+                "name": "id_to_remove",
+                "value": "={{ $json.result.message_id }}",
+                "type": "string"
+              },
+              {
+                "id": "c35ef44f-381b-486b-9166-7987ecc70531",
+                "name": "chat_id",
+                "value": "=",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          672,
+          48
+        ],
+        "id": "e12b26ea-9e36-4c10-9db9-691827889274",
+        "name": "Edit Fields"
+      },
+      {
+        "parameters": {
+          "endpointUrl": "https://n8n.srv910049.hstgr.cloud/mcp/790f792d-caf9-49ad-9a37-75c5c7d39222",
+          "serverTransport": "httpStreamable"
+        },
+        "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+        "typeVersion": 1.1,
+        "position": [
+          1072,
+          928
+        ],
+        "id": "bf240de5-7b51-4ba4-8627-331e083cf34b",
+        "name": "MCP Client"
+      },
+      {
+        "parameters": {
+          "text": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Prompt__User_Message_', ``, 'string') }}",
+          "options": {
+            "systemMessage": "אתה מנהל כלי mcp \nבמידה והוא החזיר שגיאה 429 זה אומר של \n\n\nThe Firecrawl API has a rate limit to ensure the stability and reliability of the service. The rate limit is applied to all endpoints and is based on the number of requests made within a specific time frame.\nWhen you exceed the rate limit, you will receive a 429 response code."
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.agentTool",
+        "typeVersion": 2.2,
+        "position": [
+          880,
+          704
+        ],
+        "id": "cbf195d6-8793-4eb3-b721-094b586025d7",
+        "name": "AI Agent Tool"
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "mode": "list",
+            "value": "gpt-4.1-mini"
+          },
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.2,
+        "position": [
+          752,
+          912
+        ],
+        "id": "99e03149-44ba-40f7-aab5-6291ce9b39b0",
+        "name": "OpenAI Chat Model1",
+        "credentials": {
+          "openAiApi": {
+            "id": "3cccdT1hyMrXCzp5",
+            "name": "OpenAi account"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Telegram Trigger": {
+        "main": [
+          [
+            {
+              "node": "If",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Simple Memory": {
+        "ai_memory": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_memory",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "AI Agent": {
+        "main": [
+          [
+            {
+              "node": "Send a text message",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "Translate a language in Google Translate": {
+        "ai_tool": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If": {
+        "main": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Send on it message",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "not active",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "McpCalendar": {
+        "ai_tool": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "McpGoogleTasks": {
+        "ai_tool": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Send on it message": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Merge": {
+        "main": [
+          []
+        ]
+      },
+      "Edit Fields": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "MCP Client": {
+        "ai_tool": [
+          [
+            {
+              "node": "AI Agent Tool",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "AI Agent Tool": {
+        "ai_tool": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model1": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "AI Agent Tool",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "system migration",
+    "name": null,
+    "description": null,
+    "autosaved": false
+  },
+  "tags": [
+    {
+      "updatedAt": "2025-08-19T11:08:12.824Z",
+      "createdAt": "2025-08-19T11:08:12.824Z",
+      "id": "nkgFrWkPgjIaiD09",
+      "name": "AiAgent"
+    }
+  ]
+}
