@@ -1,0 +1,2123 @@
+{
+  "updatedAt": "2026-02-10T12:12:23.000Z",
+  "createdAt": "2025-08-05T06:41:54.872Z",
+  "id": "JOS83af9GvfuQJ2F",
+  "name": "botTechNewsIL",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=The daily image from NASA\nwill make the following content accessible to our audience of followers.\nThis is a Telegram channel, in addition to the message you are writing, an image will be attached, the description of which is also attached, if necessary, you can add a touch or some scientific mention\nThe text should be in escapeMarkdownV2 format that is compatible with Telegram\nIt should be short and to the point up to 4 sentences, no more\n\nImage caption from NASA website\n{{ $('Get the astronomy picture of the day').item.json.title }}\n\nImage description from NASA website\n{{ $('Get the astronomy picture of the day').item.json.explanation }}\n\n\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.1,
+      "position": [
+        304,
+        2064
+      ],
+      "id": "9b4cd467-9cfa-40b6-a668-c3656a0b4b81",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 12
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -720,
+        2080
+      ],
+      "id": "985c4fe7-b355-4417-b135-429048e3f519",
+      "name": "Schedule Trigger2"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-5-nano",
+          "mode": "list",
+          "cachedResultName": "gpt-5-nano"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        176,
+        2288
+      ],
+      "id": "f9fc4960-e432-4e22-9c76-c82083a503b5",
+      "name": "OpenAI Chat Model4",
+      "credentials": {
+        "openAiApi": {
+          "id": "3cccdT1hyMrXCzp5",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolWikipedia",
+      "typeVersion": 1,
+      "position": [
+        304,
+        2288
+      ],
+      "id": "94934724-c699-4705-8b67-fb42d7dd5ea4",
+      "name": "Wikipedia1"
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "imageUrls": "={{$node[\"Get the astronomy picture of the day\"].json[\"url\"]}}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        -272,
+        1984
+      ],
+      "id": "b7e18ab2-e02f-4f41-ace7-3ebdffb95af8",
+      "name": "Analyze image",
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 2,
+      "credentials": {
+        "openAiApi": {
+          "id": "3cccdT1hyMrXCzp5",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -48,
+        2064
+      ],
+      "id": "c486f740-30ea-42d2-8792-45cd1e362ad7",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dateTimeTool",
+      "typeVersion": 2,
+      "position": [
+        432,
+        2288
+      ],
+      "id": "7675f07a-657c-4c1f-a7aa-b42eeba1db9c",
+      "name": "Date & Time"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolSerpApi",
+      "typeVersion": 1,
+      "position": [
+        560,
+        2288
+      ],
+      "id": "c97b30ac-eddb-481a-876d-fe0e773593b5",
+      "name": "SerpAPI",
+      "credentials": {
+        "serpApi": {
+          "id": "cECarDbKzV3VuLZK",
+          "name": "SerpAPI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "additionalFields": {}
+      },
+      "name": "Get the astronomy picture of the day",
+      "type": "n8n-nodes-base.nasa",
+      "position": [
+        -496,
+        2080
+      ],
+      "typeVersion": 1,
+      "id": "9f4d0e03-81d7-4dca-b84c-feb673cffd18",
+      "credentials": {
+        "nasaApi": {
+          "id": "3FZUZ0nR0mRWC0wt",
+          "name": "NASA account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Translate the following message into Hebrew. The output needs to be in escapeMarkdownV2 format, this goes to a Telegram message.\nIt's okay to leave scientific terms and names in English if you can't find a proper translation for them.\ninput::\n{{ $json.output }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.1,
+      "position": [
+        768,
+        2064
+      ],
+      "id": "9dc72f89-6422-4e57-971f-b1863c4e29fa",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-5-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-5-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        784,
+        2288
+      ],
+      "id": "4b1afbba-4087-42b4-a86f-e32feaebf658",
+      "name": "OpenAI Chat Model5",
+      "credentials": {
+        "openAiApi": {
+          "id": "3cccdT1hyMrXCzp5",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "text": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Text', ``, 'string') }}",
+        "translateTo": "he"
+      },
+      "type": "n8n-nodes-base.googleTranslateTool",
+      "typeVersion": 2,
+      "position": [
+        912,
+        2288
+      ],
+      "id": "dc6d93a5-2b1e-483c-a617-1b072e8438de",
+      "name": "Translate a language in Google Translate2",
+      "credentials": {
+        "googleTranslateOAuth2Api": {
+          "id": "BgBnUYsXu3gXARuA",
+          "name": "Google Translate account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "530815619",
+        "file": "={{$node[\"Get the astronomy picture of the day\"].json[\"url\"]}}\n",
+        "additionalFields": {
+          "caption": "=תמונת האסטרונומיה היומית:\n{{ $json.output }}",
+          "parse_mode": "MarkdownV2"
+        }
+      },
+      "name": "Send David",
+      "type": "n8n-nodes-base.telegram",
+      "position": [
+        1120,
+        2160
+      ],
+      "typeVersion": 1,
+      "id": "634819b2-dd12-4d4d-8bdb-0dba151c082f",
+      "webhookId": "12f61ded-03fe-4321-abc8-9b7f6839e38b",
+      "credentials": {
+        "telegramApi": {
+          "id": "HpzirYeF6mhKsgbi",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "@botTechNewsIL",
+        "file": "={{$node[\"Get the astronomy picture of the day\"].json[\"url\"]}}\n",
+        "additionalFields": {
+          "caption": "=תמונת האסטרונומיה היומית:\n{{ $json.output }}",
+          "parse_mode": "MarkdownV2"
+        }
+      },
+      "name": "Send botTechNewsIL",
+      "type": "n8n-nodes-base.telegram",
+      "position": [
+        1120,
+        1968
+      ],
+      "typeVersion": 1,
+      "id": "1b219e62-f48b-48a3-85d4-1303c25bde83",
+      "webhookId": "12f61ded-03fe-4321-abc8-9b7f6839e38b",
+      "credentials": {
+        "telegramApi": {
+          "id": "HpzirYeF6mhKsgbi",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"articles\": [\n    {\n      \"title\": \"title\",\n      \"link\": \"https://example.org\",\n      \"pubDate\": \"Wed, 06 Aug 2025 18:18:10 +0000\",\n      \"content\": \"content\",\n      \"timestamp\": 1691364000000\n    },\n    {\n      \"title\": \"title\",\n      \"link\": \"https://example.org\",\n      \"pubDate\": \"Wed, 06 Aug 2025 18:18:10 +0000\",\n      \"content\": \"content\",\n      \"timestamp\": 1691364000000\n    }\n  ]\n}\n",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        1504,
+        336
+      ],
+      "id": "194c143d-b2d1-4c9e-9df2-7c614053a607",
+      "name": "Structured Output Parser2"
+    },
+    {
+      "parameters": {
+        "jsCode": "const articles = $json.output.articleLists;\nreturn articles.map(article => ({\n  json: article,\n}));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2880,
+        -80
+      ],
+      "id": "cac4cd16-dac6-472c-8865-7866db668612",
+      "name": "Code2"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Force RTL with Unicode marks\nconst RLM = '\\u200F';\nconst RLE = '\\u202B';\nconst PDF = '\\u202C';\n\nconst tz = 'Asia/Jerusalem';\n\nconst now = new Date();\nconst datePart = now.toLocaleDateString('he-IL', {\n  timeZone: tz,\n  weekday: 'long',\n  day: '2-digit',\n  month: '2-digit',\n  year: 'numeric',\n});\nconst timePart = now.toLocaleTimeString('he-IL', {\n  timeZone: tz,\n  hour: '2-digit',\n  minute: '2-digit',\n});\n\n// Start RTL block: flag on its own line, then date, then time\nlet message = RLE\n  + `🇮🇱\\n`\n  + `${datePart}\\n`\n  + `שעה: ${timePart}\\n\\n`;\n\n$input.all().forEach(item => {\n  const a = item.json;\n  message += RLM + `<b>${a.index}. ${a.title}</b>\\n`;\n  message += RLM + `${a.content}\\n`;\n  message += RLM + `<a href=\"${a.link}\">לכתבה המלאה</a>\\n\\n`;\n});\n\nmessage += PDF;\n\nreturn [{ json: { message } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3104,
+        -80
+      ],
+      "id": "3d1581b5-33e1-4aca-aba2-1b90eb33a49a",
+      "name": "Code3"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dateTimeTool",
+      "typeVersion": 2,
+      "position": [
+        2256,
+        144
+      ],
+      "id": "41519ff0-198a-4e2b-a687-fe9b7df84ce2",
+      "name": "Date & Time2"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"articleLists\": [\n    {\n      \"index\": 1,\n      \"title\": \"{String}\",\n      \"content\": \"{String}\",\n      \"link\": \"{Stinrg}\"\n    },\n     {\n      \"index\": 1,\n      \"title\": \"{String}\",\n      \"content\": \"{String}\",\n      \"link\": \"{Stinrg}\"\n    },\n     {\n      \"index\": 1,\n      \"title\": \"{String}\",\n      \"content\": \"{String}\",\n      \"link\": \"{Stinrg}\"\n    }\n  ]\n}\n",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        2512,
+        144
+      ],
+      "id": "07f74ca6-8d18-4a3c-9729-c6e2ab372fe8",
+      "name": "Structured Output Parser3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3f5dc168-156a-4786-93f5-0a0a8bff76a0",
+              "name": "title",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "6ad07714-9a59-44de-9a32-575b2c7b914c",
+              "name": "link",
+              "value": "={{ $json.link }}",
+              "type": "string"
+            },
+            {
+              "id": "12d62329-af2b-4698-a040-a3e00a48d5f0",
+              "name": "pubDate",
+              "value": "={{ $json.pubDate }}",
+              "type": "string"
+            },
+            {
+              "id": "faad2a1b-8a34-4d54-9c76-4bb751787bd8",
+              "name": "content",
+              "value": "={{ $json.content }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -160,
+        -560
+      ],
+      "id": "1b6099fd-69aa-42d8-8f69-2f1ffd7fc8ae",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3f5dc168-156a-4786-93f5-0a0a8bff76a0",
+              "name": "title",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "6ad07714-9a59-44de-9a32-575b2c7b914c",
+              "name": "link",
+              "value": "={{ $json.link }}",
+              "type": "string"
+            },
+            {
+              "id": "12d62329-af2b-4698-a040-a3e00a48d5f0",
+              "name": "pubDate",
+              "value": "={{ $json.pubDate }}",
+              "type": "string"
+            },
+            {
+              "id": "faad2a1b-8a34-4d54-9c76-4bb751787bd8",
+              "name": "content",
+              "value": "={{ $json.content }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -160,
+        -368
+      ],
+      "id": "106cfc44-e5ba-4fb7-ae98-f81c23ac7579",
+      "name": "Edit Fields17"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3f5dc168-156a-4786-93f5-0a0a8bff76a0",
+              "name": "title",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "6ad07714-9a59-44de-9a32-575b2c7b914c",
+              "name": "link",
+              "value": "={{ $json.link }}",
+              "type": "string"
+            },
+            {
+              "id": "12d62329-af2b-4698-a040-a3e00a48d5f0",
+              "name": "pubDate",
+              "value": "={{ $json.pubDate }}",
+              "type": "string"
+            },
+            {
+              "id": "faad2a1b-8a34-4d54-9c76-4bb751787bd8",
+              "name": "content",
+              "value": "=\n{{ $json.title }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -160,
+        16
+      ],
+      "id": "0bbb9e86-17ad-40ac-a575-ddf5662a1b89",
+      "name": "Edit Fields18"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 11
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -608,
+        -80
+      ],
+      "id": "1dd93271-7c96-45c6-b91e-4efe4050032f",
+      "name": "Schedule Trigger1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3f5dc168-156a-4786-93f5-0a0a8bff76a0",
+              "name": "title",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "6ad07714-9a59-44de-9a32-575b2c7b914c",
+              "name": "link",
+              "value": "={{ $json.link }}",
+              "type": "string"
+            },
+            {
+              "id": "12d62329-af2b-4698-a040-a3e00a48d5f0",
+              "name": "pubDate",
+              "value": "={{ $json.pubDate }}",
+              "type": "string"
+            },
+            {
+              "id": "faad2a1b-8a34-4d54-9c76-4bb751787bd8",
+              "name": "content",
+              "value": "=\n{{ $json.title }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -160,
+        208
+      ],
+      "id": "0c3e4899-6c7b-4d93-9f10-8f37bd4c3582",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3f5dc168-156a-4786-93f5-0a0a8bff76a0",
+              "name": "title",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "6ad07714-9a59-44de-9a32-575b2c7b914c",
+              "name": "link",
+              "value": "={{ $json.link }}",
+              "type": "string"
+            },
+            {
+              "id": "12d62329-af2b-4698-a040-a3e00a48d5f0",
+              "name": "pubDate",
+              "value": "={{ $json.pubDate }}",
+              "type": "string"
+            },
+            {
+              "id": "faad2a1b-8a34-4d54-9c76-4bb751787bd8",
+              "name": "content",
+              "value": "=\n{{ $json.title }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -160,
+        400
+      ],
+      "id": "ac4dd5e5-3c13-4749-bdf0-4d0733548fd0",
+      "name": "Edit Fields5"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3f5dc168-156a-4786-93f5-0a0a8bff76a0",
+              "name": "title",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "6ad07714-9a59-44de-9a32-575b2c7b914c",
+              "name": "link",
+              "value": "={{ $json.link }}",
+              "type": "string"
+            },
+            {
+              "id": "12d62329-af2b-4698-a040-a3e00a48d5f0",
+              "name": "pubDate",
+              "value": "={{ $json.pubDate }}",
+              "type": "string"
+            },
+            {
+              "id": "faad2a1b-8a34-4d54-9c76-4bb751787bd8",
+              "name": "content",
+              "value": "={{ $json.content }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -160,
+        -176
+      ],
+      "id": "26bd65b5-c285-436a-b7f7-63ff509ef43c",
+      "name": "Edit Fields19"
+    },
+    {
+      "parameters": {
+        "numberInputs": 6
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        64,
+        -144
+      ],
+      "id": "5c6a6a3a-203e-4f7b-b9c0-43d393d0fa5c",
+      "name": "Merge3"
+    },
+    {
+      "parameters": {
+        "content": "# Sort by timestamp and take only the 50 last news items. ",
+        "height": 352,
+        "width": 1376,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        208,
+        -272
+      ],
+      "typeVersion": 1,
+      "id": "5a59e34e-33d0-4f25-801c-7cc0795a42f3",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "url": "https://www.wired.com/feed/rss",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        -384,
+        400
+      ],
+      "id": "e0bcb167-7188-4baa-a1e0-45e72d7cc9f6",
+      "name": "wired",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "url": "https://www.phonearena.com/feed/news",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        -384,
+        208
+      ],
+      "id": "e1b2e1b4-a394-47a4-bc76-c4316ebf472d",
+      "name": "Phone Arena",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "url": "https://technologyreview.com/feed/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        -384,
+        16
+      ],
+      "id": "bd5651c2-a1ed-4fe0-9f93-4115adda75b4",
+      "name": "Technology Review",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "url": "https://www.engadget.com/rss.xml",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        -384,
+        -176
+      ],
+      "id": "52fd8573-09e2-4a0d-a80c-90565713afc1",
+      "name": "engadget",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "url": "https://www.cnet.com/rss/news",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        -384,
+        -368
+      ],
+      "id": "4eebcd3a-f8aa-463f-8c7a-d5c7364d785c",
+      "name": "cnet",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "url": "https://techcrunch.com/feed/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        -384,
+        -560
+      ],
+      "id": "969fe285-53de-48a1-a4ae-8efbe380f986",
+      "name": "Techcrunch",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "content": "# RSS tech feeds",
+        "height": 1424,
+        "width": 848
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -768,
+        -864
+      ],
+      "typeVersion": 1,
+      "id": "0bf82aa8-14ef-402d-b85b-548565310c99",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  const pubDate = item.json.pubDate;\n  let timestamp = null;\n\n  try {\n    timestamp = new Date(pubDate).getTime();\n  } catch (e) {\n    timestamp = null; \n  }\n\n  return {\n    json: {\n      ...item.json,\n      timestamp \n    }\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        512,
+        -80
+      ],
+      "id": "04c3f6e8-8262-43d9-bd5c-ae1491588ebd",
+      "name": "Add timestamp1"
+    },
+    {
+      "parameters": {
+        "content": "# Pick 20 top articles",
+        "height": 816,
+        "width": 528,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1520,
+        -320
+      ],
+      "typeVersion": 1,
+      "id": "fd3e543f-4bf3-40cc-a5f6-7188cf02586d",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-5-nano",
+          "mode": "list",
+          "cachedResultName": "gpt-5-nano"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1408,
+        480
+      ],
+      "id": "7fe050f7-7017-4fb9-9646-678c6c2cbee0",
+      "name": "OpenAI Chat Model6",
+      "credentials": {
+        "openAiApi": {
+          "id": "3cccdT1hyMrXCzp5",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-5-nano",
+          "mode": "list",
+          "cachedResultName": "gpt-5-nano"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        2592,
+        352
+      ],
+      "id": "a3903f60-d6cb-4f53-9085-0cfa4945cdf1",
+      "name": "OpenAI Chat Model7",
+      "credentials": {
+        "openAiApi": {
+          "id": "3cccdT1hyMrXCzp5",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "text": "={{ $fromAI('Text', ``, 'string') }}",
+        "translateTo": "he"
+      },
+      "type": "n8n-nodes-base.googleTranslateTool",
+      "typeVersion": 2,
+      "position": [
+        2384,
+        144
+      ],
+      "id": "cf723800-dd32-4724-9c98-6d241490dc9d",
+      "name": "Translate a language in Google Translate1",
+      "credentials": {
+        "googleTranslateOAuth2Api": {
+          "id": "BgBnUYsXu3gXARuA",
+          "name": "Google Translate account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "@botTechNewsIL",
+        "text": "={{ $json.message }}",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        3328,
+        16
+      ],
+      "id": "dd3ecb89-7364-4644-a7a5-306a3caee336",
+      "name": "Send to BotTechNewsIL1",
+      "webhookId": "7cd39515-3611-411c-a119-875943e1ae44",
+      "credentials": {
+        "telegramApi": {
+          "id": "HpzirYeF6mhKsgbi",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "530815619",
+        "text": "={{ $json.message }}",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        3328,
+        -176
+      ],
+      "id": "bf51de3e-54eb-4dfa-9b74-9d36f6fe84a5",
+      "name": "Send to David1",
+      "webhookId": "7cd39515-3611-411c-a119-875943e1ae44",
+      "credentials": {
+        "telegramApi": {
+          "id": "HpzirYeF6mhKsgbi",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "# Create news techFeed",
+        "height": 896,
+        "width": 1168,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2048,
+        -320
+      ],
+      "typeVersion": 1,
+      "id": "2ff997be-3a1f-48b7-b49f-7d8bfe8d794d",
+      "name": "Sticky Note7"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-5-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-5-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        2128,
+        144
+      ],
+      "id": "8603ad88-ea0d-496f-8981-1115652e675e",
+      "name": "OpenAI Chat Model8",
+      "credentials": {
+        "openAiApi": {
+          "id": "3cccdT1hyMrXCzp5",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1-nano",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1-nano"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1632,
+        144
+      ],
+      "id": "33d3e027-2607-4fc3-ba28-cf9fe3e97abc",
+      "name": "OpenAI Chat Model9",
+      "credentials": {
+        "openAiApi": {
+          "id": "3cccdT1hyMrXCzp5",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "import re\nimport html\n\nHARD_BLOCK_PATTERNS = [\n    r\"\\breview\\b\",\n    r\"\\bhands?-on\\b\",\n    r\"\\bfirst look\\b\",\n    r\"\\bwhat I learned\\b\",\n    r\"\\btested\\b\",\n    r\"\\bguide\\b\",\n    r\"\\bhow to\\b\",\n    r\"\\btips\\b\",\n    r\"\\bbest\\b\",\n    r\"\\broundup\\b\",\n    r\"\\bbuying guide\\b\",\n    r\"\\bdeals?\\b\",\n    r\"\\bdiscount\\b\",\n    r\"\\bprice cut\\b\",\n    r\"\\bprime day\\b\",\n    r\"\\bcoupon\\b\",\n    r\"\\bstill selling at\\b\",\n    r\"\\bflying off shelves\\b\",\n    r\"\\bwordle\\b\",\n    r\"\\bconnections\\b\",\n    r\"\\bstrands\\b\",\n    r\"\\bpuzzle\\b\",\n    r\"\\bstreaming guide\\b\",\n    r\"\\bhow to watch\\b\",\n]\n\nLISTY_PATTERNS = [\n    r\"\\b\\d+\\s+(best|top|gifts|deals)\\b\",\n    r\"\\b(top|best)\\s+\\d+\\b\",\n    r\"\\b\\d+\\s+(excellent|favorite|favorites)\\b\",\n]\n\nHARD_BLOCK_REGEX = [re.compile(p, re.IGNORECASE) for p in HARD_BLOCK_PATTERNS]\nLISTY_REGEX = [re.compile(p, re.IGNORECASE) for p in LISTY_PATTERNS]\nTAG_RE = re.compile(r\"<[^>]+>\")\n\ndef clean_text(s: str) -> str:\n    if not s:\n        return \"\"\n    s = html.unescape(str(s))\n    s = TAG_RE.sub(\" \", s)\n    s = re.sub(r\"\\s+\", \" \", s).strip()\n    return s\n\ndef matches_blacklist(text: str) -> bool:\n    for rx in HARD_BLOCK_REGEX + LISTY_REGEX:\n        if rx.search(text):\n            return True\n    return False\n\noutput_items = []\n\nfor item in items:\n    data = item.get(\"json\", item)\n    title = clean_text(data.get(\"title\", \"\"))\n    content = clean_text(data.get(\"content\", \"\"))\n    text = f\"{title} {content}\"\n    if not matches_blacklist(text):\n        output_items.append({\"json\": data})\n\nreturn output_items\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        288,
+        -80
+      ],
+      "id": "858b5c56-81aa-4519-b239-2a0b5eb4e222",
+      "name": "FilterBlacklist"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get input data (list of items)\nconst items = $input.all();\n\n// Wrap the list inside an object under 'wrappedList'\nreturn [\n  {\n    json: {\n      articles: items.map(item => item.json)\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1408,
+        -80
+      ],
+      "id": "a7c2ab69-2a3b-4df4-8e7a-6f7141125ab2",
+      "name": "ToList"
+    },
+    {
+      "parameters": {
+        "maxItems": 60
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        960,
+        -80
+      ],
+      "id": "fe2709ce-5a2a-4ce5-b974-af3a21764cdb",
+      "name": "LimitByDate"
+    },
+    {
+      "parameters": {
+        "sortFieldsUi": {
+          "sortField": [
+            {
+              "fieldName": "timestamp",
+              "order": "descending"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.sort",
+      "typeVersion": 1,
+      "position": [
+        736,
+        -80
+      ],
+      "id": "cedbdb91-6e2c-4e1b-b4ec-1593a4668a09",
+      "name": "SortBeTimeStamp"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  const cleanField = (field) => {\n    if (!field) return '';\n    const noHtml = field.replace(/<[^>]*>/g, '').replace(/\\s+/g, ' ').trim();\n    return noHtml.length > 200 ? noHtml.substring(0, 200) + '...' : noHtml;\n  };\n\n  return {\n    json: {\n      ...item.json,\n      title: cleanField(item.json.title),\n      content: cleanField(item.json.content)\n    }\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1184,
+        -80
+      ],
+      "id": "5853b657-fb59-48aa-ad1b-b0e0afda8f78",
+      "name": "cleanData"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.articles.map(item => JSON.stringify(item)).join(',\\n') }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You receive a JSON object with a field named articles (an array of technology news articles).\nYour task is to select exactly 20 articles that are the most globally significant.\nIf the input has fewer than 20 articles, return all of them as-is without modification.\nYou must not modify, translate, summarize, or rewrite any data.\nDo not add, remove, or change any fields.\nDo not reorder the selected items.\nDo not change titles, links, pubDate, content, or timestamp values. Pass through selected items verbatim.\n\n1. Input structure\n   {\n   \"articles\": [\n   {\n   \"title\": \"string\",\n   \"link\": \"string\",\n   \"pubDate\": \"string\",\n   \"content\": \"string\",\n   \"timestamp\": number\n   }\n   ]\n   }\n\n2. Output format\n   {\n   \"articles\": [ ...exactly 20 selected articles... ]\n   }\n\nHard rules\n\n1. Always return exactly 20 articles when the input contains 20 or more unique items.\n2. If the input contains fewer than 20 articles, return all of them.\n3. Never return fewer than 20 items when 20 or more inputs exist.\n4. Preserve the original order of the selected items.\n5. Do not modify or rewrite any data; pass through selected items verbatim.\n6. Treat duplicate links as the same article; keep only the first instance.\n7. If duplicates cause fewer than 20 items to remain, fill the remaining slots with the next most relevant unique articles until the count reaches 20.\n\nRanking logic for “Global Significance”\n\n1. Global impact: affects worldwide technology, economics, or society (for example, AI breakthroughs, international regulations, security incidents, major mergers).\n2. Industry-scale importance: involves key global players or markets (Apple, Google, Microsoft, Nvidia, OpenAI, Amazon, Meta, etc.).\n3. Innovation: introduces or validates a new paradigm, research result, or product class with wide potential impact.\n4. Regulatory or economic consequence: includes new laws, antitrust cases, global bans, sanctions, large layoffs, or market effects.\n5. Trend indicator: covered broadly across major reputable media outlets.\n\nLower priority or exclude when possible\n\n* Local or country-specific stories with limited reach.\n* Deals, discounts, or minor product rumors and leaks.\n* Entertainment or gaming news unless it represents a major technological milestone.\n* Opinion or lifestyle content without factual updates.\n\nAlways follow these steps\n\n1. Deduplicate by link (keep the first appearance).\n2. Rank by global significance using the criteria above.\n3. Select the top 20 items.\n4. If fewer than 20 items exist after deduplication, include all remaining items.\n5. Return the result strictly in the required JSON format and values exactly as in the input.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        1664,
+        -80
+      ],
+      "id": "bab5b0bd-9f9f-4c7f-bfd9-fc207c4104ab",
+      "name": "FilterNewsAI",
+      "alwaysOutputData": false,
+      "executeOnce": false,
+      "retryOnFail": false
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.output.articles.map(item => JSON.stringify(item)).join(',\\n') }}\n",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "Your role:\nYou receive a JSON object that includes a list of technology news articles in English.\nYour task is to create a daily tech news feed in Hebrew, summarizing and highlighting up to 7 of the most important and interesting stories.\n\nInput format:\n[\n{\n\"title\": <String>,\n\"link\": <String>,\n\"pubDate\": <String>,\n\"content\": <String>,\n\"timestamp\": <Int>\n}\n]\n\nTasks:\n\n1. Select 6 to 7 key stories that are globally relevant and engaging (no fewer than 6 and no more than 7).\n2. Translate the title and summary into Hebrew. Keep English terms (company names, products, technologies) when no accurate Hebrew equivalent exists.\n3. Summarize each article in one paragraph of 3–4 clear, concise sentences in Hebrew.\n   Each sentence should start naturally in Hebrew (for example: \"חברת X הכריזה כי...\", \"הדו\"ח מציין ש...\", \"בנוסף...\") to ensure smooth reading flow.\n4. Maintain an informative, professional tone – factual and neutral, without opinions or superlatives.\n5. Selection priorities for inclusion:\n\n   * Developments in Artificial Intelligence – major releases, research breakthroughs, or global applications.\n   * Strategic updates from major international tech companies (Apple, Google, Microsoft, Nvidia, OpenAI, Amazon, Meta, etc.).\n   * Regulatory or global-impact events – new laws, government decisions, or international policies.\n   * Market-moving stories – large investments, mergers, IPOs, or key economic shifts.\n   * Broad consumer influence – new products or features changing user experience worldwide.\n6. Exclude purely promotional or consumer-focused stories (deals, discounts, buying guides, or minor gadget reviews), unless needed to fill the list to 6 items.\n7. The final feed must feel sharp, global, and AI-focused, with preference for innovation, strategy, and global relevance.\n\nRequired output:\n{\n\"articleLists\": [\n{\n\"index\": <Int sequentially starting from 1>,\n\"title\": <String in Hebrew (add “(עדכון)” if relevant)>,\n\"content\": <String in Hebrew – one paragraph of 3–4 sentences>,\n\"pubDate\": <String from input>,\n\"timestamp\": <Int from input>,\n\"link\": <String from input>\n}\n]\n}\n\nNotes:\n\n* JSON must be fully valid with proper commas, quotes, and brackets.\n* Do not include any extra fields beyond those listed.\n* The \"content\" field must not contain links. Links appear only in the \"link\" field.\n* The total number of items must be between 6 and 7 exactly.\n* Prioritize clarity, balance, and relevance so that the feed feels like a concise, professional daily briefing for Hebrew readers.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        2256,
+        -80
+      ],
+      "id": "48511ccc-9cc8-486f-ab7a-e5647775ba2e",
+      "name": "FeedCreator"
+    },
+    {
+      "parameters": {
+        "jsCode": "// n8n Code node (JavaScript)\n// Goal: unwrap { output: { articles: [...] } } or { articles: [...] } into flat items\n// Notes:\n// - Returns one item per article: [{ json: {...} }, { json: {...} }, ...]\n// - Handles both shapes: with/without \"output\" wrapper\n// - Throws a clear error if no articles are found\n\n// Helper to pick the articles array from various wrappers\nfunction extractArticles(inputItems) {\n  for (const it of inputItems) {\n    const j = it.json ?? {};\n\n    // Case 1: { output: { articles: [...] } }\n    if (j.output && Array.isArray(j.output.articles)) {\n      return j.output.articles;\n    }\n\n    // Case 2: { articles: [...] }\n    if (Array.isArray(j.articles)) {\n      return j.articles;\n    }\n  }\n  return null;\n}\n\nconst articles = extractArticles(items);\nif (!Array.isArray(articles)) {\n  throw new Error('No \"articles\" array found under \"output.articles\" or \"articles\".');\n}\n\n// Map each article to its own n8n item\nreturn articles.map(a => ({ json: a }));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2192,
+        368
+      ],
+      "id": "6f15d5d3-0ce6-4d8d-b8bf-bed7823824aa",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "description": "make sure to output 20 articles !!  not less !!"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolThink",
+      "typeVersion": 1.1,
+      "position": [
+        1936,
+        272
+      ],
+      "id": "bf6e416a-134e-47d8-b225-99bb9566dead",
+      "name": "Think"
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "7xFi7lxNRNpQ7jn8",
+          "mode": "list",
+          "cachedResultName": "news_items",
+          "cachedResultUrl": "/projects/0zP1zvCUNJRhmJuK/datatables/7xFi7lxNRNpQ7jn8"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "title": "={{ $json.title }}",
+            "link": "={{ $json.link }}",
+            "pubDate": "={{ $json.pubDate }}",
+            "content": "={{ $json.content }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "link",
+              "displayName": "link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "pubDate",
+              "displayName": "pubDate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "content",
+              "displayName": "content",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
+      "position": [
+        2368,
+        528
+      ],
+      "id": "845611ea-2397-48fb-9c45-d226471cabb6",
+      "name": "Insert row1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        704
+      ],
+      "id": "49aa2432-0e5b-47bb-a3e0-1394061562ee",
+      "name": "When clicking ‘Execute workflow’",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "7xFi7lxNRNpQ7jn8",
+          "mode": "list",
+          "cachedResultName": "news_items",
+          "cachedResultUrl": "/projects/0zP1zvCUNJRhmJuK/datatables/7xFi7lxNRNpQ7jn8"
+        },
+        "returnAll": true
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
+      "position": [
+        -96,
+        704
+      ],
+      "id": "602b6c61-79fc-4efa-9d9b-664dd24d89fe",
+      "name": "Get row(s)",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get input data (list of items)\nconst items = $input.all();\n\n// Wrap the list inside an object under 'wrappedList'\nreturn [\n  {\n    json: {\n      articles: items.map(item => item.json)\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        112,
+        704
+      ],
+      "id": "d36774eb-d667-4a5c-9cd0-fd26e36501df",
+      "name": "ToList1",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You receive a JSON object with a field named articles (an array of technology news articles).  \nYour task: from the input array select **2 to 4 articles** that share a common topic (for example: company name, technology domain, product category).  \nYou must then output JSON with two parts:  \n  1. a field named selectedArticles containing the chosen articles (full data, no edits).  \n  2. a field named tags containing 1 or 2 topic-tags that reflect the shared subject of the articles.\n\nYou must not modify, translate, or rewrite any data in the articles. Do not add, remove or change any fields inside each article object.\n\nInput structure:  \n{  \n  \"articles\": [  \n    {  \n      \"title\": \"string\",  \n      \"link\": \"string\",  \n      \"pubDate\": \"string\",  \n      \"content\": \"string\",  \n      \"id\": number,  \n      \"createdAt\": \"string\",  \n      \"updatedAt\": \"string\"  \n    }  \n  ]  \n}\n\nOutput format:  \n{  \n  \"selectedArticles\": [ …2-4 article objects from input… ],  \n  \"tags\": [ \"tag1\", \"tag2\" ]  \n}\n\nRules:  \n- Choose articles that clearly relate to the same topic or entity.  \n- If possible, pick 3 or 4; minimum 2.  \n- Do not change any article object fields (title, link, etc.).  \n- Derive tags that summarise the topic (for example “Netflix”, “StreamingServices”, “AI” etc.).  \n- Tags must be short keywords without spaces.  \n- Ensure the selected articles and tags match logically: the tags must reflect what the articles share.  \n- If there are more candidate articles than needed, pick those with most recent pubDate or strongest connection to the topic.  \n- Do not output explanation or commentary — only the JSON object described above.\n\n\n\n{{ $json.articles.map(item => JSON.stringify(item)).join(',\\n') }}",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        320,
+        704
+      ],
+      "id": "018568cb-38ea-41d3-9882-d9548994098d",
+      "name": "AI Agent2",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1-nano",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1-nano"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        128,
+        992
+      ],
+      "id": "001f4a8b-1f59-4d77-8247-557d9dade9f4",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "3cccdT1hyMrXCzp5",
+          "name": "OpenAi account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "[\n  {\n    \"articles\": [\n      {\n        \"title\": \"Netflix CTO says more vertical video experiments are coming, but streamer is not competing with TikTok\",\n        \"link\": \"https://techcrunch.com/2025/10/28/netflix-cto-says-more-vertical-video-experiments-are-coming-but-streamer-is-not-competing-with-tiktok/\",\n        \"pubDate\": \"Tue, 28 Oct 2025 19:47:00 +0000\",\n        \"content\": \"Netflix CTO Elizabeth Stone says company is experimenting with vertical video, but isn't trying to be TikTok.\",\n        \"id\": 1,\n        \"createdAt\": \"2025-10-28T20:48:44.679Z\",\n        \"updatedAt\": \"2025-10-28T20:48:44.679Z\"\n      },\n      {\n        \"title\": \"Galaxy S26 Ultra launches soon – and these 7 upgrades will blow you away\",\n        \"link\": \"https://www.phonearena.com/news/galaxy-s26-ultra-launches-soon-and-these-7-upgrades-will-blow-you-away_id175250\",\n        \"pubDate\": \"Tue, 28 Oct 2025 09:14:32 -0500\",\n        \"content\": \"Galaxy S26 Ultra launches soon – and these 7 upgrades will blow you away\",\n        \"id\": 20,\n        \"createdAt\": \"2025-10-28T20:48:45.149Z\",\n        \"updatedAt\": \"2025-10-28T20:48:45.149Z\"\n      }\n    ],\n    \"tags\": [\"tag1\",\"tag2\"]\n  }\n]",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        336,
+        1040
+      ],
+      "id": "a7453520-ab3d-4243-bb50-fb38c373b42b",
+      "name": "Structured Output Parser",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-5-nano",
+          "mode": "list",
+          "cachedResultName": "gpt-5-nano"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        144,
+        1216
+      ],
+      "id": "be94b735-2119-48db-8713-aa17f4e06c72",
+      "name": "OpenAI Chat Model10",
+      "credentials": {
+        "openAiApi": {
+          "id": "3cccdT1hyMrXCzp5",
+          "name": "OpenAi account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.output }}",
+        "options": {
+          "systemMessage": "You are a senior technology editor for a content channel.\nYou receive a JSON object with a field named articles (an array of technology news articles) that have already been selected (2 to 4 items).\nYour task is to produce one final Telegram post message based on those articles.\nYou must decide whether the selected articles share a single clear topic and therefore should be merged into one coherent message, or whether they cover distinct topics and should be presented separately (but still within the same post).\nYou must not modify, translate, summarise or rewrite any data in the article objects. Do not add, remove or change any fields inside each article object.\n\nInput structure:\n{\n\"articles\": [\n{\n\"title\": \"string\",\n\"link\": \"string\",\n\"pubDate\": \"string\",\n\"content\": \"string\",\n\"id\": number,\n\"createdAt\": \"string\",\n\"updatedAt\": \"string\"\n}\n]\n}\n\nOutput format:\n{\n\"message\": \"string\",\n\"tags\": [ \"keyword1\", \"keyword2\" ]\n}\n\nRules:\n\n* The field `message` must contain the full post as you would publish it on Telegram (text only, including links).\n* If the articles share the same topic, write the message as a **single cohesive block**, integrating the articles’ content naturally (you may reference multiple articles, but do not rewrite their full content; you may quote titles and link them).\n* If the articles cover different topics, you may format the message in clear separate sections for each article (still one message body).\n* Use the tags array to include 1 or 2 short keywords that relate to the theme of the post.\n* Preserve the order of articles as they appear in the input when referencing them.\n* Do not output explanation or extra fields — only the JSON object described above."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        768,
+        640
+      ],
+      "id": "5585d333-c481-42d6-9c8d-dfc0d97c32fb",
+      "name": "AI Agent3",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1-nano",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1-nano"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        704,
+        960
+      ],
+      "id": "75383673-3eac-4d0d-9a3f-adef4a5dbd83",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "3cccdT1hyMrXCzp5",
+          "name": "OpenAi account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "deleteRows",
+        "dataTableId": {
+          "__rl": true,
+          "value": "7xFi7lxNRNpQ7jn8",
+          "mode": "list",
+          "cachedResultName": "news_items",
+          "cachedResultUrl": "/projects/0zP1zvCUNJRhmJuK/datatables/7xFi7lxNRNpQ7jn8"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyValue": "={{ $json.ids }}"
+            }
+          ]
+        },
+        "options": {
+          "dryRun": false
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
+      "position": [
+        1584,
+        928
+      ],
+      "id": "788a27cb-56cc-4ce2-8739-105802dfe17c",
+      "name": "Delete row(s)",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = items[0].json;\nconst ids = [];\n\nif (input.output && Array.isArray(input.output)) {\n  input.output.forEach(group => {\n    if (group.articles && Array.isArray(group.articles)) {\n      group.articles.forEach(article => {\n        if (article.id !== undefined) {\n          ids.push(article.id);\n        }\n      });\n    }\n  });\n}\n\nreturn [{ json: { ids } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1040,
+        928
+      ],
+      "id": "7b4113fd-d5f8-4d09-91d0-101f8c0c9904",
+      "name": "Code in JavaScript1",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "ids",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1328,
+        928
+      ],
+      "id": "b2a1eb3c-cd17-4704-a11c-50823a065f82",
+      "name": "Split Out",
+      "disabled": true
+    }
+  ],
+  "connections": {
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger2": {
+      "main": [
+        [
+          {
+            "node": "Get the astronomy picture of the day",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model4": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wikipedia1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze image": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Date & Time": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SerpAPI": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get the astronomy picture of the day": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "Analyze image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model5": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send David",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send botTechNewsIL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Translate a language in Google Translate2": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser2": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "FilterNewsAI",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "Code3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code3": {
+      "main": [
+        [
+          {
+            "node": "Send to David1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send to BotTechNewsIL1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Date & Time2": {
+      "ai_tool": [
+        [
+          {
+            "node": "FeedCreator",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser3": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "FeedCreator",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields17": {
+      "main": [
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Edit Fields18": {
+      "main": [
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Techcrunch",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "cnet",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Technology Review",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Phone Arena",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "wired",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "engadget",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 4
+          }
+        ]
+      ]
+    },
+    "Edit Fields5": {
+      "main": [
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 5
+          }
+        ]
+      ]
+    },
+    "Edit Fields19": {
+      "main": [
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Merge3": {
+      "main": [
+        [
+          {
+            "node": "FilterBlacklist",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "wired": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Phone Arena": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Technology Review": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields18",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "engadget": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields19",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "cnet": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields17",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Techcrunch": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add timestamp1": {
+      "main": [
+        [
+          {
+            "node": "SortBeTimeStamp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model6": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Structured Output Parser2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model7": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Structured Output Parser3",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Translate a language in Google Translate1": {
+      "ai_tool": [
+        [
+          {
+            "node": "FeedCreator",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model8": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "FeedCreator",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model9": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "FilterNewsAI",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FilterBlacklist": {
+      "main": [
+        [
+          {
+            "node": "Add timestamp1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ToList": {
+      "main": [
+        [
+          {
+            "node": "FilterNewsAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LimitByDate": {
+      "main": [
+        [
+          {
+            "node": "cleanData",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SortBeTimeStamp": {
+      "main": [
+        [
+          {
+            "node": "LimitByDate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "cleanData": {
+      "main": [
+        [
+          {
+            "node": "ToList",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FilterNewsAI": {
+      "main": [
+        [
+          {
+            "node": "FeedCreator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FeedCreator": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Insert row1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Think": {
+      "ai_tool": [
+        [
+          {
+            "node": "FilterNewsAI",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s)": {
+      "main": [
+        [
+          {
+            "node": "ToList1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ToList1": {
+      "main": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model10": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Structured Output Parser",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent2": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent3",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete row(s)": {
+      "main": [
+        []
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Delete row(s)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Jerusalem",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed"
+  },
+  "staticData": {
+    "node:Schedule Trigger1": {
+      "recurrenceRules": []
+    },
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    },
+    "node:Schedule Trigger2": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "a2ce760b-0955-40ad-b580-7ca13397a7b8",
+  "activeVersionId": null,
+  "triggerCount": 2,
+  "shared": [
+    {
+      "updatedAt": "2025-08-05T06:41:54.877Z",
+      "createdAt": "2025-08-05T06:41:54.877Z",
+      "role": "workflow:owner",
+      "workflowId": "JOS83af9GvfuQJ2F",
+      "projectId": "0zP1zvCUNJRhmJuK"
+    }
+  ],
+  "activeVersion": null,
+  "tags": [
+    {
+      "updatedAt": "2025-08-18T17:27:05.024Z",
+      "createdAt": "2025-08-18T17:25:35.026Z",
+      "id": "oI7Jc0qEOiJaRNff",
+      "name": "News"
+    }
+  ]
+}
