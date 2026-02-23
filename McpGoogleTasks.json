@@ -1,0 +1,217 @@
+{
+  "updatedAt": "2025-10-28T19:12:47.000Z",
+  "createdAt": "2025-08-18T06:59:31.069Z",
+  "id": "eIFSgkkOCPi2pq9U",
+  "name": "McpGoogleTasks",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "path": "a1ea215b-850a-438d-9740-e28c2513c823"
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpTrigger",
+      "typeVersion": 2,
+      "position": [
+        96,
+        0
+      ],
+      "id": "0c29704c-beef-44f6-b542-8c584a86e5f5",
+      "name": "MCP Server Trigger",
+      "webhookId": "a1ea215b-850a-438d-9740-e28c2513c823"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "task": "bnZWaFJsZnd6dFkzdzVTMQ",
+        "returnAll": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Return_All', ``, 'boolean') }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.googleTasksTool",
+      "typeVersion": 1,
+      "position": [
+        0,
+        224
+      ],
+      "id": "6d918c38-f8d6-44b2-b91f-732c23f74dde",
+      "name": "GetMany",
+      "credentials": {
+        "googleTasksOAuth2Api": {
+          "id": "xs7fScWaAC7eSipl",
+          "name": "Google Tasks account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "task": "bnZWaFJsZnd6dFkzdzVTMQ",
+        "taskId": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Task_ID', ``, 'string') }}",
+        "updateFields": {}
+      },
+      "type": "n8n-nodes-base.googleTasksTool",
+      "typeVersion": 1,
+      "position": [
+        128,
+        224
+      ],
+      "id": "a7999d1e-da14-43e8-aa01-96b939fd821d",
+      "name": "Update",
+      "credentials": {
+        "googleTasksOAuth2Api": {
+          "id": "xs7fScWaAC7eSipl",
+          "name": "Google Tasks account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "task": "bnZWaFJsZnd6dFkzdzVTMQ",
+        "title": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Title', ``, 'string') }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.googleTasksTool",
+      "typeVersion": 1,
+      "position": [
+        256,
+        224
+      ],
+      "id": "d8ec0d5f-ab71-4473-a164-fd7afe6bdec2",
+      "name": "Create",
+      "credentials": {
+        "googleTasksOAuth2Api": {
+          "id": "xs7fScWaAC7eSipl",
+          "name": "Google Tasks account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "task": "bnZWaFJsZnd6dFkzdzVTMQ",
+        "taskId": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Task_ID', ``, 'string') }}"
+      },
+      "type": "n8n-nodes-base.googleTasksTool",
+      "typeVersion": 1,
+      "position": [
+        384,
+        224
+      ],
+      "id": "c0743c28-68b7-419d-9868-46c2aea2293f",
+      "name": "GetTask",
+      "credentials": {
+        "googleTasksOAuth2Api": {
+          "id": "xs7fScWaAC7eSipl",
+          "name": "Google Tasks account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "task": "bnZWaFJsZnd6dFkzdzVTMQ",
+        "taskId": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Task_ID', ``, 'string') }}"
+      },
+      "type": "n8n-nodes-base.googleTasksTool",
+      "typeVersion": 1,
+      "position": [
+        512,
+        240
+      ],
+      "id": "4a41fa3c-e344-4deb-a0f1-143f3c6b5976",
+      "name": "Delete",
+      "credentials": {
+        "googleTasksOAuth2Api": {
+          "id": "xs7fScWaAC7eSipl",
+          "name": "Google Tasks account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "GetMany": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GetTask": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "ed692f93-7352-4f69-bb04-1b283a6c90cc",
+  "activeVersionId": null,
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2025-08-18T06:59:31.072Z",
+      "createdAt": "2025-08-18T06:59:31.072Z",
+      "role": "workflow:owner",
+      "workflowId": "eIFSgkkOCPi2pq9U",
+      "projectId": "0zP1zvCUNJRhmJuK"
+    }
+  ],
+  "activeVersion": null,
+  "tags": [
+    {
+      "updatedAt": "2025-08-18T18:09:36.426Z",
+      "createdAt": "2025-08-18T17:26:25.570Z",
+      "id": "sNq0NmscW2evVDhQ",
+      "name": "Mcp Server"
+    }
+  ]
+}
