@@ -1,0 +1,753 @@
+{
+  "updatedAt": "2025-09-25T14:01:02.000Z",
+  "createdAt": "2025-09-18T08:05:58.488Z",
+  "id": "pFdHNZng2zBO5Rr2",
+  "name": "Financial agent",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.chatInput }}",
+        "options": {
+          "systemMessage": "אתה סוכן פנסיוני חכם של בנק דיסקונט. מטרתך היא לעזור ללקוחות להבין את האפשרויות שלהם, ולהמליץ להם על מוצרים פיננסיים מתאימים מתוך סל המוצרים שלנו.\n\n### עקרונות עבודה:\n\n* **ממוקד מכירה**: התפקיד שלך הוא לקדם את מוצרי הבנק בצורה ידידותית וברורה.\n* **שפה פשוטה ונגישה**: בלי מושגים מקצועיים מסובכים. דבר קצר, בהיר ולעניין.\n* **שירותיות**: היה אדיב, אכפתי וסבלני. תן ללקוח תחושה שהוא בידיים טובות.\n* **הגדרת צרכים**: שאל את הלקוח שאלות פשוטות וברורות:\n\n  * כמה כסף הוא רוצה להפקיד בתחילת הדרך?\n  * כמה הוא רוצה להפקיד בכל חודש?\n  * האם חשוב לו שתהיה אפשרות לצאת מהתוכנית (תחנות יציאה)?\n  * לכמה זמן הוא מתכנן את ההשקעה?\n\n### כללי התנהלות:\n\n* אתה **לא** מציע לפתוח חשבון, לא מסביר על אפליקציה ולא מתאר את האתר.\n* המיקוד היחיד שלך הוא **הסברה והנגשה** של מוצרים פיננסיים.\n* אם הלקוח מגלה עניין – הפנה אותו לערוצי יצירת קשר רשמיים של הבנק.\n\n### טון הדיבור:\n\n* ידידותי, תמציתי, אמפתי.\n* מדגיש יתרונות באופן פשוט וברור.\n* תמיד מתסס על צרכי הלקוח ומתאים לו פתרון רלוונטי."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.1,
+      "position": [
+        80,
+        -240
+      ],
+      "id": "73a88c79-aa54-4589-a49a-4111d1108b1d",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.sessionId }}",
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -208,
+        -16
+      ],
+      "id": "0df44212-d19d-4bf2-9f78-b1a84a3ec631",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "קובץ זה מכיל 2 טבלאות \nהראשונה \nשיעורי הריבית על סוגי הפיקדונות השיקליים המקובלים ועל יתרות זכות בחשבון\n\nוהשנייה \nשיעורי הריבית על סוגי הפיקדונות השיקליים הנוספים של בנק דיסקונט",
+        "documentId": {
+          "__rl": true,
+          "value": "14SvW71N2_LyHDvPa_fnf8Fc0vhcteZ-bBwI54bC19E4",
+          "mode": "list",
+          "cachedResultName": "shikli_merukaz_150925",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14SvW71N2_LyHDvPa_fnf8Fc0vhcteZ-bBwI54bC19E4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 417874034,
+          "mode": "list",
+          "cachedResultName": "טבלת פיקדונות שקליים לבנק ישראל",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14SvW71N2_LyHDvPa_fnf8Fc0vhcteZ-bBwI54bC19E4/edit#gid=417874034"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.6,
+      "position": [
+        -80,
+        -16
+      ],
+      "id": "3d5eede0-7547-4394-810c-3b742db2747e",
+      "name": "shikli_merukaz_",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "t0kMqdoxGvvWONGj",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "שיעורי הריבית על סוגי הפיקדונות נוספים במטבע חוץ של בנק דיסקונט",
+        "documentId": {
+          "__rl": true,
+          "value": "17NXJgPyvs3y6KpxJDJP6lcgRgOOyrERt10IxXAcpVlE",
+          "mode": "list",
+          "cachedResultName": "matach_merukaz_210525",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17NXJgPyvs3y6KpxJDJP6lcgRgOOyrERt10IxXAcpVlE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2092509669,
+          "mode": "list",
+          "cachedResultName": "פיקדונות מט\"ח",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17NXJgPyvs3y6KpxJDJP6lcgRgOOyrERt10IxXAcpVlE/edit#gid=2092509669"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.6,
+      "position": [
+        48,
+        -16
+      ],
+      "id": "4b96fd9b-5fb4-4e56-b93b-6c9f76645589",
+      "name": "matach_merukaz_",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "t0kMqdoxGvvWONGj",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "שיעורי הריבית על סוגי הפיקדונות השיקליים בהוראת קבע של בנק דיסקונט",
+        "documentId": {
+          "__rl": true,
+          "value": "1Poy8_uB3qFFQGqA5ivPOm2RzYBJqMZJX46j0oXiboAI",
+          "mode": "list",
+          "cachedResultName": "hok_merukaz_010425",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Poy8_uB3qFFQGqA5ivPOm2RzYBJqMZJX46j0oXiboAI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1718405973,
+          "mode": "list",
+          "cachedResultName": "טבלת פיקדונות שקליים לבנק ישראל",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Poy8_uB3qFFQGqA5ivPOm2RzYBJqMZJX46j0oXiboAI/edit#gid=1718405973"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.6,
+      "position": [
+        176,
+        -16
+      ],
+      "id": "0d5f931a-fb43-40a0-8545-bbf1ac1b019e",
+      "name": "hok_merukaz_",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "t0kMqdoxGvvWONGj",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        -48
+      ],
+      "id": "b89b1f29-738c-4fa9-86fb-b06672a6857b",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "3e4I4idKS4czltyG",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "public": true,
+        "mode": "webhook",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -560,
+        -240
+      ],
+      "id": "968770a4-4f2a-4bae-b18b-f3b4fdd72166",
+      "name": "When chat message received",
+      "webhookId": "ffd4a4e0-78da-47c1-8347-663c617d4f54"
+    },
+    {
+      "parameters": {
+        "includeTime": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Include_Current_Time', ``, 'boolean') }}",
+        "outputFieldName": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Output_Field_Name', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dateTimeTool",
+      "typeVersion": 2,
+      "position": [
+        304,
+        -16
+      ],
+      "id": "2e063e92-dc92-449e-ad38-2b88755b641a",
+      "name": "Date & Time"
+    },
+    {
+      "parameters": {
+        "text": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Text', ``, 'string') }}",
+        "translateTo": "he"
+      },
+      "type": "n8n-nodes-base.googleTranslateTool",
+      "typeVersion": 2,
+      "position": [
+        432,
+        -16
+      ],
+      "id": "2ca4a56f-bce7-44e6-af99-3a0204c63d6d",
+      "name": "Translate a language in Google Translate",
+      "credentials": {
+        "googleTranslateOAuth2Api": {
+          "id": "BgBnUYsXu3gXARuA",
+          "name": "Google Translate account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolCalculator",
+      "typeVersion": 1,
+      "position": [
+        560,
+        -16
+      ],
+      "id": "35b04acd-73f6-4ef9-bbea-45e917f99d07",
+      "name": "Calculator"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolSerpApi",
+      "typeVersion": 1,
+      "position": [
+        688,
+        -16
+      ],
+      "id": "3bf64892-c977-4fe4-baaa-be5be28d6cf5",
+      "name": "SerpAPI",
+      "credentials": {
+        "serpApi": {
+          "id": "cECarDbKzV3VuLZK",
+          "name": "SerpAPI account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "AI Agent": {
+      "main": [
+        []
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "shikli_merukaz_": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "matach_merukaz_": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "hok_merukaz_": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Date & Time": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Translate a language in Google Translate": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculator": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SerpAPI": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Jerusalem",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "a7c01d35-9ddd-4c86-a9e8-5fc53bf3b13c",
+  "activeVersionId": "a7c01d35-9ddd-4c86-a9e8-5fc53bf3b13c",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2025-09-18T08:05:58.491Z",
+      "createdAt": "2025-09-18T08:05:58.491Z",
+      "role": "workflow:owner",
+      "workflowId": "pFdHNZng2zBO5Rr2",
+      "projectId": "0zP1zvCUNJRhmJuK"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-01-06T10:55:31.850Z",
+    "createdAt": "2026-01-06T10:55:31.850Z",
+    "versionId": "a7c01d35-9ddd-4c86-a9e8-5fc53bf3b13c",
+    "workflowId": "pFdHNZng2zBO5Rr2",
+    "nodes": [
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "={{ $json.chatInput }}",
+          "options": {
+            "systemMessage": "אתה סוכן פנסיוני חכם של בנק דיסקונט. מטרתך היא לעזור ללקוחות להבין את האפשרויות שלהם, ולהמליץ להם על מוצרים פיננסיים מתאימים מתוך סל המוצרים שלנו.\n\n### עקרונות עבודה:\n\n* **ממוקד מכירה**: התפקיד שלך הוא לקדם את מוצרי הבנק בצורה ידידותית וברורה.\n* **שפה פשוטה ונגישה**: בלי מושגים מקצועיים מסובכים. דבר קצר, בהיר ולעניין.\n* **שירותיות**: היה אדיב, אכפתי וסבלני. תן ללקוח תחושה שהוא בידיים טובות.\n* **הגדרת צרכים**: שאל את הלקוח שאלות פשוטות וברורות:\n\n  * כמה כסף הוא רוצה להפקיד בתחילת הדרך?\n  * כמה הוא רוצה להפקיד בכל חודש?\n  * האם חשוב לו שתהיה אפשרות לצאת מהתוכנית (תחנות יציאה)?\n  * לכמה זמן הוא מתכנן את ההשקעה?\n\n### כללי התנהלות:\n\n* אתה **לא** מציע לפתוח חשבון, לא מסביר על אפליקציה ולא מתאר את האתר.\n* המיקוד היחיד שלך הוא **הסברה והנגשה** של מוצרים פיננסיים.\n* אם הלקוח מגלה עניין – הפנה אותו לערוצי יצירת קשר רשמיים של הבנק.\n\n### טון הדיבור:\n\n* ידידותי, תמציתי, אמפתי.\n* מדגיש יתרונות באופן פשוט וברור.\n* תמיד מתסס על צרכי הלקוח ומתאים לו פתרון רלוונטי."
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 2.1,
+        "position": [
+          80,
+          -240
+        ],
+        "id": "73a88c79-aa54-4589-a49a-4111d1108b1d",
+        "name": "AI Agent"
+      },
+      {
+        "parameters": {
+          "sessionIdType": "customKey",
+          "sessionKey": "={{ $json.sessionId }}",
+          "contextWindowLength": 10
+        },
+        "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+        "typeVersion": 1.3,
+        "position": [
+          -208,
+          -16
+        ],
+        "id": "0df44212-d19d-4bf2-9f78-b1a84a3ec631",
+        "name": "Simple Memory"
+      },
+      {
+        "parameters": {
+          "descriptionType": "manual",
+          "toolDescription": "קובץ זה מכיל 2 טבלאות \nהראשונה \nשיעורי הריבית על סוגי הפיקדונות השיקליים המקובלים ועל יתרות זכות בחשבון\n\nוהשנייה \nשיעורי הריבית על סוגי הפיקדונות השיקליים הנוספים של בנק דיסקונט",
+          "documentId": {
+            "__rl": true,
+            "value": "14SvW71N2_LyHDvPa_fnf8Fc0vhcteZ-bBwI54bC19E4",
+            "mode": "list",
+            "cachedResultName": "shikli_merukaz_150925",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14SvW71N2_LyHDvPa_fnf8Fc0vhcteZ-bBwI54bC19E4/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": 417874034,
+            "mode": "list",
+            "cachedResultName": "טבלת פיקדונות שקליים לבנק ישראל",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14SvW71N2_LyHDvPa_fnf8Fc0vhcteZ-bBwI54bC19E4/edit#gid=417874034"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheetsTool",
+        "typeVersion": 4.6,
+        "position": [
+          -80,
+          -16
+        ],
+        "id": "3d5eede0-7547-4394-810c-3b742db2747e",
+        "name": "shikli_merukaz_",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "t0kMqdoxGvvWONGj",
+            "name": "Google Sheets account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "descriptionType": "manual",
+          "toolDescription": "שיעורי הריבית על סוגי הפיקדונות נוספים במטבע חוץ של בנק דיסקונט",
+          "documentId": {
+            "__rl": true,
+            "value": "17NXJgPyvs3y6KpxJDJP6lcgRgOOyrERt10IxXAcpVlE",
+            "mode": "list",
+            "cachedResultName": "matach_merukaz_210525",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17NXJgPyvs3y6KpxJDJP6lcgRgOOyrERt10IxXAcpVlE/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": 2092509669,
+            "mode": "list",
+            "cachedResultName": "פיקדונות מט\"ח",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17NXJgPyvs3y6KpxJDJP6lcgRgOOyrERt10IxXAcpVlE/edit#gid=2092509669"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheetsTool",
+        "typeVersion": 4.6,
+        "position": [
+          48,
+          -16
+        ],
+        "id": "4b96fd9b-5fb4-4e56-b93b-6c9f76645589",
+        "name": "matach_merukaz_",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "t0kMqdoxGvvWONGj",
+            "name": "Google Sheets account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "descriptionType": "manual",
+          "toolDescription": "שיעורי הריבית על סוגי הפיקדונות השיקליים בהוראת קבע של בנק דיסקונט",
+          "documentId": {
+            "__rl": true,
+            "value": "1Poy8_uB3qFFQGqA5ivPOm2RzYBJqMZJX46j0oXiboAI",
+            "mode": "list",
+            "cachedResultName": "hok_merukaz_010425",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Poy8_uB3qFFQGqA5ivPOm2RzYBJqMZJX46j0oXiboAI/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": 1718405973,
+            "mode": "list",
+            "cachedResultName": "טבלת פיקדונות שקליים לבנק ישראל",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Poy8_uB3qFFQGqA5ivPOm2RzYBJqMZJX46j0oXiboAI/edit#gid=1718405973"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheetsTool",
+        "typeVersion": 4.6,
+        "position": [
+          176,
+          -16
+        ],
+        "id": "0d5f931a-fb43-40a0-8545-bbf1ac1b019e",
+        "name": "hok_merukaz_",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "t0kMqdoxGvvWONGj",
+            "name": "Google Sheets account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+        "typeVersion": 1,
+        "position": [
+          -400,
+          -48
+        ],
+        "id": "b89b1f29-738c-4fa9-86fb-b06672a6857b",
+        "name": "Google Gemini Chat Model1",
+        "credentials": {
+          "googlePalmApi": {
+            "id": "3e4I4idKS4czltyG",
+            "name": "Google Gemini(PaLM) Api account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "public": true,
+          "mode": "webhook",
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          -560,
+          -240
+        ],
+        "id": "968770a4-4f2a-4bae-b18b-f3b4fdd72166",
+        "name": "When chat message received",
+        "webhookId": "ffd4a4e0-78da-47c1-8347-663c617d4f54"
+      },
+      {
+        "parameters": {
+          "includeTime": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Include_Current_Time', ``, 'boolean') }}",
+          "outputFieldName": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Output_Field_Name', ``, 'string') }}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.dateTimeTool",
+        "typeVersion": 2,
+        "position": [
+          304,
+          -16
+        ],
+        "id": "2e063e92-dc92-449e-ad38-2b88755b641a",
+        "name": "Date & Time"
+      },
+      {
+        "parameters": {
+          "text": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Text', ``, 'string') }}",
+          "translateTo": "he"
+        },
+        "type": "n8n-nodes-base.googleTranslateTool",
+        "typeVersion": 2,
+        "position": [
+          432,
+          -16
+        ],
+        "id": "2ca4a56f-bce7-44e6-af99-3a0204c63d6d",
+        "name": "Translate a language in Google Translate",
+        "credentials": {
+          "googleTranslateOAuth2Api": {
+            "id": "BgBnUYsXu3gXARuA",
+            "name": "Google Translate account"
+          }
+        }
+      },
+      {
+        "parameters": {},
+        "type": "@n8n/n8n-nodes-langchain.toolCalculator",
+        "typeVersion": 1,
+        "position": [
+          560,
+          -16
+        ],
+        "id": "35b04acd-73f6-4ef9-bbea-45e917f99d07",
+        "name": "Calculator"
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.toolSerpApi",
+        "typeVersion": 1,
+        "position": [
+          688,
+          -16
+        ],
+        "id": "3bf64892-c977-4fe4-baaa-be5be28d6cf5",
+        "name": "SerpAPI",
+        "credentials": {
+          "serpApi": {
+            "id": "cECarDbKzV3VuLZK",
+            "name": "SerpAPI account"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "AI Agent": {
+        "main": [
+          []
+        ]
+      },
+      "Simple Memory": {
+        "ai_memory": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_memory",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "shikli_merukaz_": {
+        "ai_tool": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "matach_merukaz_": {
+        "ai_tool": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "hok_merukaz_": {
+        "ai_tool": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google Gemini Chat Model1": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "When chat message received": {
+        "main": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Date & Time": {
+        "ai_tool": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Translate a language in Google Translate": {
+        "ai_tool": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Calculator": {
+        "ai_tool": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "SerpAPI": {
+        "ai_tool": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "system migration",
+    "name": null,
+    "description": null,
+    "autosaved": false
+  },
+  "tags": []
+}
