@@ -1,0 +1,234 @@
+{
+  "updatedAt": "2025-10-13T19:59:31.000Z",
+  "createdAt": "2025-10-13T19:50:27.644Z",
+  "id": "A2uBxUwIM3HpAGeV",
+  "name": "Voice assistant agent",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {
+          "download": false,
+          "userIds": "530815619"
+        }
+      },
+      "id": "0c402bdc-7fa2-4fa1-96d6-f02853cfdaa1",
+      "name": "Telegram Message Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -96,
+        32
+      ],
+      "webhookId": "55acc711-c248-4ac9-b6cd-e295c2d33f4b",
+      "credentials": {
+        "telegramApi": {
+          "id": "HpzirYeF6mhKsgbi",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Telegram Message Trigger').first().json.message.chat.id }}",
+        "contextWindowLength": 10
+      },
+      "id": "30bef40d-efbe-4920-acad-ce9a42c0061c",
+      "name": "Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        832,
+        288
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "id": "61f3b0a0-210a-4eaa-91b5-e381d5f56754",
+      "name": "Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        640,
+        288
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "3cccdT1hyMrXCzp5",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.text }}",
+        "options": {
+          "systemMessage": "=אתה מקבל פרומט ליצירת ווידאו או תמונה , תפקידך לשפר אותו לדייק ולהמיר לאנגלית \n\nולהוציא את הפרומט בלבד ללא תוספות , מכיוון שהפלט שלך נכנס כקלט לכלי שייצר את המדיה המבוקשת"
+        }
+      },
+      "id": "f958d2f6-6602-4443-bfae-ef628af09b84",
+      "name": "Assistant Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        704,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Start here!\n@[youtube](aaOLJ2mUoVk)",
+        "height": 320,
+        "width": 464,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -736,
+        -80
+      ],
+      "typeVersion": 1,
+      "id": "cd6f0a09-148c-46e3-9858-11645de3a802",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "resource": "video",
+        "modelId": {
+          "__rl": true,
+          "value": "models/veo-2.0-generate-001",
+          "mode": "list",
+          "cachedResultName": "models/veo-2.0-generate-001"
+        },
+        "prompt": "={{ $json.output }}",
+        "returnAs": "url",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        1136,
+        0
+      ],
+      "id": "b4b219d2-dd64-48da-bcf3-f18f6d63f62e",
+      "name": "Generate a video",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "3e4I4idKS4czltyG",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "eb34fb20-49d3-403f-bca8-55f5b57d894a",
+              "leftValue": "",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        304,
+        32
+      ],
+      "id": "97688f69-0881-43aa-93fe-64fbd4fa27b4",
+      "name": "If"
+    }
+  ],
+  "connections": {
+    "Telegram Message Trigger": {
+      "main": [
+        []
+      ]
+    },
+    "Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Assistant Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Assistant Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Assistant Agent": {
+      "main": [
+        [
+          {
+            "node": "Generate a video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateId": "voice_assistant_agent_with_telegram",
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "f5f6fd13-c7e5-43c8-9da7-fd2057d63f0e",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2025-10-13T19:50:27.647Z",
+      "createdAt": "2025-10-13T19:50:27.647Z",
+      "role": "workflow:owner",
+      "workflowId": "A2uBxUwIM3HpAGeV",
+      "projectId": "0zP1zvCUNJRhmJuK"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
